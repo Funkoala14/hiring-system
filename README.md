@@ -2,7 +2,6 @@
 
 ## Project Overview
 
-This is a hr hiring system based on the MERN (MongoDB, Express, React, Node.js) stack, designed to provide an efficient platform for recruitment. Users can post job listings, and job seekers can browse and apply for jobs.
 
 ## Tech Stack
 
