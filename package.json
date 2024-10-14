@@ -1,0 +1,16 @@
+{
+    "name": "hiring-system",
+    "version": "1.0.0",
+    "description": "A mern stack based hiring system",
+    "scripts": {
+        "start": "concurrently \"npm run server\" \"npm run client\"",
+        "server": "cd server && npm start",
+        "client": "cd client && npm run dev"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "concurrently": "^6.0.0"
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "name": "server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "env-cmd nodemon index.js",
+        "seed": "env-cmd node config/seed.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.21.1",
+        "argon2": "^0.31.2",
+        "cookie-parser": "~1.4.4",
+        "cors": "^2.8.5",
+        "jsonwebtoken": "^9.0.2",
+        "nodemon": "^3.1.7",
+        "mongoose": "^8.4.1",
+        "validator": "^13.12.0"
+    },
+    "devDependencies": {
+        "env-cmd": "^10.1.0",
+        "morgan": "^1.10.0"
+    }
+}
