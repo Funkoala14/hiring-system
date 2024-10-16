@@ -1,8 +1,15 @@
 import { Router } from 'express';
-import { getUser } from '../controllers/UserController.js';
+import User from '../controllers/UserController.js';
+const { login, logout } = User;
+import validationMiddleware from '../middlewares/validationMiddleware.js';
+const { loginUserValidation, createUserValidation } = validationMiddleware;
 
 const userRouter = Router();
 
-userRouter.get('', getUser);
+// User login route
+userRouter.post('/login', loginUserValidation, login);
+
+// User logout route
+userRouter.get('/logout', logout);
 
 export default userRouter;
