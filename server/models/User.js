@@ -24,10 +24,7 @@ const userSchema = new Schema({
         minlength: 6,
     },
     role:     { type: String, enum: ['Employee', 'HR'], default: 'Employee', required: true },
-    housingAssignment: { type: Schema.Types.ObjectId, ref: 'House' },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
-});
+}, { timestamps: true } );
 
 // Hashing password before saving
 userSchema.pre('save', async function (next) {
@@ -41,5 +38,6 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.matchPassword = async function (password) {
     return await compare(password, this.password);
 };
+const User = model('User', userSchema);
 
-export default model('User', userSchema);
+export default User;
