@@ -85,11 +85,13 @@ const seedUsers = async (houses) => {
     // Clear existing users in the database
     await User.deleteMany();
 
-    // Insert new users
-    await User.insertMany(users);
+    // Loop over each user and save it using User.save()
+    for (let userData of users) {
+        const user = new User(userData); // Create a new User instance
+        await user.save(); // Save the user, triggering password hashing
+    }
 
     console.log('Users seeded successfully');
-    process.exit();
 };
 
 // Run the seed function
