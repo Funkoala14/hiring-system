@@ -2,6 +2,7 @@
 
 import { Schema as _Schema, model } from 'mongoose';
 import { genSalt, hash, compare } from 'bcrypt';
+const Schema = _Schema;
 
 const userSchema = new Schema({
     username: {
@@ -29,7 +30,7 @@ const userSchema = new Schema({
 });
 
 // Hashing password before saving
-UserSchema.pre('save', async function (next) {
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();
     }
@@ -37,8 +38,8 @@ UserSchema.pre('save', async function (next) {
     this.password = await hash(this.password, salt);
 });
 
-UserSchema.methods.matchPassword = async function (password) {
+userSchema.methods.matchPassword = async function (password) {
     return await compare(password, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+export default model('User', userSchema);
