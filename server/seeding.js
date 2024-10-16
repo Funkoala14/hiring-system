@@ -102,7 +102,7 @@ const seed = async () => {
     } catch (error) {
         console.error('Seeding failed:', error);
     } finally {
-        mongoose.connection.close();  // Close the connection when done
+        mongoose.close();  // Close the connection when done
     }
 };
 
