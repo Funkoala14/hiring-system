@@ -1,7 +1,8 @@
-# Hiring System
+# Employee Management Portal
 
 ## Project Overview
 
+The Employee Management Portal is a mern stack based application designed to streamline the onboarding and management of employees within an organization. This system allows HR representatives to manage employee profiles, track visa status, and facilitate housing arrangements, while employees can register, submit onboarding applications, and manage their personal information.
 
 ## Tech Stack
 
