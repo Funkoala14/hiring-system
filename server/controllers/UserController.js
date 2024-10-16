@@ -7,15 +7,16 @@ const { escape } = validator;
 
 // Register new user
 const register = async (req, res) => {
-
   const sanitizedUsername = escape(req.body.username);
   const sanitizedEmail = escape(req.body.email);
   const { password } = req.body;
 
   try {
     const existingUser = await findOne({
-      $or: [{ username: sanitizedUsername }, { email: sanitizedEmail }]
-    }).lean().exec();
+      $or: [{ username: sanitizedUsername }, { email: sanitizedEmail }],
+    })
+      .lean()
+      .exec();
 
     if (existingUser) {
       return res.status(409).json({ message: 'Username or email already exists' });
@@ -56,32 +57,34 @@ const login = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-      const user = await User.findOne({ $or: [{ username }, { email }] }).lean().exec();
-      if (!user) {
-        return res.status(401).json({ message: 'Invalid username or email' });
-      }
+    const user = await User.findOne({ $or: [{ username }, { email }] })
+      .lean()
+      .exec();
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid username or email' });
+    }
 
-      const isPasswordValid = await compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Incorrect password' });
-      }
+    const isPasswordValid = await compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Incorrect password' });
+    }
 
-      const token = sign(
-          {
-              id: user._id,
-              username: user.username,
-              email: user.email,
-              role: user.role,
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: '1d' }
-      );
-    
-      res.cookie('token', token, {
-          httpOnly: true,
-          sameSite: 'Strict',
-          maxAge: 24 * 60 * 60 * 1000,
-      });
+    const token = sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'Strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     return res.status(200).json({ message: 'Login successful', token: token });
   } catch (error) {
@@ -105,7 +108,17 @@ const checkToken = (req, res) => {
   }
 };
 
+// Fetch specified one User info
+const getUserInfo = (req, res) => {
+  const { id } = req.body;
+};
 
+// Update specified one User info
+const updateUserInfo = (req, res) => {
+  const { id } = req.body;
+  const user = User.findById(id).lean().exec();
+  
+};
 
 export default {
   register,
