@@ -1,38 +1,38 @@
 import { Schema } from 'mongoose';
 import validator from 'validator';
+import User from './User.js';
+import House from './House.js'
 
 const refType = Schema.Types.ObjectId;
 
-const EmployeeSchema = new Schema(
-    {
-        firstName: { type: String, trim: true },
-        lastName: { type: String, trim: true },
-        middleName: { type: String, trim: true },
-        preferedName: { type: String, trim: true },
-        image: { type: String, trim: true },
-        ssn: { type: String, trim: true },
-        birth: { type: Date },
-        gender: { type: String, enum: ['male', 'female', 'other'] },
-        cellPhone: { type: String, trim: true },
-        workPhone: { type: String, trim: true },
-        emergencyContact: {
-            firstName: { type: String, trim: true },
-            lastName: { type: String, trim: true },
-            middleName: { type: String, trim: true },
-            phone: { type: String, trim: true },
-            email: { type: String, trim: true },
-            relationship: { type: String, trim: true },
-        },
+const EmployeeSchema = new Schema({
+    firstName: { type: String, trim: true, default: null },
+    lastName: { type: String, trim: true, default: null },
+    middleName: { type: String, trim: true, default: null },
+    preferedName: { type: String, trim: true, default: null },
+    image: { type: String, trim: true, default: null },
+    ssn: { type: String, trim: true, default: null },
+    birth: { type: Date, default: null },
+    gender: { type: String, enum: ['male', 'female', 'other'], default: null },
+    cellPhone: { type: String, trim: true, default: null },
+    workPhone: { type: String, trim: true, default: null },
+    emergencyContact: {
+        firstName: { type: String, trim: true, default: null },
+        lastName: { type: String, trim: true, default: null },
+        middleName: { type: String, trim: true, default: null },
+        phone: { type: String, trim: true, default: null },
+        email: { type: String, trim: true, default: null },
+        relationship: { type: String, trim: true, default: null },
     },
-    { timestamps: true }
-);
+    housingAssignment: { type: refType, ref: 'House' },
+});
 
 // Pre-save hook for phone and email validation
 EmployeeSchema.pre('save', function (next) {
     const employee = this;
 
     // Phone number validation (for US phone numbers)
-    if (!validator.isMobilePhone(employee.cellPhone, 'en-US')) {
+    if (employee.cellPhone && !validator.isMobilePhone(employee.cellPhone, 'en-US')) {
         return next(new Error('Cell phone number is invalid.'));
     }
 
@@ -40,7 +40,7 @@ EmployeeSchema.pre('save', function (next) {
         return next(new Error('Work phone number is invalid.'));
     }
 
-    if (!validator.isMobilePhone(employee.emergencyContact.phone, 'en-US')) {
+    if (employee.emergencyContact.phone && !validator.isMobilePhone(employee.emergencyContact.phone, 'en-US')) {
         return next(new Error('Emergency contact phone number is invalid.'));
     }
 
