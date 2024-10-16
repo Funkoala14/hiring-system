@@ -1,14 +1,10 @@
 import { useState } from 'react';
-
-
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
-
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link } from '@mui/material';
-import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -32,7 +28,6 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 
 const drawerWidth = 245;
-
 
 const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -114,7 +109,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function HeaderWithDrawer({ children, auth, badgeNum, paths, handleLogout, handleNotification }) {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const drawerItems = [{
         text: 'Personal information',
         icon: <AccountBoxIcon />,
@@ -126,7 +121,7 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
     }, {
         text: 'Housing',
         icon: <MapsHomeWorkIcon />,
-        path: paths.Housing
+        path: paths.housing
     }]
 
     const handleDrawerOpen = () => {
