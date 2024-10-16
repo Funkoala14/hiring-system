@@ -1,7 +1,9 @@
-import { findOne, create } from '../models/User';
+import User from '../models/User.js';
 import { compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
-import { escape } from 'validator';
+import jsonwebtoken from 'jsonwebtoken';
+const { sign } = jsonwebtoken;
+import validator from 'validator';
+const { escape } = validator;
 
 // Register new user
 const register = async (req, res) => {
@@ -19,7 +21,7 @@ const register = async (req, res) => {
       return res.status(409).json({ message: 'Username or email already exists' });
     }
 
-    const user = await create({
+    const user = await User.create({
       username: sanitizedUsername,
       email: sanitizedEmail,
       password,
@@ -54,7 +56,7 @@ const login = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-      const user = await findOne({ $or: [{ username }, { email }] }).lean().exec();
+      const user = await User.findOne({ $or: [{ username }, { email }] }).lean().exec();
       if (!user) {
         return res.status(401).json({ message: 'Invalid username or email' });
       }

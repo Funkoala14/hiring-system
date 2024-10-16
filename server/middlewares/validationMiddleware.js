@@ -1,4 +1,5 @@
-import { escape, isEmpty, isAlphanumeric, isEmail, isStrongPassword } from 'validator';
+import validator from 'validator';
+const { escape, isEmpty, isAlphanumeric, isEmail, isStrongPassword } = validator;
 
 // Sanitize input to escape potentially harmful characters
 const createUserValidation = (req, res, next) => {
