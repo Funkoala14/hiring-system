@@ -1,18 +1,26 @@
 import User from '../models/User.js';
 import { compare } from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
-const { sign } = jsonwebtoken;
+const { sign , verify } = jsonwebtoken;
 import validator from 'validator';
 import Employee from '../models/Employee.js';
 const { escape } = validator;
 
 // Register new user
 export const register = async (req, res) => {
+    const { password } = req.body;  // Only password will be sent from the client
+    const { token } = req.query;  // Extract the token from the query string
     const sanitizedUsername = escape(req.body.username);
-    const sanitizedEmail = escape(req.body.email);
-    const { password } = req.body;
 
     try {
+
+         // Verify and decode the JWT token
+         const decoded = verify(token, process.env.JWT_SECRET);
+         const email = decoded.email;  // Extract the email from the decoded token
+         const sanitizedEmail = escape(email);
+         console.log('sanitizedEmail',sanitizedEmail);
+         
+         
         const existingUser = await Employee.findOne({
             $or: [{ username: sanitizedUsername }, { email: sanitizedEmail }],
         })
@@ -29,7 +37,7 @@ export const register = async (req, res) => {
             password,
         });
 
-        const token = sign(
+        const NewToken = sign(
             {
                 id: user._id,
                 username: user.username,
@@ -40,13 +48,13 @@ export const register = async (req, res) => {
             { expiresIn: '1d' }
         );
 
-        res.cookie('token', token, {
+        res.cookie('token', NewToken, {
             httpOnly: true,
             sameSite: 'Strict',
             maxAge: 24 * 60 * 60 * 1000,
         });
 
-        res.status(201).json({ message: 'User registered successfully', token });
+        res.status(201).json({ message: 'User registered successfully', token: NewToken });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Internal server error' });
