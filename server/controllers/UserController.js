@@ -131,7 +131,15 @@ export const getEmployeeInfo = async (req, res) => {
 
 // Update specified one User info
 export const updateEmployeeInfo = async (req, res) => {
+    // const { user } = req;
     const { userId, updateData } = req.body;
+    // if (user.role !== "HR") {
+    //     // Can only update itself info
+    //     if (userId !== user.id) {
+    //         return res.status(403).json({ message: "No permission to access", code: 403 });
+    //     }
+    // }
+
     try {
         const employee = await Employee.findOneAndUpdate({ _id: userId }, updateData, { new: true, lean: true })
             .select('-__v -password -__t')
