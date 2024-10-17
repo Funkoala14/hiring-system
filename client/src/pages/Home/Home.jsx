@@ -5,17 +5,6 @@ import { Link } from 'react-router-dom';
 
 
 function Home() {
-    const [user, setUser] = useState();
-
-    // const fetchData = async () => {
-    //     const data = await getUser();
-    //     setUser(data);
-    //     console.log(data);
-    // };
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, []);
 
     return (
         <div className='Home'>
