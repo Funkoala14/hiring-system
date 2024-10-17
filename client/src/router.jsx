@@ -2,7 +2,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import MainLayout from '/layouts/MainLayout';
-import PersonalInfo from './pages/PersonalInfo/PersonalInfo';
+import Profile from './pages/Profile/Profile';
 
 const Home = lazy(() => import('/pages/Home/Home'));
 
@@ -12,7 +12,7 @@ function AppRouter() {
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
                     <Route path='/' element={<Home />} />
-                    <Route path='/personal-info' element={<PersonalInfo />} />
+                    <Route path='/my-profile' element={<Profile />} />
                 </Routes>
             </Suspense>
         </MainLayout>
