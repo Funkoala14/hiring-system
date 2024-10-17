@@ -4,6 +4,7 @@ const { escape, isEmpty, isAlphanumeric, isEmail, isStrongPassword } = validator
 // Sanitize input to escape potentially harmful characters
 const createUserValidation = (req, res, next) => {
   let { username, email, password } = req.body;
+  let {token} = req.query;
 
   username = escape(username);
   email = escape(email);
@@ -14,7 +15,10 @@ const createUserValidation = (req, res, next) => {
     !password ||
     isEmpty(username) ||
     isEmpty(email) ||
-    isEmpty(password)
+    isEmpty(password) ||
+    !token ||
+    isEmpty(token)
+
   ) {
     return res.status(400).json({ message: 'Missing required fields!' });
   }
