@@ -10,12 +10,10 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(
-    cors({
-        origin: 'http://localhost:3000',
-        credential: true,
-    })
-);
+app.use(cors({
+    origin: 'http://localhost:3000',  // Allow only your frontend origin
+    credentials: true,  // Allow credentials (cookies)
+}));
 
 app.use(cookieParser());
 app.use(express.json());
