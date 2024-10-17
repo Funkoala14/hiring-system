@@ -9,7 +9,7 @@ const userRouter = Router();
 // User POST routes
 userRouter
     .post('/login', loginUserValidation, login)
-    .post('/signup', createUserValidation, register)
+    .post('/register', createUserValidation, register)
     .post('/info', getEmployeeInfo)
     .post('/update-info', updateEmployeeInfo);
 
