@@ -1,4 +1,4 @@
-import { verify } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const jwtValidation = (req, res, next) => {
 
@@ -11,7 +11,7 @@ const jwtValidation = (req, res, next) => {
   }
 
   try {
-    const decoded = verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
 
     next();
@@ -21,5 +21,5 @@ const jwtValidation = (req, res, next) => {
 };
 
 
-export default {jwtValidation};
+export default jwtValidation;
 
