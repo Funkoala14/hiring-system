@@ -5,10 +5,13 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import userRouter from './routers/UserRouter.js';
+import newUserRouter from './routers/NewUserRouter.js';
+import dotenv from 'dotenv';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+dotenv.config();
 
 app.use(
     cors({
@@ -21,7 +24,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(morgan(':method :url :status :response-time ms'));
 
-app.use('/v1/api/user', userRouter);
+// app.use('/v1/api/user', userRouter);
+app.use('/v1/api/user', newUserRouter);
 
 app.all('*', (_req, res) => {
     return res.status(404).json({ message: 'API Not Found' });
