@@ -11,9 +11,9 @@ function Home() {
         console.log(data);
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     fetchData();
+    // }, []);
 
     return (
         <div className='Home'>
