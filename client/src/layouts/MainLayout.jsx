@@ -1,16 +1,30 @@
-import React from 'react';
-import Header from '/components/Header/Header';
-// import Footer from '../Footer/Footer';
-import './MainLayout.scss';
+import HeaderWithDrawer from '../components/Header/HeaderWithDrawer';
 
-function MainLayout({ children }) {
+import { useState } from 'react';
+
+export default function MainLayout({ children }) {
+    const [auth, setAuth] = useState(false)
+    const [badgeNum, setBadgeNum] = useState(1)
+
+    const paths = {
+        'personalInfomation': '',
+        'visaStatus': '',
+        'housing': '',
+    }
+
     return (
-        <div className='main-container'>
-            <Header />
-            <main className='container'>{children}</main>
-            {/* <Footer /> */}
-        </div>
-    );
+        <HeaderWithDrawer
+            badgeNum={badgeNum}
+            auth={auth}
+            paths={paths}
+            handleLogout={() => {
+                console.log("HandleLogout"); //Todo
+            }}
+            handleNotification={() => {
+                console.log("handleNotification"); //Todo
+            }}
+        >
+            {children}
+        </HeaderWithDrawer>
+    )
 }
-
-export default MainLayout;
