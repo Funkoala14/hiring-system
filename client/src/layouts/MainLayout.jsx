@@ -7,7 +7,7 @@ export default function MainLayout({ children }) {
     const [badgeNum, setBadgeNum] = useState(1)
 
     const paths = {
-        'personalInfomation': '',
+        'personalInformation': '',
         'visaStatus': '',
         'housing': '',
     }
