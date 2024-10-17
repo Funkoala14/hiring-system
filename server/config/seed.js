@@ -1,6 +1,6 @@
-import User from './models/User.js'; // Import the User model
-import House from './models/House.js'; // Import the House model
-import mongoose from './config/connection.js' // Import the DB connection
+import House from '../models/House.js'; // Import the House model
+import mongoose from './connection.js'; // Import the DB connection
+import Employee from '../models/Employee.js';
 
 // Seed Houses
 const seedHouses = async () => {
@@ -11,13 +11,13 @@ const seedHouses = async () => {
                 street: '123 Main St',
                 city: 'New York',
                 state: 'NY',
-                zip: '10001'
+                zip: '10001',
             },
             landlord: {
                 name: 'John Doe',
                 phone: '123-456-7890',
-                email: 'johndoe@example.com'
-            }
+                email: 'johndoe@example.com',
+            },
         },
         {
             address: {
@@ -25,20 +25,20 @@ const seedHouses = async () => {
                 street: '456 Oak Ave',
                 city: 'Los Angeles',
                 state: 'CA',
-                zip: '90001'
+                zip: '90001',
             },
             landlord: {
                 name: 'Jane Smith',
                 phone: '987-654-3210',
-                email: 'janesmith@example.com'
-            }
-        }
+                email: 'janesmith@example.com',
+            },
+        },
     ];
 
     // Clear existing houses and insert new ones
-    await House.deleteMany();  // Clear any existing data
-    const savedHouses = await House.insertMany(houses);  // Save the new houses to DB
-    
+    await House.deleteMany(); // Clear any existing data
+    const savedHouses = await House.insertMany(houses); // Save the new houses to DB
+
     return savedHouses;
 };
 
@@ -48,7 +48,7 @@ const seedUsers = async (houses) => {
         {
             username: 'emp1',
             email: 'emp1@mail.com',
-            password: 'Pw@123456',  // Will be hashed before saving
+            password: 'Pw@123456', // Will be hashed before saving
             role: 'Employee',
             housingAssignment: houses[0]._id, // Assign employee1 to the first house
             createdAt: new Date(),
@@ -76,18 +76,18 @@ const seedUsers = async (houses) => {
             username: 'hr',
             email: 'hr@mail.com',
             password: 'Hrpw@123456',
-            role: 'HR',  // HR role, no housing assignment
+            role: 'HR', // HR role, no housing assignment
             createdAt: new Date(),
             updatedAt: new Date(),
-        }
+        },
     ];
 
     // Clear existing users in the database
-    await User.deleteMany();
+    await Employee.deleteMany();
 
-    // Loop over each user and save it using User.save()
+    // Loop over each user and save it using Employee.save()
     for (let userData of users) {
-        const user = new User(userData); // Create a new User instance
+        const user = new Employee(userData); // Create a new User instance
         await user.save(); // Save the user, triggering password hashing
     }
 
@@ -98,11 +98,11 @@ const seedUsers = async (houses) => {
 const seed = async () => {
     try {
         const houses = await seedHouses(); // Seed houses first
-        await seedUsers(houses);           // Then seed users with housing assignments
+        await seedUsers(houses); // Then seed users with housing assignments
     } catch (error) {
         console.error('Seeding failed:', error);
     } finally {
-        mongoose.close();  // Close the connection when done
+        mongoose.close(); // Close the connection when done
     }
 };
 
