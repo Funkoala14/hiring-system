@@ -9,14 +9,14 @@ import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <Provider store={store}>
-      {/* PersistGate delays rendering until rehydration is complete */}
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
-  </StrictMode>
+    <StrictMode>
+        {/* PersistGate delays rendering until rehydration is complete */}
+        <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+            <BrowserRouter>
+                <Provider store={store}>
+                    <App />
+                </Provider>
+            </BrowserRouter>
+        </PersistGate>
+    </StrictMode>
 );
