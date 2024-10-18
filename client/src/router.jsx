@@ -13,6 +13,7 @@ import Profile from './pages/Profile/Profile';
 
 const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
 
+
 const Home = lazy(() => import('/pages/Home/Home'));
 
 function AppRouter() {
