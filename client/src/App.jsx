@@ -2,6 +2,7 @@ import AppRouter from "./router"; // Assuming this provides your routing logic
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
+import useAuthInit from "./hooks/useAuthInit";
 
 const theme = createTheme({
   palette: {
@@ -15,6 +16,12 @@ const theme = createTheme({
 });
 
 function App() {
+  const { isLoading } = useAuthInit();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* This will apply Material-UI's baseline styles */}

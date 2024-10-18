@@ -1,25 +1,32 @@
 import HeaderWithDrawer from '../components/Header/HeaderWithDrawer';
-
 import { useState } from 'react';
+import { logoutThunk } from '../store/auth/auth.thunk.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectIsLoggedIn } from '../store/auth/auth.selector.js';
 
 export default function MainLayout({ children }) {
-    const [auth, setAuth] = useState(false)
+    const dispatch = useDispatch();
+
+    const [auth, setAuth] = useState(useSelector(selectIsLoggedIn))
     const [badgeNum, setBadgeNum] = useState(1)
 
     const paths = {
-        'personalInformation': '',
+        'profile': '/employee/my-profile',
         'visaStatus': '',
         'housing': '',
     }
+
+    const handleLogout = () => {
+        dispatch(logoutThunk());
+    };
+
 
     return (
         <HeaderWithDrawer
             badgeNum={badgeNum}
             auth={auth}
             paths={paths}
-            handleLogout={() => {
-                console.log("HandleLogout"); //Todo
-            }}
+            handleLogout={handleLogout}
             handleNotification={() => {
                 console.log("handleNotification"); //Todo
             }}

@@ -9,9 +9,11 @@ import NotFound from "./pages/Home/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import Forbidden from "./pages/Home/Forbidden";
 import OnBoarding from "./pages/OnBoarding";
+import Profile from './pages/Profile/Profile';
 
-const Home = lazy(() => import("/pages/Home/Home"));
 const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
+
+const Home = lazy(() => import('/pages/Home/Home'));
 
 function AppRouter() {
   return (
@@ -40,10 +42,10 @@ function AppRouter() {
         >
           {/* Employee Personal Info Route (with MainLayout) */}
           <Route
-            path="personal-info"
+            path="my-profile"
             element={
               <MainLayout>
-                <EmployeeInfo />
+                <Profile />
               </MainLayout>
             }
           />

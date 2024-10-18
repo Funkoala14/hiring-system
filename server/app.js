@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import userRouter from './routers/UserRouter.js';
+import employeeRouter from './routers/EmployeeRouter.js';
 import newUserRouter from './routers/NewUserRouter.js';
 import dotenv from 'dotenv';
 
@@ -23,7 +24,7 @@ app.use(express.json());
 app.use(morgan(':method :url :status :response-time ms'));
 
 app.use('/v1/api/user', userRouter);
-app.use('/v1/api/user', newUserRouter);
+app.use('/v1/api/employee', employeeRouter);
 
 app.all('*', (_req, res) => {
     return res.status(404).json({ message: 'API Not Found' });
