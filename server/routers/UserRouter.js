@@ -10,8 +10,8 @@ const userRouter = Router();
 userRouter
     .post('/register', createUserValidation, register)
     .post("/login", loginUserValidation, login)
-    .post("/info", getEmployeeInfo)
-    .post("/update-info", updateEmployeeInfo);
+    .post("/info", jwtValidation, getEmployeeInfo)
+    .post("/update-info", jwtValidation, updateEmployeeInfo);
 
 // User GET routes
 userRouter.get('/logout', logout);

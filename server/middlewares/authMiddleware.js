@@ -13,7 +13,7 @@ export const jwtValidation = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
-    req.user = decoded;
+    req.user ={ token, ...decoded};
 
     next();
   } catch (error) {
