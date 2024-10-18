@@ -25,6 +25,7 @@ const EmployeeSchema = new Schema({
         relationship: { type: String, trim: true, default: null },
     },
     housingAssignment: { type: refType, ref: 'House' },
+    visaStatus: { type: refType, ref: 'VisaStatus' }
 });
 
 // Pre-save hook for phone and email validation
