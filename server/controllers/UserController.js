@@ -3,8 +3,11 @@ import { compare } from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 const { sign } = jsonwebtoken;
 import validator from 'validator';
-import Employee from '../models/Employee.js';
 const { escape } = validator;
+import Employee from '../models/Employee.js';
+import House from '../models/House.js';
+import OnboardingStatus from '../models/OnboardingStatus.js';
+
 
 // Register new user
 export const register = async (req, res) => {
@@ -27,7 +30,30 @@ export const register = async (req, res) => {
         email: sanitizedEmail,
         password,
       });
-  
+      
+          // Assign user to a random house (if needed)
+    const houses = await House.find({}).lean().exec();
+    if (houses.length > 0) {
+      const randomHouse = houses[Math.floor(Math.random() * houses.length)];
+      user.house = randomHouse._id;
+      await House.findByIdAndUpdate(randomHouse._id, {
+        $push: { residents: user._id },
+      });
+    }
+
+    // Create OnboardingStatus for the user with default 'Not Started' status
+    const onboardingStatus = new OnboardingStatus({
+      employee: user._id,  // Link the onboarding status to the user
+      status: 'Not Started',  // Default status
+    });
+    await onboardingStatus.save();
+
+    // Link the OnboardingStatus to the user
+    user.onboardingStatus = onboardingStatus._id;
+
+    // Save the user with house assignment and onboarding status
+    await user.save();
+    
       const token = sign(
         {
           id: user._id,
