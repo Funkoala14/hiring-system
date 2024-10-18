@@ -36,6 +36,7 @@ const EmployeeSchema = new Schema({
         },
     },
     housingAssignment: { type: refType, ref: "House" },
+    onboardingStatus: { type: refType, ref: 'OnboardingStatus' }  // Reference to OnboardingStatus
 });
 
 // Pre-save hook for phone and email validation
