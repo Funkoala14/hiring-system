@@ -22,6 +22,7 @@ const loginThunk = createAsyncThunk('auth/login', async (credentials, { rejectWi
     // Return both username, role, and token
     return {
       username: decodedToken.username,
+      id: decodedToken.id,
       role: decodedToken.role,
       token: data.token  // Return the token from the response
     };
@@ -51,6 +52,7 @@ const signupThunk = createAsyncThunk(
     // Return both username, role, and token
     return {
       username: decodedToken.username,
+      id: decodedToken.id,
       role: decodedToken.role,
       token: data.token  // Return the token from the response
     };
@@ -76,6 +78,7 @@ const verifyThunk = createAsyncThunk('auth/verify', async (_, { rejectWithValue 
     // Return the decoded token data (username, role)
     return {
       username: decodedToken.username,
+      id: decodedToken.id,
       role: decodedToken.role,
       token: token  // Return the token to store in Redux if needed
     };

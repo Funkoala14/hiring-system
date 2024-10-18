@@ -5,6 +5,7 @@ const selectAuthState = (state) => state.auth;
 const selectIsLoggedIn = createSelector([selectAuthState], (auth) => ({
   isLoggedIn: auth.isLoggedIn,
   username: auth.username,
+  id: auth.id,
   role: auth.role,
   error: auth.error,
   token: auth.token,

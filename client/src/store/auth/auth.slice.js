@@ -14,6 +14,7 @@ const initialState = {
   isLoading: false,
   isLoggedIn: false,
   username: null,
+  id: null,
   role: null, 
   token: null,
   error: null,
@@ -23,11 +24,24 @@ const initialState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
+  reducers: {
+    resetAuth: (state) => {
+        // reset auth states
+        state.isLoading = false;
+        state.isLoggedIn = false;
+        state.username = null;
+        state.id = null;
+        state.role = null;
+        state.token = null;
+        state.error = null;
+    },
+},
   extraReducers: (builder) => {
     builder.addCase(logoutThunk.fulfilled, (state) => {
       state.isLoading = false;
       state.isLoggedIn = false;
       state.username = null;
+      state.id = null;
       state.role = null;
       state.token = null;
       state.error = null;
@@ -54,6 +68,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isLoggedIn = true;
         state.username = action.payload?.username;
+        state.username = action.payload?.id;
         state.role = action.payload?.role;
         state.token = action.payload?.token;  
          // Store the token in cookies
@@ -61,6 +76,7 @@ const authSlice = createSlice({
 
         console.log('role',action.payload.role);
         console.log('username',action.payload.username);
+        console.log('id',action.payload.id);
         console.log('token',action.payload.token);
         console.log('action.payload;',action.payload);
 
@@ -80,5 +96,6 @@ const authSlice = createSlice({
   },
 });
 
+export const { resetAuth } = authSlice.actions;
 const authReducer = authSlice.reducer;
 export default authReducer;

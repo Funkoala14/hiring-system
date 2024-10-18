@@ -105,21 +105,21 @@ export const checkToken = (req, res) => {
     if (req.user) {
         return res.status(200).json({ username: req.user.username, role: req.user.role });
     } else {
-        return res.status(401).json({ message: 'Not authenticated' });
+        return res.status(401).json({ message: 'Token has expired or is invalid.' });
     }
 };
 
 // Fetch specified one User info
 export const getEmployeeInfo = async (req, res) => {
-    const { userId } = req.body;
+    const { id } = req.body;
     try {
-        const employee = await Employee.findById(userId)
+        const employee = await Employee.findById(id)
             .select('-__v -password -__t')
             .populate('housingAssignment')
             .lean()
             .exec();
         if (!employee) {
-            return res.status(401).json({ message: 'Can not find user' });
+            return res.status(404).json({ message: 'Can not find user' });
         }
 
         return res.status(200).json({ message: 'success', data: { userId: employee._id, ...employee }, code: 200 });
@@ -131,14 +131,14 @@ export const getEmployeeInfo = async (req, res) => {
 
 // Update specified one User info
 export const updateEmployeeInfo = async (req, res) => {
-    // const { user } = req;
+    const { user } = req;
     const { userId, updateData } = req.body;
-    // if (user.role !== "HR") {
-    //     // Can only update itself info
-    //     if (userId !== user.id) {
-    //         return res.status(403).json({ message: "No permission to access", code: 403 });
-    //     }
-    // }
+    if (user.role !== "HR") {
+        // Can only update itself info
+        if (userId !== user.id) {
+            return res.status(403).json({ message: "No permission to access other employee's detail", code: 403 });
+        }
+    }
 
     try {
         const employee = await Employee.findOneAndUpdate({ _id: userId }, updateData, { new: true, lean: true })
@@ -164,7 +164,7 @@ export const updateEmployeeInfo = async (req, res) => {
 };
 
 export const getEmployeeList = async (req, res) => {
-    // const {user} = req;
+    const {user} = req;
     try {
         const employees = await Employee.find().select("-__v -password -__t").sort({ lastName: 1 }).lean().exec();
         return res.status(200).json({ message: "success", data: employees, code: 200 });
