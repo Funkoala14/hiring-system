@@ -36,6 +36,7 @@ const EmployeeSchema = new Schema({
         },
     },
     housingAssignment: { type: refType, ref: "House" },
+    visaStatus: { type: refType, ref: 'VisaStatus' }
 });
 
 // Pre-save hook for phone and email validation

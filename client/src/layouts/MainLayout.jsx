@@ -12,7 +12,7 @@ export default function MainLayout({ children }) {
 
     const paths = {
         'profile': '/employee/my-profile',
-        'visaStatus': '',
+        'visaStatus': '/employee/visa-status',
         'housing': '',
     }
 

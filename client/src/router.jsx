@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import MainLayout from '/layouts/MainLayout';
+import VisaStatus from './pages/VisaStatus/VisaStatus';
 import { SendLink } from './pages/Registration/SendRegistration';
 import Login from "./pages/Home/Login";
 import Dashboard from "./pages/Home/Dashboard";
@@ -17,64 +18,70 @@ const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
 const Home = lazy(() => import('/pages/Home/Home'));
 
 function AppRouter() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Routes>
-        {/* Home Route */}
-        <Route path="/" element={<MainLayout><Home /></MainLayout>} />
 
-        {/* SendLink Route */}
-        <Route path="/contact" element={<MainLayout><SendLink /></MainLayout>} />
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+                {/* Home Route */}
+                <Route path="/" element={<MainLayout><Home /></MainLayout>} />
 
-        {/* RegistrationPage Route */}
-        <Route path="/register" element={<MainLayout><RegistrationPage /></MainLayout>} />
+                {/* SendLink Route */}
+                <Route path="/contact" element={<MainLayout><SendLink /></MainLayout>} />
 
-        {/* Login Route */}
-        <Route path="login" element={<Login />} />
+                {/* RegistrationPage Route */}
+                <Route path="/register" element={<MainLayout><RegistrationPage /></MainLayout>} />
 
-        {/* Employee Routes */}
-        <Route
-          path="employee"
-          element={
-            <PrivateRoute allowedRoles={["Employee"]}>
-              <Outlet /> {/* Outlet to render nested routes */}
-            </PrivateRoute>
-          }
-        >
-          {/* Employee Personal Info Route (with MainLayout) */}
-          <Route
-            path="my-profile"
-            element={
-              <MainLayout>
-                <Profile />
-              </MainLayout>
-            }
-          />
+                {/* Login Route */}
+                <Route path="login" element={<Login />} />
 
-          {/* On-Boarding Route (without Header and Navbar) */}
-          <Route path="on-boarding" element={<OnBoarding />} />
-        </Route>
+                {/* Employee Routes */}
+                <Route
+                    path="employee"
+                    element={
+                        <PrivateRoute allowedRoles={["Employee"]}>
+                            <Outlet /> {/* Outlet to render nested routes */}
+                        </PrivateRoute>
+                    }
+                >
+                    {/* Employee Personal Info Route (with MainLayout) */}
+                    <Route
+                        path="my-profile"
+                        element={
+                            <MainLayout>
+                                <Profile />
+                            </MainLayout>
+                        }
+                    />
 
-        {/* HR Dashboard Route (Protected) */}
-        <Route
-          path="hr/dashboard"
-          element={
-            <PrivateRoute allowedRoles={["HR"]}>
-              <MainLayout>
-                <Dashboard />
-              </MainLayout>
-            </PrivateRoute>
-          }
-        />
+                    {/* On-Boarding Route (without Header and Navbar) */}
+                    <Route path="on-boarding" element={<OnBoarding />} />
 
-        {/* Forbidden Route */}
-        <Route path="forbidden" element={<MainLayout><Forbidden /></MainLayout>} />
+                    {/* Visa-Status Route */}
+                    <Route path='visa-status' element={<MainLayout>
+                        <VisaStatus />
+                    </MainLayout>} />
+                </Route>
 
-        {/* Catch-all route for undefined paths */}
-        <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
-      </Routes>
-    </Suspense>
-  );
+                {/* HR Dashboard Route (Protected) */}
+                <Route
+                    path="hr/dashboard"
+                    element={
+                        <PrivateRoute allowedRoles={["HR"]}>
+                            <MainLayout>
+                                <Dashboard />
+                            </MainLayout>
+                        </PrivateRoute>
+                    }
+                />
+
+                {/* Forbidden Route */}
+                <Route path="forbidden" element={<MainLayout><Forbidden /></MainLayout>} />
+
+                {/* Catch-all route for undefined paths */}
+                <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
+            </Routes>
+        </Suspense>
+    );
 }
 
 export default AppRouter;
