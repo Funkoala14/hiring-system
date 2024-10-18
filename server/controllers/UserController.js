@@ -4,6 +4,7 @@ import jsonwebtoken from 'jsonwebtoken';
 const { sign } = jsonwebtoken;
 import validator from 'validator';
 import Employee from '../models/Employee.js';
+import config from '../config/config.js';
 const { escape } = validator;
 
 // Register new user
@@ -35,7 +36,7 @@ export const register = async (req, res) => {
           email: user.email,
           role: user.role,
         },
-        process.env.JWT_SECRET,
+        config.JWT_SECRET,
         { expiresIn: '1d' }
       );
   
@@ -76,7 +77,7 @@ export const login = async (req, res) => {
                 email: user.email,
                 role: user.role,
             },
-            process.env.JWT_SECRET,
+            config.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
