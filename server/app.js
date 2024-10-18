@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(morgan(':method :url :status :response-time ms'));
 
-// app.use('/v1/api/user', userRouter);
+app.use('/v1/api/user', userRouter);
 app.use('/v1/api/user', newUserRouter);
 
 app.all('*', (_req, res) => {
