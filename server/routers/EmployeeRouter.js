@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { getEmployeeList } from "../controllers/UserController";
+import { Router } from 'express';
+import { getEmployeeList } from '../controllers/UserController.js';
 
 const employeeRouter = Router();
 
-employeeRouter.get("/employee-list", getEmployeeList);
+employeeRouter.get('/list', getEmployeeList);
 
 export default employeeRouter;
