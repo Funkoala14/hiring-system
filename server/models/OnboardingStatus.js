@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { Schema as _Schema, model } from 'mongoose';
+const Schema = _Schema;
 
 const onboardingStatusSchema = new Schema({
     employee: { type: Schema.Types.ObjectId, ref: 'Employee', required: true },  // Reference to the employee (User model)
@@ -14,4 +14,4 @@ const onboardingStatusSchema = new Schema({
 });
 
 // Export the model
-module.exports = mongoose.model('OnboardingStatus', onboardingStatusSchema);
+export default model('OnboardingStatus', onboardingStatusSchema);
