@@ -8,7 +8,7 @@ export default function MainLayout({ children }) {
 
     const paths = {
         'personalInformation': '',
-        'visaStatus': '',
+        'visaStatus': '/visa-status',
         'housing': '',
     }
 
