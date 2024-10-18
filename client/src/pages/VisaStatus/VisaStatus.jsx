@@ -1,66 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { Typography, Card } from '@mui/material';
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
-
-const FileUploadButton = ({ handleUpload }) => {
-    return (
-        <Button
-            component="label"
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-        >
-            Upload files
-            <VisuallyHiddenInput
-                type="file"
-                onChange={handleUpload}
-                multiple
-            />
-        </Button>
-    )
-}
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { selectDocumentFeedback, selectDocumentStatus } from '../../store/visaSlice/visa.selectors';
+import { useSelector, useDispatch } from 'react-redux';
+import DropZone from '../../components/DropZone';
+import FileList from '../../components/FileList';
 
 const VisaStatus = () => {
     const [file, setFile] = useState(null)
+    const status = useSelector(selectDocumentStatus)
+    const feedback = useSelector(selectDocumentFeedback)
+    const dispatch = useDispatch()
+
     const handleUpload = (e) => {
         if (e.target.files) { setFile(e.target.files[0]) }
     }
+
+    useEffect(() => {
+        // dispatch(visaStatusInit)
+    }, [])
+
     return (
         <>
-            <FileUploadButton handleUpload={handleUpload} />
-            {file &&
-                <div>
-                    <Typography variant="subtitle1" gutterBottom>
-                        {file.name}
-                    </Typography>
-                    <iframe
-                        src={`${URL.createObjectURL(file)}`}
-                        title={`${file.name}`}
-                        width="100%"
-                        style={{
-                            border: 'none',
-                            height: "60vh"
-                        }}
-                    ></iframe>
-                </div>
-            }
+            <Typography variant="h5" sx={{ pb: 2 }}>
+                Visa Status
+            </Typography>
+            <Typography sx={{ textTransform: 'capitalize' }}>Approval Status: {status}</Typography>
+            <Typography sx={{ textTransform: 'capitalize' }}>HR Feedback: {feedback}</Typography>
+
+            <DropZone setFile={setFile} />
+            {file && <FileList files={[file]}></FileList>}
         </>
     )
 }
-
 
 export default VisaStatus

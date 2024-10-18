@@ -253,11 +253,11 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                                     },
                                     open
                                         ? {
-                                              justifyContent: "initial",
-                                          }
+                                            justifyContent: "initial",
+                                        }
                                         : {
-                                              justifyContent: "center",
-                                          },
+                                            justifyContent: "center",
+                                        },
                                 ]}
                             >
                                 <ListItemIcon
@@ -268,11 +268,11 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                                         },
                                         open
                                             ? {
-                                                  mr: 3,
-                                              }
+                                                mr: 3,
+                                            }
                                             : {
-                                                  mr: "auto",
-                                              },
+                                                mr: "auto",
+                                            },
                                     ]}
                                 >
                                     {icon}
@@ -282,11 +282,11 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                                     sx={[
                                         open
                                             ? {
-                                                  opacity: 1,
-                                              }
+                                                opacity: 1,
+                                            }
                                             : {
-                                                  opacity: 0,
-                                              },
+                                                opacity: 0,
+                                            },
                                     ]}
                                 />
                             </ListItemButton>
@@ -294,7 +294,7 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                     ))}
                 </List>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 4, backgroundColor: blueGrey[50], pt: 12, height: "fit-content" }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 4, backgroundColor: blueGrey[50], pt: 12, height: "fit-content", minHeight: '100vh' }}>
                 {children}
             </Box>
         </Box>
