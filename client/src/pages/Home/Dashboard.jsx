@@ -4,9 +4,11 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Typography, Container, Button, Box } from '@mui/material';
 import { logoutThunk } from '../../store/auth/auth.thunk';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleLogout = () => {
@@ -26,7 +28,7 @@ const Dashboard = () => {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => navigate('/manage-employees')}
+                    onClick={() => navigate('/hr/employee-management')}
                 >
                     Manage Employees
                 </Button>

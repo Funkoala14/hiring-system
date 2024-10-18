@@ -294,7 +294,7 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                     ))}
                 </List>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 4, backgroundColor: blueGrey[50], pt: 12, height: "fit-content" }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 4, backgroundColor: blueGrey[50], pt: 12, height: "fit-content", minHeight: "100vh" }}>
                 {children}
             </Box>
         </Box>

@@ -10,6 +10,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Forbidden from "./pages/Home/Forbidden";
 import OnBoarding from "./pages/OnBoarding";
 import Profile from './pages/Profile/Profile';
+import EmployeeManagement from './pages/EmployeeManagement/EmployeeManagement';
 
 const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
 
@@ -46,7 +47,7 @@ function AppRouter() {
             path="my-profile"
             element={
               <MainLayout>
-                <Profile />
+                <Profile parent={"employee"}/>
               </MainLayout>
             }
           />
@@ -57,15 +58,17 @@ function AppRouter() {
 
         {/* HR Dashboard Route (Protected) */}
         <Route
-          path="hr/dashboard"
+          path="hr"
           element={
             <PrivateRoute allowedRoles={["HR"]}>
-              <MainLayout>
-                <Dashboard />
-              </MainLayout>
+              <Outlet/>
             </PrivateRoute>
           }
-        />
+        >
+          <Route path='dashboard' element={<MainLayout><Dashboard /></MainLayout>}/>
+          <Route path='employee-management' element={<MainLayout><EmployeeManagement /></MainLayout>}/>
+          <Route path='employee-profile' element={<MainLayout><Profile parent={"hr"}/></MainLayout>}/>
+        </Route>
 
         {/* Forbidden Route */}
         <Route path="forbidden" element={<MainLayout><Forbidden /></MainLayout>} />

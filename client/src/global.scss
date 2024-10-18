@@ -19,9 +19,28 @@
 .justify-between {
     justify-content: space-between;
 }
+.align-center {
+    align-items: center;
+}
+.align-start {
+    align-items: start;
+}
+.align-end {
+    align-items: end;
+}
+
 .g-1 {
     gap: 1rem;
 }
 .g-2 {
     gap: 2rem;
+}
+
+.title {
+    font-weight: bold;
+}
+
+header .title{
+    font-size: 1.5rem;
+    padding-bottom: 1rem;
 }
