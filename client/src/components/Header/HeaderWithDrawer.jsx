@@ -110,19 +110,23 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function HeaderWithDrawer({ children, auth, badgeNum, paths, handleLogout, handleNotification }) {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
-    const drawerItems = [{
-        text: 'Personal information',
-        icon: <AccountBoxIcon />,
-        path: paths.personalInformation
-    }, {
-        text: 'Visa Status',
-        icon: <TravelExploreIcon />,
-        path: paths.visaStatus
-    }, {
-        text: 'Housing',
-        icon: <MapsHomeWorkIcon />,
-        path: paths.housing
-    }]
+    const drawerItems = [
+        {
+            text: "My Profile",
+            icon: <AccountBoxIcon />,
+            path: paths.profile,
+        },
+        {
+            text: "Visa Status",
+            icon: <TravelExploreIcon />,
+            path: paths.visaStatus,
+        },
+        {
+            text: "Housing",
+            icon: <MapsHomeWorkIcon />,
+            path: paths.housing,
+        },
+    ];
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -145,66 +149,68 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
     };
 
     const handleLogoutClick = () => {
-        handleLogout()
-        handleMenuClose()
-    }
+        handleLogout();
+        handleMenuClose();
+    };
 
-    const renderUserActions = <Box sx={{ display: 'flex' }}>
-        <IconButton
-            size="large"
-            aria-label="new notifications"
-            color="inherit"
-            onClick={handleNotification}
-        >
-            <Badge badgeContent={badgeNum} color="error">
-                <NotificationsIcon />
-            </Badge>
-        </IconButton>
-        <IconButton
-            size="large"
-            edge="end"
-            aria-label="account of current user"
-            aria-controls="user-menu"
-            aria-haspopup="true"
-            onClick={handleProfileMenuOpen}
-            color="inherit"
-        >
-            <AccountCircle />
-        </IconButton>
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}
-            id="user-menu"
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
+    const renderUserActions = (
+        <Box sx={{ display: "flex" }}>
+            <IconButton size="large" aria-label="new notifications" color="inherit" onClick={handleNotification}>
+                <Badge badgeContent={badgeNum} color="error">
+                    <NotificationsIcon />
+                </Badge>
+            </IconButton>
+            <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls="user-menu"
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+            >
+                <AccountCircle />
+            </IconButton>
+            <Menu
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                }}
+                id="user-menu"
+                keepMounted
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+                slotProps={{
+                    paper: {
+                        elevation: 2,
+                    },
+                }}
+            >
+                <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+            </Menu>
+        </Box>
+    );
 
-            slotProps={{
-                paper: {
-                    elevation: 2,
-                },
-            }}
-        >
-            <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
-        </Menu>
-    </Box>
-
-    const renderLoginOrSignup = <Box sx={{ display: 'flex' }}>
-        <Link href="/login" color="inherit" sx={{ textDecoration: "none", marginRight: 2 }}>Login</Link>
-        <Link href="/signup" color="inherit" sx={{ textDecoration: "none" }}>Signup</Link>
-    </Box>
+    const renderLoginOrSignup = (
+        <Box sx={{ display: "flex" }}>
+            <Link href="/login" color="inherit" sx={{ textDecoration: "none", marginRight: 2 }}>
+                Login
+            </Link>
+            <Link href="/signup" color="inherit" sx={{ textDecoration: "none" }}>
+                Signup
+            </Link>
+        </Box>
+    );
 
     return (
-        <Box sx={{ display: 'flex', height: '100vh' }}>
+        <Box sx={{ display: "flex", height: "100vh" }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open} sx={{ backgroundColor: blueGrey[500], boxShadow: 0, borderBottom: '1px solid gray' }}>
+            <AppBar position="fixed" open={open} sx={{ backgroundColor: blueGrey[500], boxShadow: 0, borderBottom: "1px solid gray" }}>
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -215,7 +221,7 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                             {
                                 marginRight: 5,
                             },
-                            open && { display: 'none' },
+                            open && { display: "none" },
                         ]}
                     >
                         <MenuIcon />
@@ -224,23 +230,19 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                         HR Management System
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
-                    {auth ? renderUserActions :
-                        renderLoginOrSignup
-
-                    }
+                    {auth.isLoggedIn ? renderUserActions : renderLoginOrSignup}
                 </Toolbar>
-
-            </AppBar >
+            </AppBar>
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
                     <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
                 <List>
                     {drawerItems.map(({ text, icon, path }) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                        <ListItem key={text} disablePadding sx={{ display: "block" }}>
                             <ListItemButton
                                 component="a"
                                 href={path}
@@ -251,26 +253,26 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                                     },
                                     open
                                         ? {
-                                            justifyContent: 'initial',
-                                        }
+                                              justifyContent: "initial",
+                                          }
                                         : {
-                                            justifyContent: 'center',
-                                        },
+                                              justifyContent: "center",
+                                          },
                                 ]}
                             >
                                 <ListItemIcon
                                     sx={[
                                         {
                                             minWidth: 0,
-                                            justifyContent: 'center',
+                                            justifyContent: "center",
                                         },
                                         open
                                             ? {
-                                                mr: 3,
-                                            }
+                                                  mr: 3,
+                                              }
                                             : {
-                                                mr: 'auto',
-                                            },
+                                                  mr: "auto",
+                                              },
                                     ]}
                                 >
                                     {icon}
@@ -280,11 +282,11 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                                     sx={[
                                         open
                                             ? {
-                                                opacity: 1,
-                                            }
+                                                  opacity: 1,
+                                              }
                                             : {
-                                                opacity: 0,
-                                            },
+                                                  opacity: 0,
+                                              },
                                     ]}
                                 />
                             </ListItemButton>
@@ -292,9 +294,9 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                     ))}
                 </List>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 4, backgroundColor: blueGrey[50], pt: 12 }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 4, backgroundColor: blueGrey[50], pt: 12, height: "fit-content" }}>
                 {children}
             </Box>
-        </Box >
+        </Box>
     );
 }

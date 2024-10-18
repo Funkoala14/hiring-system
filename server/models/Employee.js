@@ -13,7 +13,7 @@ const EmployeeSchema = new Schema({
     image: { type: String, trim: true, default: null },
     ssn: { type: String, trim: true, default: null },
     birth: { type: Date, default: null },
-    gender: { type: String, enum: ['male', 'female', 'other'], default: null },
+    gender: { type: String, enum: ["male", "female", "other"], default: null },
     cellPhone: { type: String, trim: true, default: null },
     workPhone: { type: String, trim: true, default: null },
     emergencyContact: {
@@ -24,7 +24,18 @@ const EmployeeSchema = new Schema({
         email: { type: String, trim: true, default: null },
         relationship: { type: String, trim: true, default: null },
     },
-    housingAssignment: { type: refType, ref: 'House' },
+    address: {
+        buildingOrAptNumber: { type: String, trim: true, default: null, maxlength: 10 },
+        street: { type: String, trim: true, default: null },
+        city: { type: String, trim: true, default: null },
+        state: { type: String, trim: true, default: null, maxlength: 2 },
+        zipcode: {
+            type: String,
+            trim: true,
+            default: null,
+        },
+    },
+    housingAssignment: { type: refType, ref: "House" },
     visaStatus: { type: refType, ref: 'VisaStatus' }
 });
 
