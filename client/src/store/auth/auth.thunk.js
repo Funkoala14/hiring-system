@@ -34,13 +34,32 @@ const signupThunk = createAsyncThunk(
   'auth/signup',
   async (credentials, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post('v1/api/user/signup', credentials);
-      Cookies.set('token', data.token);
-      return data.username;
+      console.log('Sending credentials:', credentials);
+      // Sending a request to the backend to register the user
+      const { data } = await axios.post('http://localhost:5000/v1/api/user/register', credentials);
+
+          // Use 'let' for decodedToken so it can be reassigned or modified
+    let decodedToken;  
+
+    try {
+      decodedToken = jwtDecode(data.token);  // Decode the JWT token
     } catch (error) {
-      return rejectWithValue(error.response?.data?.error || "Signup failed");
+      console.error('Token decoding failed', error);
+      throw new Error('Token decoding failed');
     }
-  },
+
+    // Return both username, role, and token
+    return {
+      username: decodedToken.username,
+      role: decodedToken.role,
+      token: data.token  // Return the token from the response
+    };
+    } catch (error) {
+      // Catching the error and passing the appropriate message
+      const errorMessage = error.response?.data || 'Signup failed. Please try again.';
+      return rejectWithValue(errorMessage);
+    }
+  }
 );
 
 const verifyThunk = createAsyncThunk('auth/verify', async (_, { rejectWithValue }) => {
