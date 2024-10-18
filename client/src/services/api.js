@@ -7,10 +7,21 @@ const api = axios.create({
     },
 });
 
+// Request Interceptor
+api.interceptors.request.use(
+    (config) => {
+        return config;
+    },
+    (error) => {
+        console.error('Request error:', error);
+        return Promise.reject(error);
+    }
+);
+
 // Response Interceptor
 api.interceptors.response.use(
     (response) => {
-        return response.data;
+        return response;
     },
     (error) => {
         // Handle errors in the response
