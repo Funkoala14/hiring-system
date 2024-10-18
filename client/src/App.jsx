@@ -16,7 +16,11 @@ const theme = createTheme({
 });
 
 function App() {
-  useAuthInit();
+  const { isLoading } = useAuthInit();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   
   return (
     <ThemeProvider theme={theme}>

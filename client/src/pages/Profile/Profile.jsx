@@ -14,14 +14,14 @@ import { fetchEmployeeInfo, updateEmployeeInfo } from "../../store/profileSlice/
 import "./profile.scss";
 import { STATES } from "../../store/constant";
 import FormControl from "@mui/material/FormControl";
+import { selectIsLoggedIn } from "../../store/auth/auth.selector";
 
 const Profile = () => {
     const dispatch = useDispatch();
     const { info, loading, error } = useSelector((state) => state.profile);
-    const { userId } = useSelector((state) => state.user);
-
+    const { username } = useSelector(selectIsLoggedIn);
     useEffect(() => {
-        const formData = { userId };
+        const formData = { username };
         dispatch(fetchEmployeeInfo(formData));
     }, [dispatch]);
 
@@ -36,36 +36,36 @@ const Profile = () => {
     return (
         <section>
             <header>
-                <h1 className="title">My Profile</h1>
+                <h1 className='title'>My Profile</h1>
             </header>
             <Stack spacing={2}>
-                <AvatarSection info={info} userId={userId} />
-                <PersonalSection info={info} userId={userId} />
-                <AddressSection info={info} userId={userId} />
-                <ContactSection info={info} userId={userId} />
-                <EmploymentSetcion info={info} userId={userId} />
-                <EmergencySection info={info} userId={userId} />
+                <AvatarSection info={info} username={username} />
+                <PersonalSection info={info} username={username} />
+                <AddressSection info={info} username={username} />
+                <ContactSection info={info} username={username} />
+                <EmploymentSetcion info={info} username={username} />
+                <EmergencySection info={info} username={username} />
             </Stack>
-            <div className="profile-container"></div>
+            <div className='profile-container'></div>
         </section>
     );
 };
 
-const AvatarSection = ({ info, userId }) => {
+const AvatarSection = ({ info, username }) => {
     const handleChange = () => {
         console.log(12);
     };
     return (
-        <div className="outlined-container flex-row g-2">
+        <div className='outlined-container flex-row g-2'>
             <Badge
-                overlap="circular"
+                overlap='circular'
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 badgeContent={<DriveFileRenameOutlineOutlinedIcon sx={{ cursor: "pointer" }} onClick={handleChange} />}
             >
-                <Avatar alt="Travis Howard" src={info.image} sx={{ width: 100, height: 100 }} />
+                <Avatar alt='Travis Howard' src={info.image} sx={{ width: 100, height: 100 }} />
             </Badge>
-            <div className="infos flex-col justify-between">
-                <div className="name">
+            <div className='infos flex-col justify-between'>
+                <div className='name'>
                     {info.preferedName || info.firstName} {info.lastName}
                 </div>
                 <div>Role: {info.role}</div>
@@ -76,7 +76,7 @@ const AvatarSection = ({ info, userId }) => {
     );
 };
 
-const PersonalSection = ({ info, userId }) => {
+const PersonalSection = ({ info, username }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -94,19 +94,19 @@ const PersonalSection = ({ info, userId }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(updateEmployeeInfo({ userId, updateData: formData }));
+        dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
     };
 
     return (
-        <div className="outlined-container">
-            <div className="title">Personal Information</div>
+        <div className='outlined-container'>
+            <div className='title'>Personal Information</div>
             {edit ? (
                 <>
-                    <div className="buttons">
+                    <div className='buttons'>
                         <Button
-                            variant="outlined"
-                            color="error"
+                            variant='outlined'
+                            color='error'
                             endIcon={<CancelOutlinedIcon />}
                             onClick={() => {
                                 setEdit(false);
@@ -115,128 +115,137 @@ const PersonalSection = ({ info, userId }) => {
                         >
                             Cancel
                         </Button>
-                        <Button variant="outlined" endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
+                        <Button
+                            variant='outlined'
+                            color='secondary'
+                            endIcon={<SaveAsOutlinedIcon />}
+                            onClick={handleSubmit}
+                        >
                             Save
                         </Button>
                     </div>
-                    <form className="input-container">
-                        <label className="input-item">
+                    <form className='input-container'>
+                        <label className='input-item'>
                             First Name
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.firstName || ""}
                                 onChange={handleChange("firstName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Middle Name
                             <TextField
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.middleName || ""}
                                 onChange={handleChange("middleName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Last Name
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.lastName || ""}
                                 onChange={handleChange("lastName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Prefered Name
                             <TextField
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.preferedName || ""}
                                 onChange={handleChange("preferedName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Email Address
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.email || ""}
                                 onChange={handleChange("email")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Social Security Number
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.ssn || ""}
                                 onChange={handleChange("ssn")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Date of Birth
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.birth || ""}
                                 onChange={handleChange("birth")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Gender
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.gender || ""}
                                 onChange={handleChange("gender")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
                     </form>
                 </>
             ) : (
                 <>
-                    <div className="buttons">
-                        <Button variant="outlined" endIcon={<DriveFileRenameOutlineOutlinedIcon />} onClick={() => setEdit(true)}>
+                    <div className='buttons'>
+                        <Button
+                            variant='outlined'
+                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                            onClick={() => setEdit(true)}
+                        >
                             Edit
                         </Button>
                     </div>
-                    <div className="view-container">
-                        <label className="view-item">
+                    <div className='view-container'>
+                        <label className='view-item'>
                             First Name
                             <span>{info?.firstName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Middle Name
                             <span>{info?.middleName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Last Name
                             <span>{info?.lastName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Prefered Name
                             <span>{info?.preferedName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Email Address
                             <span>{info?.email}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Social Security Number
                             <span>{info?.ssn}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Date of Birth
                             <span>{info?.birth}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Gender
                             <span>{info?.gender}</span>
                         </label>
@@ -247,7 +256,7 @@ const PersonalSection = ({ info, userId }) => {
     );
 };
 
-const AddressSection = ({ info, userId }) => {
+const AddressSection = ({ info, username }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -272,19 +281,19 @@ const AddressSection = ({ info, userId }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(updateEmployeeInfo({ userId, updateData: formData }));
+        dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
     };
 
     return (
-        <div className="outlined-container">
-            <div className="title">Address</div>
+        <div className='outlined-container'>
+            <div className='title'>Address</div>
             {edit ? (
                 <>
-                    <div className="buttons">
+                    <div className='buttons'>
                         <Button
-                            variant="outlined"
-                            color="error"
+                            variant='outlined'
+                            color='error'
                             endIcon={<CancelOutlinedIcon />}
                             onClick={() => {
                                 setEdit(false);
@@ -293,45 +302,49 @@ const AddressSection = ({ info, userId }) => {
                         >
                             Cancel
                         </Button>
-                        <Button variant="outlined" endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
+                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
                             Save
                         </Button>
                     </div>
-                    <form className="input-container">
-                        <label className="input-item">
+                    <form className='input-container'>
+                        <label className='input-item'>
                             Building/Apt #
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.address?.buildingOrAptNumber || ""}
                                 onChange={handleChange("address.buildingOrAptNumber")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Street
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.address?.street || ""}
                                 onChange={handleChange("address.street")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             City
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.address?.city || ""}
                                 onChange={handleChange("address.city")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             State
-                            <FormControl sx={{ minWidth: 120 }} variant="standard" size="small">
-                                <Select label="state" value={formData?.address?.state || ""} onChange={handleChange("address.state")}>
+                            <FormControl sx={{ minWidth: 120 }} variant='standard' size='small'>
+                                <Select
+                                    label='state'
+                                    value={formData?.address?.state || ""}
+                                    onChange={handleChange("address.state")}
+                                >
                                     {STATES.map((state) => (
                                         <MenuItem key={state.code} value={state.code}>
                                             {state.name}
@@ -340,39 +353,43 @@ const AddressSection = ({ info, userId }) => {
                                 </Select>
                             </FormControl>
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Zipcode
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.address?.zipcode || ""}
                                 onChange={handleChange("address.zipcode")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
                     </form>
                 </>
             ) : (
                 <>
-                    <div className="buttons">
-                        <Button variant="outlined" endIcon={<DriveFileRenameOutlineOutlinedIcon />} onClick={() => setEdit(true)}>
+                    <div className='buttons'>
+                        <Button
+                            variant='outlined'
+                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                            onClick={() => setEdit(true)}
+                        >
                             Edit
                         </Button>
                     </div>
-                    <div className="view-container">
-                        <label className="view-item">
+                    <div className='view-container'>
+                        <label className='view-item'>
                             Building/Apt #<span>{info?.address?.buildingOrAptNumber}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Street<span>{info?.address?.street}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             City<span>{info?.address?.city}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             State<span>{info?.address?.state}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Zipcode<span>{info?.address?.zipcode}</span>
                         </label>
                     </div>
@@ -382,7 +399,7 @@ const AddressSection = ({ info, userId }) => {
     );
 };
 
-const ContactSection = ({ info, userId }) => {
+const ContactSection = ({ info, username }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -394,19 +411,19 @@ const ContactSection = ({ info, userId }) => {
     };
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(updateEmployeeInfo({ userId, updateData: formData }));
+        dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
     };
 
     return (
-        <div className="outlined-container">
-            <div className="title">Contact</div>
+        <div className='outlined-container'>
+            <div className='title'>Contact</div>
             {edit ? (
                 <>
-                    <div className="buttons">
+                    <div className='buttons'>
                         <Button
-                            variant="outlined"
-                            color="error"
+                            variant='outlined'
+                            color='error'
                             endIcon={<CancelOutlinedIcon />}
                             onClick={() => {
                                 setEdit(false);
@@ -415,46 +432,50 @@ const ContactSection = ({ info, userId }) => {
                         >
                             Cancel
                         </Button>
-                        <Button variant="outlined" endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
+                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
                             Save
                         </Button>
                     </div>
-                    <form className="input-container">
-                        <label className="input-item">
+                    <form className='input-container'>
+                        <label className='input-item'>
                             Cell Phone Number
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.cellPhone || ""}
                                 onChange={handleChange("cellPhone")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Work Phone Number
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.workPhone || ""}
                                 onChange={handleChange("workPhone")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
                     </form>
                 </>
             ) : (
                 <>
-                    <div className="buttons">
-                        <Button variant="outlined" endIcon={<DriveFileRenameOutlineOutlinedIcon />} onClick={() => setEdit(true)}>
+                    <div className='buttons'>
+                        <Button
+                            variant='outlined'
+                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                            onClick={() => setEdit(true)}
+                        >
                             Edit
                         </Button>
                     </div>
-                    <div className="view-container">
-                        <label className="view-item">
+                    <div className='view-container'>
+                        <label className='view-item'>
                             Cell Phone Number
                             <span>{info?.cellPhone}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Work Phone Number
                             <span>{info?.workPhone}</span>
                         </label>
@@ -465,7 +486,7 @@ const ContactSection = ({ info, userId }) => {
     );
 };
 
-const EmploymentSetcion = ({ info, userId }) => {
+const EmploymentSetcion = ({ info, username }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -477,19 +498,19 @@ const EmploymentSetcion = ({ info, userId }) => {
     };
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(updateEmployeeInfo({ userId, updateData: formData }));
+        dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
     };
 
     return (
-        <div className="outlined-container">
-            <div className="title">Employment</div>
+        <div className='outlined-container'>
+            <div className='title'>Employment</div>
             {edit ? (
                 <>
-                    <div className="buttons">
+                    <div className='buttons'>
                         <Button
-                            variant="outlined"
-                            color="error"
+                            variant='outlined'
+                            color='error'
                             endIcon={<CancelOutlinedIcon />}
                             onClick={() => {
                                 setEdit(false);
@@ -498,40 +519,44 @@ const EmploymentSetcion = ({ info, userId }) => {
                         >
                             Cancel
                         </Button>
-                        <Button variant="outlined" endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
+                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
                             Save
                         </Button>
                     </div>
-                    <form className="input-container">
-                        <label className="input-item">
+                    <form className='input-container'>
+                        <label className='input-item'>
                             First Name
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.firstName || ""}
                                 onChange={handleChange("firstName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
                     </form>
                 </>
             ) : (
                 <>
-                    <div className="buttons">
-                        <Button variant="outlined" endIcon={<DriveFileRenameOutlineOutlinedIcon />} onClick={() => setEdit(true)}>
+                    <div className='buttons'>
+                        <Button
+                            variant='outlined'
+                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                            onClick={() => setEdit(true)}
+                        >
                             Edit
                         </Button>
                     </div>
-                    <div className="view-container">
-                        <label className="view-item">
+                    <div className='view-container'>
+                        <label className='view-item'>
                             Visa Title
                             <span>{info?.firstName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Start Date
                             <span>{info?.firstName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             End Date
                             <span>{info?.firstName}</span>
                         </label>
@@ -542,7 +567,7 @@ const EmploymentSetcion = ({ info, userId }) => {
     );
 };
 
-const EmergencySection = ({ info, userId }) => {
+const EmergencySection = ({ info, username }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -566,19 +591,19 @@ const EmergencySection = ({ info, userId }) => {
     };
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(updateEmployeeInfo({ userId, updateData: formData }));
+        dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
     };
 
     return (
-        <div className="outlined-container">
-            <div className="title">Emergency Contact</div>
+        <div className='outlined-container'>
+            <div className='title'>Emergency Contact</div>
             {edit ? (
                 <>
-                    <div className="buttons">
+                    <div className='buttons'>
                         <Button
-                            variant="outlined"
-                            color="error"
+                            variant='outlined'
+                            color='error'
                             endIcon={<CancelOutlinedIcon />}
                             onClick={() => {
                                 setEdit(false);
@@ -587,102 +612,106 @@ const EmergencySection = ({ info, userId }) => {
                         >
                             Cancel
                         </Button>
-                        <Button variant="outlined" endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
+                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
                             Save
                         </Button>
                     </div>
-                    <form className="input-container">
-                        <label className="input-item">
+                    <form className='input-container'>
+                        <label className='input-item'>
                             First Name
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.emergencyContact?.firstName || ""}
                                 onChange={handleChange("emergencyContact.firstName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Middle Name
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.emergencyContact?.middleName || ""}
                                 onChange={handleChange("emergencyContact.middleName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Last Name
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.emergencyContact?.lastName || ""}
                                 onChange={handleChange("emergencyContact.lastName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Phone
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.emergencyContact?.phone || ""}
                                 onChange={handleChange("emergencyContact.phone")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Email Address
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.emergencyContact?.email || ""}
                                 onChange={handleChange("emergencyContact.email")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
-                        <label className="input-item">
+                        <label className='input-item'>
                             Relationship
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.emergencyContact?.relationship || ""}
                                 onChange={handleChange("emergencyContact.relationship")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
                     </form>
                 </>
             ) : (
                 <>
-                    <div className="buttons">
-                        <Button variant="outlined" endIcon={<DriveFileRenameOutlineOutlinedIcon />} onClick={() => setEdit(true)}>
+                    <div className='buttons'>
+                        <Button
+                            variant='outlined'
+                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                            onClick={() => setEdit(true)}
+                        >
                             Edit
                         </Button>
                     </div>
-                    <div className="view-container">
-                        <label className="view-item">
+                    <div className='view-container'>
+                        <label className='view-item'>
                             First Name
                             <span>{info?.emergencyContact?.firstName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Middle Name
                             <span>{info?.emergencyContact?.middleName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Last Name
                             <span>{info?.emergencyContact?.lastName}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Phone
                             <span>{info?.emergencyContact?.phone}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Email
                             <span>{info?.emergencyContact?.email}</span>
                         </label>
-                        <label className="view-item">
+                        <label className='view-item'>
                             Relationship
                             <span>{info?.emergencyContact?.relationship}</span>
                         </label>
@@ -693,7 +722,7 @@ const EmergencySection = ({ info, userId }) => {
     );
 };
 
-const DocumentSection = ({ info, userId }) => {
+const DocumentSection = ({ info, username }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -705,19 +734,19 @@ const DocumentSection = ({ info, userId }) => {
     };
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(updateEmployeeInfo({ userId, updateData: formData }));
+        dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
     };
 
     return (
-        <div className="outlined-container">
-            <div className="title">Personal Information</div>
+        <div className='outlined-container'>
+            <div className='title'>Personal Information</div>
             {edit ? (
                 <>
-                    <div className="buttons">
+                    <div className='buttons'>
                         <Button
-                            variant="outlined"
-                            color="error"
+                            variant='outlined'
+                            color='error'
                             endIcon={<CancelOutlinedIcon />}
                             onClick={() => {
                                 setEdit(false);
@@ -726,32 +755,36 @@ const DocumentSection = ({ info, userId }) => {
                         >
                             Cancel
                         </Button>
-                        <Button variant="outlined" endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
+                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
                             Save
                         </Button>
                     </div>
-                    <form className="input-container">
-                        <label className="input-item">
+                    <form className='input-container'>
+                        <label className='input-item'>
                             First Name
                             <TextField
                                 required
-                                id="standard-required"
+                                id='standard-required'
                                 value={formData?.firstName || ""}
                                 onChange={handleChange("firstName")}
-                                variant="standard"
+                                variant='standard'
                             />
                         </label>
                     </form>
                 </>
             ) : (
                 <>
-                    <div className="buttons">
-                        <Button variant="outlined" endIcon={<DriveFileRenameOutlineOutlinedIcon />} onClick={() => setEdit(true)}>
+                    <div className='buttons'>
+                        <Button
+                            variant='outlined'
+                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                            onClick={() => setEdit(true)}
+                        >
                             Edit
                         </Button>
                     </div>
-                    <div className="view-container">
-                        <label className="view-item">
+                    <div className='view-container'>
+                        <label className='view-item'>
                             First Name
                             <span>{info?.firstName}</span>
                         </label>

@@ -1,22 +1,21 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import Cookies from "js-cookie";
 import { verifyThunk } from "../store/auth/auth.thunk.js";
-import { resetAuth } from "../store/auth/auth.slice.js";
 
 const useAuthInit = () => {
     const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(true); 
 
     useEffect(() => {
-        const token = Cookies.get("token");
-		
-        if (token) {
-            const userData = { token };
-            dispatch(verifyThunk(userData));
-        } else {
-			dispatch(resetAuth());
-		}
+        const initializeAuth = async () => {
+            await dispatch(verifyThunk());
+            setIsLoading(false); 
+        };
+
+        initializeAuth();
     }, [dispatch]);
+
+    return { isLoading };
 };
 
 export default useAuthInit;

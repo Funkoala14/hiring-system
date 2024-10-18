@@ -230,7 +230,7 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                         HR Management System
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
-                    {auth ? renderUserActions : renderLoginOrSignup}
+                    {auth.isLoggedIn ? renderUserActions : renderLoginOrSignup}
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>

@@ -9,8 +9,9 @@ import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
-    <StrictMode>
-        {/* PersistGate delays rendering until rehydration is complete */}
+    // <StrictMode>
+    // </StrictMode>
+    //     {/* PersistGate delays rendering until rehydration is complete */}
         <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
             <BrowserRouter>
                 <Provider store={store}>
@@ -18,5 +19,4 @@ createRoot(document.getElementById("root")).render(
                 </Provider>
             </BrowserRouter>
         </PersistGate>
-    </StrictMode>
 );
