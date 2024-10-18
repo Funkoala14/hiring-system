@@ -24,7 +24,7 @@ export default defineConfig({
     server: {
         port: 3000,
         proxy: {
-            '/vi/api': 'http://localhost:5000', // backend
+            '/v1/api': 'http://localhost:5000', // backend
         },
     },
 });
