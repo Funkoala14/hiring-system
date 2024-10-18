@@ -1,5 +1,4 @@
-import pkg from 'jsonwebtoken';
-const { verify } = pkg;
+import jwt from 'jsonwebtoken';
 
 export const jwtValidation = (req, res, next) => {
 
@@ -12,7 +11,7 @@ export const jwtValidation = (req, res, next) => {
   }
 
   try {
-    const decoded = verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
 
     next();
@@ -36,3 +35,6 @@ export const checkPermission = (requireRole) => (req, res, next) => {
 
     next();
 };
+
+
+
