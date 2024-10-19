@@ -15,14 +15,28 @@ import "./profile.scss";
 import { STATES } from "../../store/constant";
 import FormControl from "@mui/material/FormControl";
 import { selectIsLoggedIn } from "../../store/auth/auth.selector";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Breadcrumbs, Link, Typography } from "@mui/material";
 
-const Profile = () => {
+const Profile = ({ parent }) => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation();
     const { info, loading, error } = useSelector((state) => state.profile);
     const { username } = useSelector(selectIsLoggedIn);
+    const queryParams = new URLSearchParams(location.search);
+
     useEffect(() => {
-        const formData = { username };
-        dispatch(fetchEmployeeInfo(formData));
+        switch (parent) {
+            case "hr":
+                const userName = queryParams.get("username");
+                dispatch(fetchEmployeeInfo({ username: userName }));
+                break;
+            case "employee":
+                const formData = { username };
+                dispatch(fetchEmployeeInfo(formData));
+                break;
+        }
     }, [dispatch]);
 
     if (loading) {
@@ -33,25 +47,37 @@ const Profile = () => {
         return <p>Error: {error}</p>;
     }
 
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
     return (
         <section>
+            {parent === "hr" && (
+                <Breadcrumbs aria-label='breadcrumb' sx={{ margin: "16px 0" }}>
+                    <Link underline='hover' color='inherit' onClick={handleGoBack} sx={{ cursor: "pointer" }}>
+                        Go Back
+                    </Link>
+                    <Typography sx={{ color: "text.primary" }}>Employee Profile</Typography>
+                </Breadcrumbs>
+            )}
             <header>
-                <h1 className='title'>My Profile</h1>
+                <h1 className='title'>{parent === "hr" ? "Profile" : "My Profile"}</h1>
             </header>
             <Stack spacing={2}>
-                <AvatarSection info={info} username={username} />
-                <PersonalSection info={info} username={username} />
-                <AddressSection info={info} username={username} />
-                <ContactSection info={info} username={username} />
-                <EmploymentSetcion info={info} username={username} />
-                <EmergencySection info={info} username={username} />
+                <AvatarSection info={info} username={username} showEdit={parent === "employee"} />
+                <PersonalSection info={info} username={username} showEdit={parent === "employee"} />
+                <AddressSection info={info} username={username} showEdit={parent === "employee"} />
+                <ContactSection info={info} username={username} showEdit={parent === "employee"} />
+                <EmploymentSetcion info={info} username={username} showEdit={parent === "employee"} />
+                <EmergencySection info={info} username={username} showEdit={parent === "employee"} />
             </Stack>
             <div className='profile-container'></div>
         </section>
     );
 };
 
-const AvatarSection = ({ info, username }) => {
+const AvatarSection = ({ info, username, showEdit }) => {
     const handleChange = () => {
         console.log(12);
     };
@@ -60,7 +86,9 @@ const AvatarSection = ({ info, username }) => {
             <Badge
                 overlap='circular'
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                badgeContent={<DriveFileRenameOutlineOutlinedIcon sx={{ cursor: "pointer" }} onClick={handleChange} />}
+                badgeContent={
+                    showEdit && <DriveFileRenameOutlineOutlinedIcon sx={{ cursor: "pointer" }} onClick={handleChange} />
+                }
             >
                 <Avatar alt='Travis Howard' src={info.image} sx={{ width: 100, height: 100 }} />
             </Badge>
@@ -76,7 +104,7 @@ const AvatarSection = ({ info, username }) => {
     );
 };
 
-const PersonalSection = ({ info, username }) => {
+const PersonalSection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -208,13 +236,15 @@ const PersonalSection = ({ info, username }) => {
             ) : (
                 <>
                     <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
-                            onClick={() => setEdit(true)}
-                        >
-                            Edit
-                        </Button>
+                        {showEdit && (
+                            <Button
+                                variant='outlined'
+                                endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                                onClick={() => setEdit(true)}
+                            >
+                                Edit
+                            </Button>
+                        )}
                     </div>
                     <div className='view-container'>
                         <label className='view-item'>
@@ -256,7 +286,7 @@ const PersonalSection = ({ info, username }) => {
     );
 };
 
-const AddressSection = ({ info, username }) => {
+const AddressSection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -368,13 +398,15 @@ const AddressSection = ({ info, username }) => {
             ) : (
                 <>
                     <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
-                            onClick={() => setEdit(true)}
-                        >
-                            Edit
-                        </Button>
+                        {showEdit && (
+                            <Button
+                                variant='outlined'
+                                endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                                onClick={() => setEdit(true)}
+                            >
+                                Edit
+                            </Button>
+                        )}
                     </div>
                     <div className='view-container'>
                         <label className='view-item'>
@@ -399,7 +431,7 @@ const AddressSection = ({ info, username }) => {
     );
 };
 
-const ContactSection = ({ info, username }) => {
+const ContactSection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -462,13 +494,15 @@ const ContactSection = ({ info, username }) => {
             ) : (
                 <>
                     <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
-                            onClick={() => setEdit(true)}
-                        >
-                            Edit
-                        </Button>
+                        {showEdit && (
+                            <Button
+                                variant='outlined'
+                                endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                                onClick={() => setEdit(true)}
+                            >
+                                Edit
+                            </Button>
+                        )}
                     </div>
                     <div className='view-container'>
                         <label className='view-item'>
@@ -486,7 +520,7 @@ const ContactSection = ({ info, username }) => {
     );
 };
 
-const EmploymentSetcion = ({ info, username }) => {
+const EmploymentSetcion = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -539,13 +573,15 @@ const EmploymentSetcion = ({ info, username }) => {
             ) : (
                 <>
                     <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
-                            onClick={() => setEdit(true)}
-                        >
-                            Edit
-                        </Button>
+                        {showEdit && (
+                            <Button
+                                variant='outlined'
+                                endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                                onClick={() => setEdit(true)}
+                            >
+                                Edit
+                            </Button>
+                        )}
                     </div>
                     <div className='view-container'>
                         <label className='view-item'>
@@ -567,7 +603,7 @@ const EmploymentSetcion = ({ info, username }) => {
     );
 };
 
-const EmergencySection = ({ info, username }) => {
+const EmergencySection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -682,13 +718,15 @@ const EmergencySection = ({ info, username }) => {
             ) : (
                 <>
                     <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
-                            onClick={() => setEdit(true)}
-                        >
-                            Edit
-                        </Button>
+                        {showEdit && (
+                            <Button
+                                variant='outlined'
+                                endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                                onClick={() => setEdit(true)}
+                            >
+                                Edit
+                            </Button>
+                        )}
                     </div>
                     <div className='view-container'>
                         <label className='view-item'>
@@ -722,7 +760,7 @@ const EmergencySection = ({ info, username }) => {
     );
 };
 
-const DocumentSection = ({ info, username }) => {
+const DocumentSection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
@@ -775,13 +813,15 @@ const DocumentSection = ({ info, username }) => {
             ) : (
                 <>
                     <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            endIcon={<DriveFileRenameOutlineOutlinedIcon />}
-                            onClick={() => setEdit(true)}
-                        >
-                            Edit
-                        </Button>
+                        {showEdit && (
+                            <Button
+                                variant='outlined'
+                                endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                                onClick={() => setEdit(true)}
+                            >
+                                Edit
+                            </Button>
+                        )}
                     </div>
                     <div className='view-container'>
                         <label className='view-item'>

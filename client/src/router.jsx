@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Forbidden from "./pages/Home/Forbidden";
 import OnBoarding from "./pages/OnBoarding";
 import Profile from './pages/Profile/Profile';
+import EmployeeManagement from './pages/EmployeeManagement/EmployeeManagement';
 
 const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
 
@@ -32,26 +33,26 @@ function AppRouter() {
                 <Route path="/register" element={<MainLayout><RegistrationPage /></MainLayout>} />
 
                 {/* Login Route */}
-                <Route path="login" element={<Login />} />
+                <Route path="/login" element={<Login />} />
 
-                {/* Employee Routes */}
-                <Route
-                    path="employee"
-                    element={
-                        <PrivateRoute allowedRoles={["Employee"]}>
-                            <Outlet /> {/* Outlet to render nested routes */}
-                        </PrivateRoute>
-                    }
-                >
-                    {/* Employee Personal Info Route (with MainLayout) */}
-                    <Route
-                        path="my-profile"
-                        element={
-                            <MainLayout>
-                                <Profile />
-                            </MainLayout>
-                        }
-                    />
+        {/* Employee Routes */}
+        <Route
+          path="employee"
+          element={
+            <PrivateRoute allowedRoles={["Employee"]}>
+              <Outlet /> {/* Outlet to render nested routes */}
+            </PrivateRoute>
+          }
+        >
+          {/* Employee Personal Info Route (with MainLayout) */}
+          <Route
+            path="my-profile"
+            element={
+              <MainLayout>
+                <Profile parent={"employee"}/>
+              </MainLayout>
+            }
+          />
 
                     {/* On-Boarding Route (without Header and Navbar) */}
                     <Route path="on-boarding" element={<OnBoarding />} />
@@ -61,18 +62,20 @@ function AppRouter() {
                         <VisaStatus />
                     </MainLayout>} />
                 </Route>
-
-                {/* HR Dashboard Route (Protected) */}
-                <Route
-                    path="hr/dashboard"
-                    element={
-                        <PrivateRoute allowedRoles={["HR"]}>
-                            <MainLayout>
-                                <Dashboard />
-                            </MainLayout>
-                        </PrivateRoute>
-                    }
-                />
+                                                       
+   {/* HR Dashboard Route (Protected) */}
+        <Route
+          path="hr"
+          element={
+            <PrivateRoute allowedRoles={["HR"]}>
+              <Outlet/>
+            </PrivateRoute>
+          }
+        >
+          <Route path='dashboard' element={<MainLayout><Dashboard /></MainLayout>}/>
+          <Route path='employee-management' element={<MainLayout><EmployeeManagement /></MainLayout>}/>
+          <Route path='employee-profile' element={<MainLayout><Profile parent={"hr"}/></MainLayout>}/>
+        </Route>
 
                 {/* Forbidden Route */}
                 <Route path="forbidden" element={<MainLayout><Forbidden /></MainLayout>} />

@@ -14,11 +14,11 @@ const PrivateRoute = ({ children, allowedRoles }) => {
         }
         // Dispatch verifyThunk to validate the token
         dispatch(verifyThunk());
-      }
+    }
     
-      if (isLoading) {
-        return <div>Loading...</div>;
-      }
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
 
     // If logged in, but role is not allowed, redirect to a 403 or home page
     if (!allowedRoles.includes(role)) {
