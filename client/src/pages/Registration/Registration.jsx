@@ -54,13 +54,16 @@ const RegistrationPage = () => {
   // Handle navigation after successful login
   useEffect(() => {
     if (isLoggedIn) {
+      console.log('credentials.Username :', credentials.username);  // Debug log
       if (role === 'HR') {
         navigate('/hr/dashboard');  // HR redirect
       } else {
-        navigate('/on-boarding');  // Employee redirect
+        navigate(`/employee/details?username=${credentials.username}`);  // Employee redirect
       }
+      //
+      setCredentials({ username: '', password: '' });
     }
-  }, [isLoggedIn, role, navigate]);
+  }, [isLoggedIn, role, navigate, credentials.username]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,8 +75,10 @@ const RegistrationPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Check the username before dispatch
+    console.log('Submitting Username:', credentials.username);
     dispatch(signupThunk({ ...credentials, email }));
-    setCredentials({ username: '', password: '' });
+
   };
 
   if (isLoading) {

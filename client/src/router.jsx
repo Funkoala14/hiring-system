@@ -5,9 +5,9 @@ import VisaStatus from './pages/VisaStatus/VisaStatus';
 import { SendLink } from './pages/Registration/SendRegistration';
 import Login from "./pages/Home/Login";
 import Dashboard from "./pages/Home/Dashboard";
-import EmployeeInfo from "./pages/Home/EmployeeInfo";
 import NotFound from "./pages/Home/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
+import OnboardingStatus from "./components/OnboardingStatus";
 import Forbidden from "./pages/Home/Forbidden";
 import OnBoarding from "./pages/OnBoarding";
 import Profile from './pages/Profile/Profile';
@@ -44,6 +44,12 @@ function AppRouter() {
             </PrivateRoute>
           }
         >
+
+          {/* Employee Details Route (for onboarding status check) */}
+          <Route
+            path="details"
+            element={<OnboardingStatus />}  // OnboardingStatus will handle the redirect logic
+          />
           {/* Employee Personal Info Route (with MainLayout) */}
           <Route
             path="my-profile"
