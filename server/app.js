@@ -23,6 +23,9 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(morgan(':method :url :status :response-time ms'));
 
+// newUserRouter for create register link
+app.use('/v1/api/user', newUserRouter);
+
 app.use('/v1/api/user', userRouter);
 app.use('/v1/api/employee', employeeRouter);
 
