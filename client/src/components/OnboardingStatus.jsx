@@ -31,9 +31,9 @@ const OnboardingStatus = () => {
             
             const { status } = info.onboardingStatus;
             // if (status === 'Not Started' || status === 'Pending') {
-            if (status === 'Not Started' || status === 'Pending') {
+            if  (status === 'Approved') {
                 navigate('/employee/my-profile');
-            } else if (status === 'Approved') {
+            } else if (status === 'Not Started' || status === 'Pending' || status === 'Rejected') {
                 navigate('/employee/on-boarding');
             }
         }
