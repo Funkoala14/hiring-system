@@ -176,6 +176,7 @@ export const getEmployeeInfo = async (req, res) => {
     const employee = await Employee.findOne({ username })
       .select("-__v -password -__t")
       .populate("housingAssignment")
+      .populate('onboardingStatus')
       .lean()
       .exec();
     if (!employee) {
