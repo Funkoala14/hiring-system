@@ -124,7 +124,7 @@ export const logout = (req, res) => {
 // Check if the user is logged in (token validation)
 export const checkToken = (req, res) => {
     if (req.user) {
-        return res.status(200).json({ data: req.user });
+        return res.status(200).json({ code: 200, data: req.user });
     } else {
         return res.status(401).json({ message: "Token has expired or is invalid." });
     }
@@ -133,7 +133,10 @@ export const checkToken = (req, res) => {
 // Fetch specified one User info
 export const getEmployeeInfo = async (req, res) => {
     const { username } = req.body;
-
+    if(!username){
+        
+        return res.status(400).json({ message: "Username is required" });
+    }
     try {
         const employee = await Employee.findOne({username})
             .select("-__v -password -__t")
@@ -141,7 +144,7 @@ export const getEmployeeInfo = async (req, res) => {
             .lean()
             .exec();
         if (!employee) {
-            return res.status(404).json({ message: "Can not find user" });
+            return res.status(404).json({ message: `Can not find user ${username}` });
         }
 
         return res.status(200).json({ message: "success", data: { id: employee._id, ...employee }, code: 200 });

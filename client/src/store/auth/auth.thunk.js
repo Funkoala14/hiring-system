@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../interceptors/auth.interceptor';
-import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode';
 import { get, post } from '../../services/api.js'
 
@@ -47,12 +46,18 @@ const verifyThunk = createAsyncThunk('auth/verify', async (_, { rejectWithValue 
   try {
     
     const { data, message } = await get('/user/verify');
-    
+      
     if (!data) {
       throw new Error(message || 'No token found');
     }
     console.log('verify passed: ', data);
     
+    // if (data.role === "HR") {
+    //     navigate("/hr/dashboard"); // HR redirect
+    // } else {
+    //     navigate("/employee/my-profile"); // Employee redirect
+    // }
+      
     return data;
   } catch (error) {
     return rejectWithValue(error.response?.data || 'Token verification failed');
@@ -63,12 +68,8 @@ const verifyThunk = createAsyncThunk('auth/verify', async (_, { rejectWithValue 
 const logoutThunk = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
   try {
     // Send the logout request to the server (this assumes your server clears any session-related info)
-    await axios.get('/v1/api/user/logout', {
-      withCredentials: true,  // Ensure cookies are included in the request
-    });
+    await get('/user/logout');
 
-    // Remove the token from cookies
-    Cookies.remove('token');
   } catch (error) {
     return rejectWithValue(error.response?.data || 'Logout failed');
   }
