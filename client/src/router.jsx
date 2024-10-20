@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import MainLayout from '/layouts/MainLayout';
+import VisaStatus from './pages/VisaStatus/VisaStatus';
 import { SendLink } from './pages/Registration/SendRegistration';
 import Login from "./pages/Home/Login";
 import Dashboard from "./pages/Home/Dashboard";
@@ -18,20 +19,21 @@ const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
 const Home = lazy(() => import('/pages/Home/Home'));
 
 function AppRouter() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Routes>
-        {/* Home Route */}
-        <Route path="/" element={<MainLayout><Home /></MainLayout>} />
 
-        {/* SendLink Route */}
-        <Route path="/contact" element={<MainLayout><SendLink /></MainLayout>} />
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+                {/* Home Route */}
+                <Route path="/" element={<MainLayout><Home /></MainLayout>} />
 
-        {/* RegistrationPage Route */}
-        <Route path="/register" element={<MainLayout><RegistrationPage /></MainLayout>} />
+                {/* SendLink Route */}
+                <Route path="/contact" element={<MainLayout><SendLink /></MainLayout>} />
 
-        {/* Login Route */}
-        <Route path="login" element={<Login />} />
+                {/* RegistrationPage Route */}
+                <Route path="/register" element={<MainLayout><RegistrationPage /></MainLayout>} />
+
+                {/* Login Route */}
+                <Route path="/login" element={<Login />} />
 
         {/* Employee Routes */}
         <Route
@@ -52,11 +54,16 @@ function AppRouter() {
             }
           />
 
-          {/* On-Boarding Route (without Header and Navbar) */}
-          <Route path="on-boarding" element={<OnBoarding />} />
-        </Route>
+                    {/* On-Boarding Route (without Header and Navbar) */}
+                    <Route path="on-boarding" element={<OnBoarding />} />
 
-        {/* HR Dashboard Route (Protected) */}
+                    {/* Visa-Status Route */}
+                    <Route path='visa-status' element={<MainLayout>
+                        <VisaStatus />
+                    </MainLayout>} />
+                </Route>
+                                                       
+   {/* HR Dashboard Route (Protected) */}
         <Route
           path="hr"
           element={
@@ -70,14 +77,14 @@ function AppRouter() {
           <Route path='employee-profile' element={<MainLayout><Profile parent={"hr"}/></MainLayout>}/>
         </Route>
 
-        {/* Forbidden Route */}
-        <Route path="forbidden" element={<MainLayout><Forbidden /></MainLayout>} />
+                {/* Forbidden Route */}
+                <Route path="forbidden" element={<MainLayout><Forbidden /></MainLayout>} />
 
-        {/* Catch-all route for undefined paths */}
-        <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
-      </Routes>
-    </Suspense>
-  );
+                {/* Catch-all route for undefined paths */}
+                <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
+            </Routes>
+        </Suspense>
+    );
 }
 
 export default AppRouter;
