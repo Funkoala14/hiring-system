@@ -25,6 +25,12 @@ app.use(express.json());
 app.use(morgan(':method :url :status :response-time ms'));
 app.use(express.urlencoded({ extended: true }));
 
+// newUserRouter for create register link
+app.use('/v1/api/user', newUserRouter);
+
+// newUserRouter for create register link
+app.use('/v1/api/user', newUserRouter);
+
 app.use('/v1/api/user', userRouter);
 app.use('/v1/api/visa', visaStatusRouter);
 app.use('/v1/api/employee', employeeRouter);
