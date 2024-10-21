@@ -189,7 +189,7 @@ export const updateEmployeeInfo = async (req, res) => {
 export const getEmployeeList = async (req, res) => {
     const { user } = req;
     try {
-        const employees = await Employee.find().select("-__v -password -__t").sort({ lastName: 1 }).lean().exec();
+        const employees = await Employee.find({role: 'Employee'}).select("-__v -password -__t").sort({ lastName: 1 }).lean().exec();
         return res.status(200).json({ message: "success", data: employees, code: 200 });
     } catch (error) {
         console.error(error);
