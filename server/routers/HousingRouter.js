@@ -8,6 +8,6 @@ const housingRouter = Router();
 housingRouter
     .get("/list", jwtValidation, checkPermission("HR"),  getHousesList)
     .post("/add", jwtValidation, checkPermission("HR"), housingValidation, postAddHouse)
-    .delete("/delete", jwtValidation, checkPermission("HR"), deleteHouse);
+    .delete("/delete/:houseId", jwtValidation, checkPermission("HR"), deleteHouse);
 
 export default housingRouter;

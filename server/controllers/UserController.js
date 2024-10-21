@@ -171,7 +171,14 @@ export const getEmployeeInfo = async (req, res) => {
     try {
         const employee = await Employee.findOne({ username })
             .select("-__v -password -__t")
-            .populate("housingAssignment visaStatus onboardingStatus")
+            .populate({
+                path: "housingAssignment",
+                populate: {
+                    path: "residents",
+                    select: "_id username firstName preferedName lastName phone email",
+                },
+            })
+            .populate("visaStatus onboardingStatus")
             .lean()
             .exec();
         if (!employee) {
@@ -209,7 +216,13 @@ export const updateEmployeeInfo = async (req, res) => {
             lean: true,
         })
             .select("-__v -password -__t")
-            .populate("housingAssignment")
+            .populate({
+                path: "housingAssignment",
+                populate: {
+                    path: "residents",
+                    select: "_id username firstName preferedName lastName phone email",
+                },
+            })
             .lean()
             .exec();
         if (!employee) {

@@ -5,6 +5,7 @@ import FacilityReport from './FacilityReport.js';
 const Schema = _Schema;
 
 const houseSchema = new Schema({
+  title: { type: String, unique: true, required: true },
   address: {
     building: { type: String, required: true },
     street:   { type: String, required: true },
