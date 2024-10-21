@@ -32,6 +32,7 @@ app.use('/v1/api/user', newUserRouter);
 app.use('/v1/api/user', newUserRouter);
 
 app.use('/v1/api/user', userRouter);
+app.use('/v1/api/user', newUserRouter);
 app.use('/v1/api/visa', visaStatusRouter);
 app.use('/v1/api/employee', employeeRouter);
 

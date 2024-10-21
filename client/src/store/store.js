@@ -3,8 +3,6 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // Default is localStorage for web
 import authReducer from './auth/auth.slice';
 import profileReducer from './profileSlice/profile.slice.js';
-
-import userReducer from './userSlice/user.slice.js';
 import visaReducer from './visaSlice/visa.slice.js';
 import employeeSlice from './employeeSlice/employee.slice.js';
 import searchSlice from './searchSlice/search.slice.js';
@@ -24,8 +22,7 @@ const store = configureStore({
         auth: persistedAuthReducer, // Use the persisted reducer for auth
         // Other reducers can go here
         profile: profileReducer,
-        user: userReducer,
-        visa: visaReducer
+        visa: visaReducer,
         employee: employeeSlice,
         search: searchSlice,
     },

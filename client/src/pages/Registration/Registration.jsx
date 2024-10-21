@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TextField, Button, Container, Typography, Box, CircularProgress } from '@mui/material';
 import { signupThunk } from '../../store/auth/auth.thunk';
 import { selectIsLoggedIn, selectIsLoading } from '../../store/auth/auth.selector';
+import { post } from '../../services/api';
 
 const RegistrationPage = () => {
   const [credentials, setCredentials] = useState({
@@ -26,13 +27,7 @@ const RegistrationPage = () => {
 
     const verifyToken = async () => {
       try {
-        const response = await fetch('http://localhost:5000/v1/api/user/verify-token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
+        const response = await post('/user/verify-token', { token });
 
         const data = await response.json();
         if (response.ok) {

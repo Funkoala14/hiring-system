@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { TextField, Button, Container, Typography, Box, CircularProgress } from '@mui/material';
+import { post } from '../../services/api';
 
 export const SendLink = () => {
   const form = useRef();
@@ -9,13 +10,7 @@ export const SendLink = () => {
 
   const generateTokenLink = async (name, email) => {
     try {
-      const response = await fetch('http://localhost:5000/v1/api/user/generate-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email }),
-      });
+      const response = await post('/user/generate-token', { name, email });
 
       const data = await response.json();
       if (response.ok) {

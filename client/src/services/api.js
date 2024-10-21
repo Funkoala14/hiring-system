@@ -28,7 +28,7 @@ api.interceptors.response.use(
         if (error.response) {
             // monitor /verify
             if (error.response.status === 401 && error.config.url === "/user/verify") {
-                if (window.location.pathname !== "/login") {
+                if (window.location.pathname !== "/login" && window.location.pathname !== "/register") {
                     window.location.href = "/login";
                 }
             }
