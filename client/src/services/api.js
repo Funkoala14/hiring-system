@@ -1,10 +1,9 @@
 import axios from 'axios';
 
+// Create Axios instance with base URL
 const api = axios.create({
     baseURL: '/v1/api',
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    withCredentials: true, // Include cookies if needed
 });
 
 // Request Interceptor
@@ -34,7 +33,7 @@ api.interceptors.response.use(
             }
 
             // The request was made and the server responded with a status code
-            console.error('API Error Response:',error.response.status, error.response.data.message);
+            console.error('API Error Response:', error.response.status, error.response.data.message);
             // alert(`Error: ${error.response.status} - ${error.response.data.message || 'Something went wrong'}`);
         } else if (error.request) {
             // The request was made but no response was received
@@ -52,22 +51,31 @@ api.interceptors.response.use(
 // Define common HTTP methods
 const get = async (url, params = {}) => {
     const res = await api.get(url, { params });
-    return res.data; // Handle post requests
+    return res.data;
 };
 
-const post = async (url, data) => {
-    const res = await api.post(url, data);
-    return res.data; // Handle post requests
+// Handle POST requests for JSON data
+const post = async (url, data, isMultipart = false) => {
+    const headers = isMultipart
+        ? { 'Content-Type': 'multipart/form-data' } // For file uploads
+        : { 'Content-Type': 'application/json' };  // For JSON data
+
+    const res = await api.post(url, data, { headers });
+    return res.data;
 };
 
+// Handle PUT requests
 const put = async (url, data) => {
-    const res = await api.put(url, data); // Handle put requests
-    return res.data; 
+    const res = await api.put(url, data, {
+        headers: { 'Content-Type': 'application/json' },
+    });
+    return res.data;
 };
 
+// Handle DELETE requests
 const del = async (url) => {
-    const res = await api.delete(url); // Handle delete requests
-    return res.data; 
+    const res = await api.delete(url);
+    return res.data;
 };
 
 export { get, post, put, del };
