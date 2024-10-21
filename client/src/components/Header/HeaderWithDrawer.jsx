@@ -201,7 +201,7 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
             <Link href="/login" color="inherit" sx={{ textDecoration: "none", marginRight: 2 }}>
                 Login
             </Link>
-            <Link href="/signup" color="inherit" sx={{ textDecoration: "none" }}>
+            <Link href="/register" color="inherit" sx={{ textDecoration: "none" }}>
                 Signup
             </Link>
         </Box>
