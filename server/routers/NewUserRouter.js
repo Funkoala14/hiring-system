@@ -25,7 +25,7 @@ router.post('/generate-token', async (req, res) => {
 
     const token = generateRegistrationToken(email);
     
-    res.json({ token });
+    res.status(200).json({ token: token });
   } catch (error) {
     console.error('Error creating new user:', error);
     res.status(500).json({ message: 'Server error' });
