@@ -9,7 +9,7 @@ const useAuthInit = () => {
     useEffect(() => {
         const initializeAuth = async () => {
             // On/Off useAuthInit
-            //await dispatch(verifyThunk());
+            await dispatch(verifyThunk());
             setIsLoading(false); 
         };
 

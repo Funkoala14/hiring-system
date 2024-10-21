@@ -12,6 +12,7 @@ import Forbidden from "./pages/Home/Forbidden";
 import OnBoarding from "./pages/OnBoarding";
 import Profile from './pages/Profile/Profile';
 import EmployeeManagement from './pages/EmployeeManagement/EmployeeManagement';
+import HousingManagement from './pages/HousingManagement/HousingManagement';
 
 const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
 
@@ -81,6 +82,7 @@ function AppRouter() {
           <Route path='dashboard' element={<MainLayout><Dashboard /></MainLayout>}/>
           <Route path='employee-management' element={<MainLayout><EmployeeManagement /></MainLayout>}/>
           <Route path='employee-profile' element={<MainLayout><Profile parent={"hr"}/></MainLayout>}/>
+          <Route path='housing-mangement' element={<MainLayout><HousingManagement /></MainLayout>}/>
         </Route>
 
                 {/* Forbidden Route */}
