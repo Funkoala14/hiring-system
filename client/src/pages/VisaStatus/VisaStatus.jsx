@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Typography, Button, Box } from '@mui/material';
-import { selectVisaState } from '../store/visaSlice/visa.selectors';
+import { selectVisaState } from '../../store/visaSlice/visa.selectors';
 import { useSelector, useDispatch } from 'react-redux';
-import DropZone from '../components/DropZone';
-import FileList from '../components/FileList';
-import { visaStatusInit, updateVisaStatus } from '../store/visaSlice/visa.thunk';
-import CustomizedStepper from '../components/CustomizedStepper';
+import DropZone from '../../components/DropZone';
+import FileList from '../../components/FileList';
+import { visaStatusInit, updateVisaStatus } from '../../store/visaSlice/visa.thunk';
+import CustomizedStepper from '../../components/CustomizedStepper';
 
 
 const VisaStatus = () => {
