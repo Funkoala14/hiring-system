@@ -30,7 +30,7 @@ function AppRouter() {
                 <Route path="/contact" element={<MainLayout><SendLink /></MainLayout>} />
 
                 {/* RegistrationPage Route */}
-                <Route path="/register" element={<MainLayout><RegistrationPage /></MainLayout>} />
+                <Route path="/register" element={<RegistrationPage />} />
 
                 {/* Login Route */}
                 <Route path="/login" element={<Login />} />
