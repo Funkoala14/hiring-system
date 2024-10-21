@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-const selectVisaState = (state) => state.visa
+export const selectVisaState = (state) => state.visa
 
 export const selectDocumentStatus = createSelector(selectVisaState, ({ status }) => status)
 

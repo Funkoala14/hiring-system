@@ -4,9 +4,10 @@ import { visaStatusInit, updateVisaStatus } from "./visa.thunk";
 const visaSlice = createSlice({
     name: "visa",
     initialState: {
-        documentType: "",
+        type: "",
         status: "",
         feedback: "",
+        file: null
     },
     reducers: {
         updateDocumentStatus: (state, action) => {
@@ -19,14 +20,20 @@ const visaSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(visaStatusInit.fulfilled, (state, action) => {
-                const { type, status, hrFeedback } = action.payload[action.payload.length - 1]
+                const { type, status, feedback, file } = action.payload;
 
-                state.documentType = type
+                state.type = type
                 state.status = status
-                state.feedback = hrFeedback
+                state.feedback = feedback
+                state.file = file
             })
             .addCase(updateVisaStatus.fulfilled, (state, action) => {
-                console.log(action.payload);
+                const { type, status, feedback, file } = action.payload;
+
+                state.type = type
+                state.status = status
+                state.feedback = feedback
+                state.file = file
             })
     }
 });
