@@ -1,10 +1,28 @@
 import { Router } from 'express';
-import { submitDocument, getVisaStatusByEmployeeId } from '../controllers/VisaStatusController.js';
+import { submitDocument, getVisaStatusByEmployeeId, getAllPendingStatuses, getAllApprovedStatuses } from '../controllers/VisaStatusController.js';
+import { jwtValidation, checkPermission } from '../middlewares/authMiddleware.js';
+import multer from 'multer';
 
+const upload = multer();
 
 const visaStatusRouter = Router();
 
-visaStatusRouter.post('/submit', submitDocument); //Add authMiddleware later 
-visaStatusRouter.get('/status', getVisaStatusByEmployeeId); //Add authMiddleware later 
+visaStatusRouter.post('/submit',
+    jwtValidation,
+    upload.single('file'),
+    submitDocument);
+visaStatusRouter.get('/info', jwtValidation, getVisaStatusByEmployeeId);
+visaStatusRouter.get('/all-pending',
+    // jwtValidation,
+    // checkPermission('hr'), // Add this after testing
+    getAllPendingStatuses
+);
+
+visaStatusRouter.get('/all-approved',
+    // jwtValidation,
+    // checkPermission('hr'), // Add this after testing
+    getAllApprovedStatuses
+);
+
 
 export default visaStatusRouter;

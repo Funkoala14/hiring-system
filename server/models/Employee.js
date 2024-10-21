@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 import validator from 'validator';
 import User from './User.js';
 import House from './House.js'
+import VisaStatus from './VisaStatus.js'; // Import to make sure VisaStatus has been initialized correctly
 
 const refType = Schema.Types.ObjectId;
 
