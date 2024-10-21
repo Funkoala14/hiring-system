@@ -10,7 +10,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import Forbidden from "./pages/Home/Forbidden";
 import OnBoarding from "./pages/OnBoarding";
 import Profile from './pages/Profile/Profile';
-
+import ApplicationTables from './pages/ViewOnboardingApplications'; 
+import ApplicationDetails from './pages/ApplicationDetails'; 
 
 
 
@@ -32,7 +33,9 @@ function AppRouter() {
         {/* RegistrationPage Route */}
         <Route path="/register" element={<MainLayout><RegistrationPage /></MainLayout>} />
 
-
+        {/* Review Applications Route */} 
+        <Route path="/onboarding-review" element={<MainLayout><ApplicationTables /></MainLayout>} /> 
+        <Route path="/application/:id" element={<MainLayout><ApplicationDetails /></MainLayout>} />
 
         {/* Login Route */}
         <Route path="login" element={<Login />} />
