@@ -173,7 +173,7 @@ const AddHousing = () => {
     };
 
     const validateForm = () => {
-        const { phone } = formData;
+        const { phone } = formData.landlord;
         const errors = {};
         const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
 

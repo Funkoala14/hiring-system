@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEmployeeList } from "../../store/employeeSlice/employee.thunk";
 import { clearSearch, setBaseQuery, setFilteredList } from "../../store/searchSlice/search.slice";
-import { Typography } from "@mui/material";
 
 const EmployeeManagement = () => {
     const dispatch = useDispatch();
