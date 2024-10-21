@@ -1,19 +1,40 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { selectHousingByTitle } from "../../store/housingSlice/housing.selectors";
-import { Breadcrumbs, Card, Typography } from "@mui/material";
+import {
+    Breadcrumbs,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+} from "@mui/material";
 
-const HousingView = () => {
+const HousingView = ({ parent }) => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const [housing, setHousing] = useState(null);
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
 
     const title = queryParams.get("title");
 
-    // Use the selector to find the housing item by title
-    const housing = useSelector(selectHousingByTitle(title));
+    const house = useSelector(selectHousingByTitle(title));
+    const { housingAssignment } = useSelector((state) => state.profile.info);
+
+    useEffect(() => {
+        if (parent === "hr" && title) {
+            // Use the selector to find the housing item by title
+            setHousing(house);
+        } else if (parent === "employee") {
+            console.log(housingAssignment.residents);
+
+            setHousing(housingAssignment);
+        }
+    }, [parent]);
 
     const handleGoBack = () => {
         navigate(-1);
@@ -45,7 +66,7 @@ const HousingDetail = ({ housing }) => {
             <header>
                 <h1 className='title'>{housing.title}</h1>
             </header>
-            <Typography variant='h5' sx={{ m: "1rem 0" }}>
+            <Typography variant='h5' sx={{ m: "1rem 0", borderBottom: "1px solid #aaa" }}>
                 Address
             </Typography>
             <div className='view-container' sx={{ p: "1rem" }}>
@@ -66,7 +87,7 @@ const HousingDetail = ({ housing }) => {
                     Zipcode<span>{housing?.address?.zip}</span>
                 </label>
             </div>
-            <Typography variant='h5' sx={{ m: "1rem 0" }}>
+            <Typography variant='h5' sx={{ m: "1rem 0", borderBottom: "1px solid #aaa" }}>
                 Landlord
             </Typography>
             <div className='view-container'>
@@ -83,6 +104,46 @@ const HousingDetail = ({ housing }) => {
                     <span>{housing?.landlord?.email}</span>
                 </label>
             </div>
+            <Typography variant='h5' sx={{ m: "1rem 0", borderBottom: "1px solid #aaa" }}>
+                Residents
+            </Typography>
+
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Phone</TableCell>
+                            <TableCell>Email</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {housing.residents.length ? (
+                            housing.residents.map((row) => (
+                                <TableRow key={row._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                    <TableCell component='th' scope='row'>
+                                        {parent === "hr" ? (
+                                            <Link href={`/hr/employee-profile?username=${row.username}`}>
+                                                {row.preferedName || row.firstName} {row.lastName}
+                                            </Link>
+                                        ) : (
+                                            `${row.preferedName || row.firstName} ${row.lastName}`
+                                        )}
+                                    </TableCell>
+                                    <TableCell>{row.phone}</TableCell>
+                                    <TableCell>{row.email}</TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow sx={{ textAlign: "center" }}>
+                                <TableCell colSpan={5} align='center'>
+                                    No residents
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
     );
 };
@@ -90,7 +151,9 @@ const HousingDetail = ({ housing }) => {
 const HousingFaicilityReport = () => {
     return (
         <div className='facility-reports outlined-container'>
-            <div className='title'>Facility Reports</div>
+            <header>
+                <h1 className='title'>Facility Reports</h1>
+            </header>
         </div>
     );
 };

@@ -76,6 +76,7 @@ const HousingManagement = () => {
                             <TableCell>Landlord Name</TableCell>
                             <TableCell>Landlord Phone</TableCell>
                             <TableCell>Landlord Email</TableCell>
+                            <TableCell align="center">Residents Number</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
@@ -93,6 +94,7 @@ const HousingManagement = () => {
                                     <TableCell>{row.landlord.name}</TableCell>
                                     <TableCell>{row.landlord.phone}</TableCell>
                                     <TableCell>{row.landlord.email}</TableCell>
+                                    <TableCell align="center">{row.residents.length || 0}</TableCell>
                                     <TableCell>
                                         <Button onClick={() => handleClickOpen(row._id)}>Delete</Button>
                                     </TableCell>
