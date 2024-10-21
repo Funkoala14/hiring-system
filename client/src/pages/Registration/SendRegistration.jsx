@@ -11,14 +11,16 @@ export const SendLink = () => {
   const generateTokenLink = async (name, email) => {
     try {
       const response = await post('/user/generate-token', { name, email });
+      console.log('response', response);
+      
 
-      const data = await response.json();
-      if (response.ok) {
-        const link = `http://localhost:3000/register?token=${data.token}`;
+      //const data = await response.json();
+      if (response.token) {
+        const link = `http://localhost:3000/register?token=${response.token}`;
         setTokenLink(link);
         return link;
       } else {
-        console.error('Failed to generate token:', data.message);
+        console.error('Failed to generate token:', response.message);
       }
     } catch (error) {
       console.error('Error generating token:', error);

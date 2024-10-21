@@ -28,13 +28,13 @@ const RegistrationPage = () => {
     const verifyToken = async () => {
       try {
         const response = await post('/user/verify-token', { token });
+        console.log('response', response);
 
-        const data = await response.json();
-        if (response.ok) {
-          setEmail(data.email);
+        if (response.email) {
+          setEmail(response.email);
           setIsTokenValid(true);
         } else {
-          console.error('Token validation failed:', data.message);
+          console.error('Token validation failed:', response.message);
         }
       } catch (error) {
         console.error('Error validating token:', error);
