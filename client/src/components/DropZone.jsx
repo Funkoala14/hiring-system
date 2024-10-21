@@ -24,14 +24,12 @@ const DropZone = ({ setFile }) => {
     });
 
     return (
-        <Box sx={{ mt: 5 }}>
-            <DropZoneContainer {...getRootProps()}>
-                <input {...getInputProps()} />
-                <Typography variant="h6" gutterBottom>
-                    Drag 'n' drop a file here, or click to select one
-                </Typography>
-            </DropZoneContainer>
-        </Box>
+        <DropZoneContainer {...getRootProps()}>
+            <input {...getInputProps()} />
+            <Typography variant="h6" gutterBottom>
+                Drag 'n' drop a file here, or click to select one
+            </Typography>
+        </DropZoneContainer>
     );
 };
 

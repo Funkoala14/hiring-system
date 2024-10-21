@@ -3,24 +3,22 @@ import { Accordion, AccordionDetails, AccordionSummary, ListItemText } from '@mu
 import PreviewIcon from '@mui/icons-material/Preview'
 
 const FileList = ({ files }) => {
-    console.log(files);
 
     return (
         files.map((file) =>
-            <Accordion sx={{ backgroundColor: 'white' }}>
+            <Accordion key={file.name} sx={{ backgroundColor: 'white' }} sx={{ my: 2 }}>
                 <AccordionSummary
                     expandIcon={<PreviewIcon />}
                     aria-controls="panel1-content"
                     id="panel1-header"
                 >
-                    <ListItemText primary={file.path} secondary={`${file.size} bytes`} />
+                    <ListItemText primary={file.name} secondary={`${file.size} bytes`} />
                 </AccordionSummary>
                 <AccordionDetails>
                     <iframe
                         src={URL.createObjectURL(file)}
                         title={file.name}
                         width="100%"
-
                         style={{
                             border: 'none',
                             height: "80vh"
@@ -31,5 +29,5 @@ const FileList = ({ files }) => {
         ))
 }
 
-export default FileList
+export default FileList;
 
