@@ -19,7 +19,8 @@ const seedHouses = async () => {
                 phone: "123-456-7890",
                 email: "johndoe@example.com",
             },
-            residents: []
+            residents: [],
+            facilityReports: [],
         },
         {
             address: {
@@ -34,7 +35,8 @@ const seedHouses = async () => {
                 phone: "987-654-3210",
                 email: "janesmith@example.com",
             },
-            residents: []
+            residents: [],
+            facilityReports: [],
         },
     ];
 
@@ -88,7 +90,7 @@ const seedEmployees = async (houses) => {
             ssn: "112-33-4455",
             phone: "555-2234-567",
             email: "mark.taylor@mail.com",
-            password: "Pw@123456", 
+            password: "Pw@123456",
             role: "Employee",
             housingAssignment: houses[1]._id,
         },
@@ -110,13 +112,12 @@ const seedEmployees = async (houses) => {
 
         if (user.housingAssignment) {
             await House.findByIdAndUpdate(
-                user.housingAssignment, 
+                user.housingAssignment,
                 { $addToSet: { residents: user._id } } // add employee to residents list
             );
         }
     }
 
-    
     console.log("Employees seeded successfully");
 };
 

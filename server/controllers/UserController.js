@@ -140,7 +140,7 @@ export const getEmployeeInfo = async (req, res) => {
     try {
         const employee = await Employee.findOne({username})
             .select("-__v -password -__t")
-            .populate("housingAssignment")
+            .populate("housingAssignment visaStatus")
             .lean()
             .exec();
         if (!employee) {
