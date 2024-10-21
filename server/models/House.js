@@ -1,5 +1,7 @@
 import { Schema as _Schema, model } from 'mongoose';
-import User from './User.js';
+import Employee from './Employee.js';
+import FacilityReport from './FacilityReport.js';
+
 const Schema = _Schema;
 
 const houseSchema = new Schema({
@@ -18,6 +20,7 @@ const houseSchema = new Schema({
   residents: [{ 
     type: Schema.Types.ObjectId, ref: 'Employee'
   }],
+  facilityReports: [{ type: Schema.Types.ObjectId, ref: 'FacilityReport'}],
 }, { timestamps: true } );
 
 // Export the House model
