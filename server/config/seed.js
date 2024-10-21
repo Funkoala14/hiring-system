@@ -16,9 +16,11 @@ const seedHouses = async () => {
             },
             landlord: {
                 name: "John Doe",
-                phone: "123-456-7890",
+                phone: "1234567890",
                 email: "johndoe@example.com",
             },
+            residents: [],
+            facilityReports: [],
         },
         {
             address: {
@@ -30,9 +32,11 @@ const seedHouses = async () => {
             },
             landlord: {
                 name: "Jane Smith",
-                phone: "987-654-3210",
+                phone: "9876543210",
                 email: "janesmith@example.com",
             },
+            residents: [],
+            facilityReports: [],
         },
     ];
 
@@ -48,6 +52,10 @@ const seedEmployees = async (houses) => {
     const users = [
         {
             username: "emp1",
+            firstName: "John",
+            lastName: "Doe",
+            ssn: "123456789",
+            phone: "5551234567",
             email: "emp1@mail.com",
             password: "Pw@123456", // Will be hashed before saving
             role: "Employee",
@@ -55,6 +63,10 @@ const seedEmployees = async (houses) => {
         },
         {
             username: "emp2",
+            firstName: "Jane",
+            lastName: "Smith",
+            ssn: "987654321",
+            phone: "5559876543",
             email: "emp2@mail.com",
             password: "Pw@123456",
             role: "Employee",
@@ -62,10 +74,25 @@ const seedEmployees = async (houses) => {
         },
         {
             username: "emp3",
+            firstName: "Michael",
+            lastName: "Jones",
+            ssn: "543219876",
+            phone: "5556543321",
             email: "emp3@mail.com",
             password: "Pw@123456",
             role: "Employee",
             housingAssignment: houses[0]._id, // Assign employee3 to the first house
+        },
+        {
+            username: "emp4",
+            firstName: "Mark",
+            lastName: "Taylor",
+            ssn: "112334455",
+            phone: "5552234567",
+            email: "mark.taylor@mail.com",
+            password: "Pw@123456",
+            role: "Employee",
+            housingAssignment: houses[1]._id,
         },
         {
             username: "hr",
@@ -82,32 +109,24 @@ const seedEmployees = async (houses) => {
     for (let userData of users) {
         const user = new Employee(userData); // Create a new User instance
         await user.save(); // Save the user, triggering password hashing
+
+        if (user.housingAssignment) {
+            await House.findByIdAndUpdate(
+                user.housingAssignment,
+                { $addToSet: { residents: user._id } } // add employee to residents list
+            );
+        }
     }
 
     console.log("Employees seeded successfully");
 };
 
-// Seed HR
-const seedHR = async () => {
-    const user = {
-        username: "hr",
-        email: "hr@email.com",
-        password: "Pw@123456", // Will be hashed before saving
-        role: "HR",
-    };
-    await User.find({ role: "HR" }).deleteMany();
-
-    const hr = new User(user);
-    await hr.save();
-
-    console.log("HR seeded successfully");
-};
 // Run the seed function
 const seed = async () => {
     try {
         const houses = await seedHouses(); // Seed houses first
-        // await seedEmployees(houses); // Then seed users with housing assignments
-        await seedHR();
+        await seedEmployees(houses); // Then seed users with housing assignments
+        // await seedHR();
     } catch (error) {
         console.error("Seeding failed:", error);
     } finally {
