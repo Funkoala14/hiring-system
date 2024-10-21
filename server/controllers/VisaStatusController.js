@@ -7,19 +7,18 @@ import VisaStatus from "../models/VisaStatus.js";
 
 export const submitDocument = async (req, res) => {
     try {
-
         const employeeId = req.user.id
         const type = req.body.type
 
         if (!req.file) {
             return res.status(400).json({ message: "File not uploaded" })
         }
-        const { orginalName, buffer } = req.file;
+        const { originalname, buffer } = req.file;
 
         const newDoc = new Document({
             type,
             file: buffer,
-            filename: orginalName
+            filename: originalname
         })
 
         await newDoc.save()
@@ -29,13 +28,15 @@ export const submitDocument = async (req, res) => {
         const updatedStatus = await VisaStatus.findByIdAndUpdate(
             employee.visaStatus,
             { $push: { documents: newDoc._id } },
-            { new: true, useFindAndModify: false }
-        );
+            { new: true }
+        )
+            .populate('documents')
+            .lean()
+            .exec();
 
-        console.log(updatedStatus);
+        const nextStep = getNextStep(updatedStatus.documents)
 
-
-        return res.status(201).json({ message: 'File submitted successfully!', data: updatedStatus });
+        return res.status(201).json({ message: 'File submitted successfully!', data: nextStep });
     }
     catch (error) {
         console.error(error)
@@ -43,7 +44,7 @@ export const submitDocument = async (req, res) => {
     }
 };
 
-export const getVisaStatusByEmployeeId = async (req, res) => {
+export const getVisaStatusNextStep = async (req, res) => {
     try {
         const employeeId = req.user.id
         const employee = await User.findById(employeeId)
@@ -52,9 +53,8 @@ export const getVisaStatusByEmployeeId = async (req, res) => {
                 populate: { path: 'documents' },
             })
             .lean().exec();
-
-        res.status(200).json({ data: employee.visaStatus?.documents, message: "success" })
-
+        const nextStep = getNextStep(employee.visaStatus.documents)
+        res.status(200).json({ data: nextStep, message: "success" })
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: error.message })
@@ -71,8 +71,7 @@ export const getAllPendingStatuses = async (_req, res) => {
         const pendingStatuses = allUsers.reduce((acc, employee) => {
             const nextStep = getNextStep(employee.visaStatus.documents);
 
-
-            if (nextStep.documentType === 'I-20' && nextStep.status === 'approved') {
+            if (nextStep.type === 'I-20' && nextStep.status === 'approved') {
                 return acc;
             }
 
@@ -89,21 +88,6 @@ export const getAllPendingStatuses = async (_req, res) => {
     }
 }
 
-const getNextStep = (documents) => {
-
-    const sequence = ['I-20', 'I-983', 'OPT EAD', 'OPT Receipt'];
-
-    for (const type of sequence) {
-        const document = documents.find(doc => doc.type === type);
-        if (document) {
-            return { documentType: document.type, status: document.status };
-        }
-    }
-    return { documentType: "OPT Receipt", status: "not-submitted" }
-
-};
-
-
 export const getAllApprovedStatuses = async (_req, res) => {
     try {
         let allUsers = await User.find({ visaStatus: { $exists: true, $ne: null } }).populate({
@@ -114,8 +98,7 @@ export const getAllApprovedStatuses = async (_req, res) => {
         const approvedStatuses = allUsers.reduce((acc, employee) => {
             const nextStep = getNextStep(employee.visaStatus.documents);
 
-
-            if (nextStep.documentType === 'I-20' && nextStep.status === 'approved') {
+            if (nextStep.type === 'I-20' && nextStep.status === 'approved') {
                 acc.push(employee);
                 return acc;
             }
@@ -129,3 +112,45 @@ export const getAllApprovedStatuses = async (_req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
+
+export const getNextStep = (documents) => {
+    const sequence = ['OPT Receipt', 'OPT EAD', 'I-983', 'I-20'];
+
+    // Filter and sort documents based on their order in the sequence
+    const sortedDocuments = documents
+        .filter(doc => sequence.includes(doc.type))
+        .sort((a, b) => sequence.indexOf(a.type) - sequence.indexOf(b.type));
+
+    // Check if all documents are approved
+    const allApproved = sortedDocuments.length === sequence.length &&
+        sortedDocuments.every(doc => doc.status === 'approved');
+
+    if (allApproved) {
+        // If all steps are approved, return the last step (I-20)
+        return sortedDocuments[sortedDocuments.length - 1];
+    }
+
+    // Get the last submitted document in the sequence
+    const lastDocument = sortedDocuments[sortedDocuments.length - 1];
+
+    // If the last submitted document is not approved, return it
+    if (lastDocument && lastDocument.status !== 'approved') {
+        return lastDocument;
+    }
+
+    // If the last document is approved, find the next step in the sequence
+    const nextIndex = sequence.indexOf(lastDocument.type) + 1;
+    if (nextIndex < sequence.length) {
+        // Return a placeholder for the next step
+        return {
+            type: sequence[nextIndex],
+            status: 'not-submitted',
+            file: null,
+            feedback: "",
+        };
+    }
+
+    // Default case: Return the first step if no documents are submitted yet
+    return { type: 'OPT Receipt', status: 'not-submitted', file: null, feedback: "" };
+};
+

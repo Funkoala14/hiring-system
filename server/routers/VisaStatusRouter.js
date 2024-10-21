@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { submitDocument, getVisaStatusByEmployeeId, getAllPendingStatuses, getAllApprovedStatuses } from '../controllers/VisaStatusController.js';
+import { submitDocument, getVisaStatusNextStep, getAllPendingStatuses, getAllApprovedStatuses } from '../controllers/VisaStatusController.js';
 import { jwtValidation, checkPermission } from '../middlewares/authMiddleware.js';
 import multer from 'multer';
 
@@ -11,7 +11,7 @@ visaStatusRouter.post('/submit',
     jwtValidation,
     upload.single('file'),
     submitDocument);
-visaStatusRouter.get('/info', jwtValidation, getVisaStatusByEmployeeId);
+visaStatusRouter.get('/info', jwtValidation, getVisaStatusNextStep);
 visaStatusRouter.get('/all-pending',
     // jwtValidation,
     // checkPermission('hr'), // Add this after testing
