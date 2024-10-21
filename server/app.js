@@ -10,6 +10,7 @@ import employeeRouter from './routers/EmployeeRouter.js';
 import newUserRouter from './routers/NewUserRouter.js';
 import dotenv from 'dotenv';
 import housingRouter from './routers/HousingRouter.js';
+import OnboardingApplicationRouter from './routers/OnboardingApplicationRouter.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -37,6 +38,10 @@ app.use('/v1/api/user', newUserRouter);
 app.use('/v1/api/visa', visaStatusRouter);
 app.use('/v1/api/employee', employeeRouter);
 app.use('/v1/api/housing', housingRouter);
+
+// router for onboarding applications
+app.use('/v1/api/onboarding', OnboardingApplicationRouter);
+
 
 app.all('*', (_req, res) => {
     return res.status(404).json({ message: 'API Not Found' });
