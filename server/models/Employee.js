@@ -46,7 +46,7 @@ EmployeeSchema.pre("save", function (next) {
     const employee = this;
 
     // Phone number validation (for US phone numbers)
-    if (employee.cellPhone && !validator.isMobilePhone(employee.cellPhone, "en-US")) {
+    if (employee.phone && !validator.isMobilePhone(employee.phone, "en-US")) {
         return next(new Error("Cell phone number is invalid."));
     }
 

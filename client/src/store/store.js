@@ -1,31 +1,33 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // Default is localStorage for web
-import authReducer from './auth/auth.slice';
+import authReducer from './auth/auth.slice.js';
 import profileReducer from './profileSlice/profile.slice.js';
 import visaReducer from './visaSlice/visa.slice.js';
 import employeeSlice from './employeeSlice/employee.slice.js';
 import searchSlice from './searchSlice/search.slice.js';
+import housingSlice from './housingSlice/housing.slice.js';
 
-// Persist configuration for the auth state
+const rootReducer = combineReducers({
+    auth: authReducer,
+    profile: profileReducer,
+    visa: visaReducer,
+    employee: employeeSlice,
+    search: searchSlice,
+    housing: housingSlice,
+});
+
+// Persist configuration
 const persistConfig = {
-    key: 'auth', // Key for the auth state in localStorage
+    key: 'root', 
     storage, // Use localStorage to persist the state
-    whitelist: ['isLoggedIn', 'username', 'role', 'token'], // Specify which parts of the state to persist
+    whitelist: ['auth', 'profile', 'visa', 'employee', 'search', 'housing'],
 };
 
-// Create a persisted reducer for the auth slice
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-    reducer: {
-        auth: persistedAuthReducer, // Use the persisted reducer for auth
-        // Other reducers can go here
-        profile: profileReducer,
-        visa: visaReducer,
-        employee: employeeSlice,
-        search: searchSlice,
-    },
+    reducer: persistedReducer, // Use the persisted root reducer
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false, // Disable serializable check for redux-persist

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Create Axios instance with base URL
 const api = axios.create({
@@ -12,7 +12,7 @@ api.interceptors.request.use(
         return config;
     },
     (error) => {
-        console.error('Request error:', error);
+        console.error("Request error:", error);
         return Promise.reject(error);
     }
 );
@@ -37,11 +37,11 @@ api.interceptors.response.use(
             // alert(`Error: ${error.response.status} - ${error.response.data.message || 'Something went wrong'}`);
         } else if (error.request) {
             // The request was made but no response was received
-            console.error('API Error Request:', error.request);
+            console.error("API Error Request:", error.request);
             // alert('Network error: No response from server');
         } else {
             // Something happened in setting up the request
-            console.error('API Error Message:', error.message);
+            console.error("API Error Message:", error.message);
             // alert('Error: ' + error.message);
         }
         return Promise.reject(error); // Reject the promise

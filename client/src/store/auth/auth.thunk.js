@@ -51,12 +51,6 @@ const verifyThunk = createAsyncThunk('auth/verify', async (_, { rejectWithValue 
       throw new Error(message || 'No token found');
     }
     console.log('verify passed: ', data);
-    
-    // if (data.role === "HR") {
-    //     navigate("/hr/dashboard"); // HR redirect
-    // } else {
-    //     navigate("/employee/my-profile"); // Employee redirect
-    // }
       
     return data;
   } catch (error) {

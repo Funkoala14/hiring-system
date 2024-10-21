@@ -13,7 +13,7 @@ export default function MainLayout({ children }) {
     const paths = {
         'profile': '/employee/my-profile',
         'visaStatus': '/employee/visa-status',
-        'housing': '',
+        'housing': '/employee/housing-detail',
     }
 
     const handleLogout = () => {
