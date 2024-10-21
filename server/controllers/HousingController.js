@@ -1,4 +1,4 @@
-import { isObjectIdOrHexString, ObjectId, Types } from "mongoose";
+import { isObjectIdOrHexString, Types } from "mongoose";
 import House from "../models/House.js";
 
 export const getHousesList = async (_req, res) => {
@@ -18,9 +18,9 @@ export const getHousesList = async (_req, res) => {
 
 export const postAddHouse = async (req, res) => {
     try {
-        const { address, landlord } = req.body;
+        const { address, landlord, title } = req.body;
 
-        const newHouse = new House({ address, landlord });
+        const newHouse = new House({ title, address, landlord });
         await newHouse.save();
 
         const houses = await House.find()
@@ -37,7 +37,8 @@ export const postAddHouse = async (req, res) => {
 };
 
 export const deleteHouse = async (req, res) => {
-    const { houseId } = req.body;
+    const { houseId } = req.params;
+    console.log(houseId);
     if (!isObjectIdOrHexString(houseId)) {
         return res.status(400).json({ message: "Invalid house ID format" });
     }

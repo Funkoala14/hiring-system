@@ -108,6 +108,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         setFormData(info);
@@ -122,8 +123,28 @@ const PersonalSection = ({ info, username, showEdit }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
+        }
+
         dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
+    };
+
+    const validateForm = () => {
+        const { phone } = formData;
+        const errors = {};
+        const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
+
+        if (!phone) {
+            errors.phone = "Phone number is required";
+        } else if (!phoneRegex.test(phone)) {
+            errors.phone = "Invalid phone number format";
+        }
+
+        return errors;
     };
 
     return (
@@ -131,28 +152,23 @@ const PersonalSection = ({ info, username, showEdit }) => {
             <div className='title'>Personal Information</div>
             {edit ? (
                 <>
-                    <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            color='error'
-                            endIcon={<CancelOutlinedIcon />}
-                            onClick={() => {
-                                setEdit(false);
-                                setFormData(info);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant='outlined'
-                            color='secondary'
-                            endIcon={<SaveAsOutlinedIcon />}
-                            onClick={handleSubmit}
-                        >
-                            Save
-                        </Button>
-                    </div>
-                    <form className='input-container'>
+                    <form className='input-container' onSubmit={handleSubmit}>
+                        <div className='buttons'>
+                            <Button
+                                variant='outlined'
+                                color='error'
+                                endIcon={<CancelOutlinedIcon />}
+                                onClick={() => {
+                                    setEdit(false);
+                                    setFormData(info);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button variant='outlined' color='secondary' endIcon={<SaveAsOutlinedIcon />} type='submit'>
+                                Save
+                            </Button>
+                        </div>
                         <label className='input-item'>
                             First Name
                             <TextField
@@ -161,6 +177,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                                 value={formData?.firstName || ""}
                                 onChange={handleChange("firstName")}
                                 variant='standard'
+                                maxLength='20'
                             />
                         </label>
                         <label className='input-item'>
@@ -170,6 +187,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                                 value={formData?.middleName || ""}
                                 onChange={handleChange("middleName")}
                                 variant='standard'
+                                maxLength='20'
                             />
                         </label>
                         <label className='input-item'>
@@ -180,6 +198,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                                 value={formData?.lastName || ""}
                                 onChange={handleChange("lastName")}
                                 variant='standard'
+                                maxLength='20'
                             />
                         </label>
                         <label className='input-item'>
@@ -189,6 +208,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                                 value={formData?.preferedName || ""}
                                 onChange={handleChange("preferedName")}
                                 variant='standard'
+                                maxLength='20'
                             />
                         </label>
                         <label className='input-item'>
@@ -199,6 +219,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                                 value={formData?.email || ""}
                                 onChange={handleChange("email")}
                                 variant='standard'
+                                type='email'
                             />
                         </label>
                         <label className='input-item'>
@@ -209,6 +230,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                                 value={formData?.ssn || ""}
                                 onChange={handleChange("ssn")}
                                 variant='standard'
+                                maxLength='9'
                             />
                         </label>
                         <label className='input-item'>
@@ -219,17 +241,18 @@ const PersonalSection = ({ info, username, showEdit }) => {
                                 value={formData?.birth || ""}
                                 onChange={handleChange("birth")}
                                 variant='standard'
+                                type='date'
                             />
                         </label>
                         <label className='input-item'>
                             Gender
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.gender || ""}
-                                onChange={handleChange("gender")}
-                                variant='standard'
-                            />
+                            <FormControl sx={{ minWidth: 120 }} variant='standard' size='small'>
+                                <Select label='gender' value={formData?.gender || ""} onChange={handleChange("gender")}>
+                                    <MenuItem value='male'>Male</MenuItem>
+                                    <MenuItem value='female'>Female</MenuItem>
+                                    <MenuItem value='other'>Other</MenuItem>
+                                </Select>
+                            </FormControl>
                         </label>
                     </form>
                 </>
@@ -320,23 +343,23 @@ const AddressSection = ({ info, username, showEdit }) => {
             <div className='title'>Address</div>
             {edit ? (
                 <>
-                    <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            color='error'
-                            endIcon={<CancelOutlinedIcon />}
-                            onClick={() => {
-                                setEdit(false);
-                                setFormData(info);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
-                            Save
-                        </Button>
-                    </div>
-                    <form className='input-container'>
+                    <form className='input-container' onSubmit={handleSubmit}>
+                        <div className='buttons'>
+                            <Button
+                                variant='outlined'
+                                color='error'
+                                endIcon={<CancelOutlinedIcon />}
+                                onClick={() => {
+                                    setEdit(false);
+                                    setFormData(info);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
+                                Save
+                            </Button>
+                        </div>
                         <label className='input-item'>
                             Building/Apt #
                             <TextField
@@ -355,6 +378,7 @@ const AddressSection = ({ info, username, showEdit }) => {
                                 value={formData?.address?.street || ""}
                                 onChange={handleChange("address.street")}
                                 variant='standard'
+                                maxLength='30'
                             />
                         </label>
                         <label className='input-item'>
@@ -365,6 +389,7 @@ const AddressSection = ({ info, username, showEdit }) => {
                                 value={formData?.address?.city || ""}
                                 onChange={handleChange("address.city")}
                                 variant='standard'
+                                maxLength='30'
                             />
                         </label>
                         <label className='input-item'>
@@ -391,6 +416,7 @@ const AddressSection = ({ info, username, showEdit }) => {
                                 value={formData?.address?.zipcode || ""}
                                 onChange={handleChange("address.zipcode")}
                                 variant='standard'
+                                maxLength='6'
                             />
                         </label>
                     </form>
@@ -435,16 +461,43 @@ const ContactSection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
+    const [errors, setErrors] = useState({});
+
     const handleChange = (key) => {
         return (event) => {
             const value = event.target.value;
             setFormData((prev) => ({ ...prev, [key]: value }));
         };
     };
+
     const handleSubmit = (event) => {
         event.preventDefault();
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
+        }
         dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
+    };
+
+    const validateForm = () => {
+        const { phone, workPhonephone } = formData;
+        const errors = {};
+        const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
+
+        if (!phone) {
+            errors.phone = "Phone number is required";
+        } else if (!phoneRegex.test(phone)) {
+            errors.phone = "Invalid phone number format";
+        }
+        if (!workPhonephone) {
+            errors.workPhonephone = "Phone number is required";
+        } else if (!phoneRegex.test(phone)) {
+            errors.workPhonephone = "Invalid phone number format";
+        }
+
+        return errors;
     };
 
     return (
@@ -452,31 +505,34 @@ const ContactSection = ({ info, username, showEdit }) => {
             <div className='title'>Contact</div>
             {edit ? (
                 <>
-                    <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            color='error'
-                            endIcon={<CancelOutlinedIcon />}
-                            onClick={() => {
-                                setEdit(false);
-                                setFormData(info);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
-                            Save
-                        </Button>
-                    </div>
-                    <form className='input-container'>
+                    <form className='input-container' onSubmit={handleSubmit}>
+                        <div className='buttons'>
+                            <Button
+                                variant='outlined'
+                                color='error'
+                                endIcon={<CancelOutlinedIcon />}
+                                onClick={() => {
+                                    setEdit(false);
+                                    setFormData(info);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
+                                Save
+                            </Button>
+                        </div>
                         <label className='input-item'>
                             Cell Phone Number
                             <TextField
                                 required
                                 id='standard-required'
-                                value={formData?.cellPhone || ""}
-                                onChange={handleChange("cellPhone")}
+                                value={formData?.phone || ""}
+                                onChange={handleChange("phone")}
                                 variant='standard'
+                                maxLength='10'
+                                error={!!errors.phone}
+                                helperText={errors.phone}
                             />
                         </label>
                         <label className='input-item'>
@@ -487,6 +543,9 @@ const ContactSection = ({ info, username, showEdit }) => {
                                 value={formData?.workPhone || ""}
                                 onChange={handleChange("workPhone")}
                                 variant='standard'
+                                maxLength='10'
+                                error={!!errors.workPhonephone}
+                                helperText={errors.workPhonephone}
                             />
                         </label>
                     </form>
@@ -507,7 +566,7 @@ const ContactSection = ({ info, username, showEdit }) => {
                     <div className='view-container'>
                         <label className='view-item'>
                             Cell Phone Number
-                            <span>{info?.cellPhone}</span>
+                            <span>{info?.phone}</span>
                         </label>
                         <label className='view-item'>
                             Work Phone Number
@@ -524,12 +583,21 @@ const EmploymentSetcion = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
+
     const handleChange = (key) => {
-        return (event) => {
-            const value = event.target.value;
+        if (key.includes(".")) {
+            const keys = key.split(".");
+            setFormData((prev) => {
+                return {
+                    ...prev,
+                    [keys[0]]: { ...prev[keys[0]], [keys[1]]: value },
+                };
+            });
+        } else {
             setFormData((prev) => ({ ...prev, [key]: value }));
-        };
+        }
     };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         dispatch(updateEmployeeInfo({ username, updateData: formData }));
@@ -541,30 +609,30 @@ const EmploymentSetcion = ({ info, username, showEdit }) => {
             <div className='title'>Employment</div>
             {edit ? (
                 <>
-                    <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            color='error'
-                            endIcon={<CancelOutlinedIcon />}
-                            onClick={() => {
-                                setEdit(false);
-                                setFormData(info);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
-                            Save
-                        </Button>
-                    </div>
-                    <form className='input-container'>
+                    <form className='input-container' onSubmit={handleSubmit}>
+                        <div className='buttons'>
+                            <Button
+                                variant='outlined'
+                                color='error'
+                                endIcon={<CancelOutlinedIcon />}
+                                onClick={() => {
+                                    setEdit(false);
+                                    setFormData(info);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
+                                Save
+                            </Button>
+                        </div>
                         <label className='input-item'>
-                            First Name
+                            Visa Title
                             <TextField
                                 required
                                 id='standard-required'
-                                value={formData?.firstName || ""}
-                                onChange={handleChange("firstName")}
+                                value={formData?.visaStatus.visaTitle || ""}
+                                onChange={handleChange("visaStatus.visaTitle")}
                                 variant='standard'
                             />
                         </label>
@@ -586,15 +654,15 @@ const EmploymentSetcion = ({ info, username, showEdit }) => {
                     <div className='view-container'>
                         <label className='view-item'>
                             Visa Title
-                            <span>{info?.firstName}</span>
+                            <span>{info?.visaStatus?.visaTitle}</span>
                         </label>
                         <label className='view-item'>
                             Start Date
-                            <span>{info?.firstName}</span>
+                            <span>{info?.visaStatus?.startDate}</span>
                         </label>
                         <label className='view-item'>
                             End Date
-                            <span>{info?.firstName}</span>
+                            <span>{info?.visaStatus?.endDate}</span>
                         </label>
                     </div>
                 </>
@@ -605,6 +673,7 @@ const EmploymentSetcion = ({ info, username, showEdit }) => {
 
 const EmergencySection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
+    const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
 
@@ -625,10 +694,31 @@ const EmergencySection = ({ info, username, showEdit }) => {
             }
         };
     };
+
     const handleSubmit = (event) => {
         event.preventDefault();
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
+        }
+
         dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
+    };
+
+    const validateForm = () => {
+        const { phone } = formData.emergencyContact;
+        const errors = {};
+        const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
+
+        if (!phone) {
+            errors.phone = "Phone number is required";
+        } else if (!phoneRegex.test(phone)) {
+            errors.phone = "Invalid phone number format";
+        }
+
+        return errors;
     };
 
     return (
@@ -636,23 +726,23 @@ const EmergencySection = ({ info, username, showEdit }) => {
             <div className='title'>Emergency Contact</div>
             {edit ? (
                 <>
-                    <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            color='error'
-                            endIcon={<CancelOutlinedIcon />}
-                            onClick={() => {
-                                setEdit(false);
-                                setFormData(info);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
-                            Save
-                        </Button>
-                    </div>
-                    <form className='input-container'>
+                    <form className='input-container' onSubmit={handleSubmit}>
+                        <div className='buttons'>
+                            <Button
+                                variant='outlined'
+                                color='error'
+                                endIcon={<CancelOutlinedIcon />}
+                                onClick={() => {
+                                    setEdit(false);
+                                    setFormData(info);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
+                                Save
+                            </Button>
+                        </div>
                         <label className='input-item'>
                             First Name
                             <TextField
@@ -691,6 +781,8 @@ const EmergencySection = ({ info, username, showEdit }) => {
                                 value={formData?.emergencyContact?.phone || ""}
                                 onChange={handleChange("emergencyContact.phone")}
                                 variant='standard'
+                                error={!!errors.phone}
+                                helperText={errors.phone}
                             />
                         </label>
                         <label className='input-item'>
@@ -701,17 +793,25 @@ const EmergencySection = ({ info, username, showEdit }) => {
                                 value={formData?.emergencyContact?.email || ""}
                                 onChange={handleChange("emergencyContact.email")}
                                 variant='standard'
+                                type='email'
                             />
                         </label>
                         <label className='input-item'>
                             Relationship
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.emergencyContact?.relationship || ""}
+                            <Select
+                                label='gender'
+                                value={formData?.emergencyContact.relationship || ""}
                                 onChange={handleChange("emergencyContact.relationship")}
-                                variant='standard'
-                            />
+                            >
+                                <MenuItem value='parent'>Parent</MenuItem>
+                                <MenuItem value='sibling'>Sibling</MenuItem>
+                                <MenuItem value='spouse'>Spouse</MenuItem>
+                                <MenuItem value='child'>Child</MenuItem>
+                                <MenuItem value='relative'>Relative</MenuItem>
+                                <MenuItem value='friend'>Friend</MenuItem>
+                                <MenuItem value='colleague'>Colleague</MenuItem>
+                                <MenuItem value='other'>Other</MenuItem>
+                            </Select>
                         </label>
                     </form>
                 </>
@@ -793,11 +893,11 @@ const DocumentSection = ({ info, username, showEdit }) => {
                         >
                             Cancel
                         </Button>
-                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />} onClick={handleSubmit}>
+                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
                             Save
                         </Button>
                     </div>
-                    <form className='input-container'>
+                    <form className='input-container' onSubmit={handleSubmit}>
                         <label className='input-item'>
                             First Name
                             <TextField

@@ -7,6 +7,7 @@ import User from "../models/User.js";
 const seedHouses = async () => {
     const houses = [
         {
+            title: "House 1",
             address: {
                 building: "Building 1",
                 street: "123 Main St",
@@ -23,6 +24,7 @@ const seedHouses = async () => {
             facilityReports: [],
         },
         {
+            title: "House 2",
             address: {
                 building: "Building 2",
                 street: "456 Oak Ave",

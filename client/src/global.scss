@@ -36,11 +36,23 @@
     gap: 2rem;
 }
 
+.p-1 {
+    padding: 1rem;
+}
+
+.pb-1 {
+    padding-bottom: 1rem;
+}
+
+.pt-1 {
+    padding-top: 1rem;
+}
+
 .title {
     font-weight: bold;
 }
 
-header .title{
+header .title {
     font-size: 1.5rem;
     padding-bottom: 1rem;
 }

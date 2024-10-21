@@ -60,9 +60,10 @@ const loginUserValidation = (req, res, next) => {
 
 export const housingValidation = (req, res, next) => {
     try {
-        const { address, landlord } = req.body;
+        const { address, landlord , title} = req.body;
         const { building, street, city, state, zip } = address;
         const { name, phone, email } = landlord;
+        if (!title) return res.status(400).json({ message: "Missing title!" });
         if (!address) return res.status(400).json({ message: "Missing address info!" });
         if (!landlord) return res.status(400).json({ message: "Missing landlord info!" });
         if (!building) return res.status(400).json({ message: "Missing building info!" });
