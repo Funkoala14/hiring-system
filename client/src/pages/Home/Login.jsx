@@ -24,7 +24,7 @@ const Login = () => {
                 if (role === 'HR') {
                     navigate('/hr/dashboard');  // HR redirect
                 } else {
-                    navigate('/employee/my-profile');  // Employee redirect
+                    navigate('/employee/on-boarding');  // Employee redirect
                 }
             }
         }, [isLoggedIn, role, navigate]); 
