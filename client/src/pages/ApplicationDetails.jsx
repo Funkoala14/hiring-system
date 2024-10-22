@@ -44,7 +44,7 @@ const ApplicationDetails = () => {
       });
 
       if (response.ok) {
-        navigate('/onboarding-review');
+        navigate('/hr/onboarding-review');
       } else {
         console.error('Error updating status:', response.statusText);
       }

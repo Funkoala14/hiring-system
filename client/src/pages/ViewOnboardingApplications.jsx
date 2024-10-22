@@ -37,7 +37,7 @@ const ApplicationTables = () => {
         <TableCell sx={{ width: '30%' }}>{app.name}</TableCell>
         <TableCell sx={{ width: '50%' }}>{app.email}</TableCell>
         <TableCell sx={{ width: '20%', textAlign: 'center' }}>
-          <Button variant="contained" color="primary" onClick={() => navigate(`/application/${app._id}`)}>
+          <Button variant="contained" color="primary" onClick={() => navigate(`/hr/application/${app._id}`)}>
             View Application
           </Button>
         </TableCell>
