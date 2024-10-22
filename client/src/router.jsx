@@ -40,34 +40,28 @@ function AppRouter() {
           path="employee"
           element={
             <PrivateRoute allowedRoles={["Employee"]}>
-              <Outlet /> {/* Outlet to render nested routes */}
+                <Outlet /> {/* Nested employee routes will be rendered here */}
             </PrivateRoute>
           }
         >
-
-          {/* Employee Details Route (for onboarding status check) */}
-          <Route
-            path="details"
-            element={<OnboardingStatus />}  // OnboardingStatus will handle the redirect logic
-          />
           {/* Employee Personal Info Route (with MainLayout) */}
           <Route
             path="my-profile"
             element={
               <MainLayout>
-                <Profile parent={"employee"}/>
+                  <Profile parent={"employee"}/>
               </MainLayout>
             }
           />
+          
+          {/* On-Boarding Route (without Header and Navbar) */}
+          <Route path="on-boarding" element={<OnBoarding />} />
 
-                    {/* On-Boarding Route (without Header and Navbar) */}
-                    <Route path="on-boarding" element={<OnBoarding />} />
-
-                    {/* Visa-Status Route */}
-                    <Route path='visa-status' element={<MainLayout>
-                        <VisaStatus />
-                    </MainLayout>} />
-                </Route>
+          {/* Visa-Status Route */}
+          <Route path='visa-status' element={<MainLayout>
+              <VisaStatus />
+          </MainLayout>} />
+      </Route>
                                                        
    {/* HR Dashboard Route (Protected) */}
         <Route
