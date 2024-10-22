@@ -1,46 +1,58 @@
-import React, { Suspense, lazy } from 'react';
-import { Routes, Route, Outlet } from 'react-router-dom';
-import MainLayout from '/layouts/MainLayout';
-import VisaStatus from './pages/VisaStatus/VisaStatus';
-import { SendLink } from './pages/Registration/SendRegistration';
+import React, { Suspense, lazy } from "react";
+import { Routes, Route, Outlet } from "react-router-dom";
+import MainLayout from "/layouts/MainLayout";
+import VisaStatus from "./pages/VisaStatus/VisaStatus";
+import { SendLink } from "./pages/Registration/SendRegistration";
 import Login from "./pages/Home/Login";
 import Dashboard from "./pages/Home/Dashboard";
 import NotFound from "./pages/Home/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
-import OnboardingStatus from "./components/OnboardingStatus";
 import Forbidden from "./pages/Home/Forbidden";
-import OnBoarding from "./pages/OnBoarding";
-import Profile from './pages/Profile/Profile';
-import EmployeeManagement from './pages/EmployeeManagement/EmployeeManagement';
+import OnBoarding from "./pages/OnBoarding/OnBoarding";
+import Profile from "./pages/Profile/Profile";
+import EmployeeManagement from "./pages/EmployeeManagement/EmployeeManagement";
+import Confirmation from "./pages/OnBoarding/Confirmation";
 
-const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
+const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
 
-
-const Home = lazy(() => import('/pages/Home/Home'));
+const Home = lazy(() => import("/pages/Home/Home"));
 
 function AppRouter() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        {/* Home Route */}
+        <Route
+          path="/"
+          element={
+            <MainLayout>
+              <Home />
+            </MainLayout>
+          }
+        />
 
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <Routes>
-                {/* Home Route */}
-                <Route path="/" element={<MainLayout><Home /></MainLayout>} />
+        {/* SendLink Route */}
+        <Route
+          path="/contact"
+          element={
+            <MainLayout>
+              <SendLink />
+            </MainLayout>
+          }
+        />
 
-                {/* SendLink Route */}
-                <Route path="/contact" element={<MainLayout><SendLink /></MainLayout>} />
+        {/* RegistrationPage Route */}
+        <Route path="/register" element={<RegistrationPage />} />
 
-                {/* RegistrationPage Route */}
-                <Route path="/register" element={<RegistrationPage />} />
-
-                {/* Login Route */}
-                <Route path="/login" element={<Login />} />
+        {/* Login Route */}
+        <Route path="/login" element={<Login />} />
 
         {/* Employee Routes */}
         <Route
           path="employee"
           element={
             <PrivateRoute allowedRoles={["Employee"]}>
-                <Outlet /> {/* Nested employee routes will be rendered here */}
+              <Outlet /> {/* Nested employee routes will be rendered here */}
             </PrivateRoute>
           }
         >
@@ -49,42 +61,90 @@ function AppRouter() {
             path="my-profile"
             element={
               <MainLayout>
-                  <Profile parent={"employee"}/>
+                <Profile parent={"employee"} />
               </MainLayout>
             }
           />
-          
+
           {/* On-Boarding Route (without Header and Navbar) */}
-          <Route path="on-boarding" element={<OnBoarding />} />
+
+          <Route path="on-boarding" element={<OnBoarding/>} /> 
+
+          {/* Confirmation Route */}
+          <Route
+            path="on-boarding/confirmation"
+            element={<Confirmation parent={"on-boarding"} />}
+          />
+ 
 
           {/* Visa-Status Route */}
-          <Route path='visa-status' element={<MainLayout>
-              <VisaStatus />
-          </MainLayout>} />
-      </Route>
-                                                       
-   {/* HR Dashboard Route (Protected) */}
+          <Route
+            path="visa-status"
+            element={
+              <MainLayout>
+                <VisaStatus />
+              </MainLayout>
+            }
+          />
+        </Route>
+
+        {/* HR Dashboard Route (Protected) */}
         <Route
           path="hr"
           element={
             <PrivateRoute allowedRoles={["HR"]}>
-              <Outlet/>
+              <Outlet />
             </PrivateRoute>
           }
         >
-          <Route path='dashboard' element={<MainLayout><Dashboard /></MainLayout>}/>
-          <Route path='employee-management' element={<MainLayout><EmployeeManagement /></MainLayout>}/>
-          <Route path='employee-profile' element={<MainLayout><Profile parent={"hr"}/></MainLayout>}/>
+          <Route
+            path="dashboard"
+            element={
+              <MainLayout>
+                <Dashboard />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="employee-management"
+            element={
+              <MainLayout>
+                <EmployeeManagement />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="employee-profile"
+            element={
+              <MainLayout>
+                <Profile parent={"hr"} />
+              </MainLayout>
+            }
+          />
         </Route>
 
-                {/* Forbidden Route */}
-                <Route path="forbidden" element={<MainLayout><Forbidden /></MainLayout>} />
+        {/* Forbidden Route */}
+        <Route
+          path="forbidden"
+          element={
+            <MainLayout>
+              <Forbidden />
+            </MainLayout>
+          }
+        />
 
-                {/* Catch-all route for undefined paths */}
-                <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
-            </Routes>
-        </Suspense>
-    );
+        {/* Catch-all route for undefined paths */}
+        <Route
+          path="*"
+          element={
+            <MainLayout>
+              <NotFound />
+            </MainLayout>
+          }
+        />
+      </Routes>
+    </Suspense>
+  );
 }
 
 export default AppRouter;
