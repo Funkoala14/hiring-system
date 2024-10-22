@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, logout, register, checkToken, getEmployeeInfo, updateEmployeeInfo} from '../controllers/UserController.js';
+import { login, logout, register, checkToken, getEmployeeInfo, updateEmployeeInfo } from '../controllers/UserController.js';
 import validationMiddleware from '../middlewares/validationMiddleware.js';
 import { checkPermission, jwtValidation } from "../middlewares/authMiddleware.js";
 const { loginUserValidation, createUserValidation } = validationMiddleware;

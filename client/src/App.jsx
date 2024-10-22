@@ -5,29 +5,30 @@ import React from "react";
 import useAuthInit from "./hooks/useAuthInit";
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#ff5733", // Primary color (red)
-    },
-    secondary: {
-      main: "#dc004e", // Secondary color
-    },
-  },
+	palette: {
+		primary: {
+			main: "#ff5733", // Primary color (red)
+		},
+		secondary: {
+			main: "#dc004e", // Secondary color
+		},
+	},
 });
 
 function App() {
-  const { isLoading } = useAuthInit();
+	const { isLoading } = useAuthInit();
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline /> {/* This will apply Material-UI's baseline styles */}
-      <AppRouter></AppRouter>
-    </ThemeProvider>
-  );
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
+
+	return (
+		<ThemeProvider theme={theme}>
+			<CssBaseline />
+			{/* This will apply Material-UI's baseline styles */}
+			<AppRouter></AppRouter>
+		</ThemeProvider>
+	);
 }
 
 export default App;

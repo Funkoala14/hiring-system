@@ -61,5 +61,5 @@ export const deleteHouse = async (req, res) => {
             .lean()
             .exec();
         return res.status(200).json({ message: "House deleted successfully", code: 200, data: houses });
-    } catch (error) {}
+    } catch (error) { }
 };

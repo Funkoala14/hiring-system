@@ -6,7 +6,7 @@ import { housingValidation } from "../middlewares/validationMiddleware.js";
 const housingRouter = Router();
 
 housingRouter
-    .get("/list", jwtValidation, checkPermission("HR"),  getHousesList)
+    .get("/list", jwtValidation, checkPermission("HR"), getHousesList)
     .post("/add", jwtValidation, checkPermission("HR"), housingValidation, postAddHouse)
     .delete("/delete/:houseId", jwtValidation, checkPermission("HR"), deleteHouse);
 

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../interceptors/auth.interceptor';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { get, post } from '../../services/api.js'
 
 const loginThunk = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
@@ -22,18 +22,18 @@ const signupThunk = createAsyncThunk(
       // Sending a request to the backend to register the user
       const { data } = await post('/user/register', credentials);
 
-    //       // Use 'let' for decodedToken so it can be reassigned or modified
-    // let decodedToken;  
+      //       // Use 'let' for decodedToken so it can be reassigned or modified
+      // let decodedToken;  
 
-    // try {
-    //   decodedToken = jwtDecode(data.token);  // Decode the JWT token
-    // } catch (error) {
-    //   console.error('Token decoding failed', error);
-    //   throw new Error('Token decoding failed');
-    // }
+      // try {
+      //   decodedToken = jwtDecode(data.token);  // Decode the JWT token
+      // } catch (error) {
+      //   console.error('Token decoding failed', error);
+      //   throw new Error('Token decoding failed');
+      // }
 
-    // Return both username, role, and token
-    return data;
+      // Return both username, role, and token
+      return data;
     } catch (error) {
       // Catching the error and passing the appropriate message
       const errorMessage = error.response?.data || 'Signup failed. Please try again.';
@@ -44,14 +44,14 @@ const signupThunk = createAsyncThunk(
 
 const verifyThunk = createAsyncThunk('auth/verify', async (_, { rejectWithValue }) => {
   try {
-    
+
     const { data, message } = await get('/user/verify');
-      
+
     if (!data) {
       throw new Error(message || 'No token found');
     }
     console.log('verify passed: ', data);
-      
+
     return data;
   } catch (error) {
     return rejectWithValue(error.response?.data || 'Token verification failed');

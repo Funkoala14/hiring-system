@@ -17,14 +17,14 @@ router.post('/generate-token', async (req, res) => {
 
   try {
     let user = await NewUser.findOne({ email });
-    
+
     if (!user) {
       user = new NewUser({ name, email });
       await user.save();
     }
 
     const token = generateRegistrationToken(email);
-    
+
     res.json({ token });
   } catch (error) {
     console.error('Error creating new user:', error);
@@ -38,7 +38,7 @@ router.post('/verify-token', (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    
+
     res.json({ email: decoded.email });
   } catch (error) {
     res.status(400).json({ message: 'Invalid or expired token' });
