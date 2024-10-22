@@ -6,6 +6,9 @@ const documentSchema = new Schema({
         type: String,
         required: true
     },
+    filename: {
+        type: String,
+    },
     file: {
         type: Buffer,
         required: true
