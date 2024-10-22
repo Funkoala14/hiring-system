@@ -3,9 +3,12 @@
     "version": "1.0.0",
     "description": "A mern stack based hiring system",
     "scripts": {
-        "start": "concurrently \"npm run server\" \"npm run client\"",
+        "start": "npm run install-all && concurrently \"npm run server\" \"npm run client\"",
         "server": "cd server && npm start",
-        "client": "cd client && npm run dev"
+        "client": "cd client && npm run dev",
+        "install-all": "npm run install-server && npm run install-client",
+        "install-server": "cd server && npm install",
+        "install-client": "cd client && npm install"
     },
     "keywords": [],
     "author": "",
@@ -14,3 +17,4 @@
         "concurrently": "^6.0.0"
     }
 }
+

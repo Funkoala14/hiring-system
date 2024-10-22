@@ -10,14 +10,23 @@ export default function MainLayout({ children }) {
     const [auth, setAuth] = useState(useSelector(selectIsLoggedIn))
     const [badgeNum, setBadgeNum] = useState(1)
 
-    const paths = {
+    const employeePaths = {
+        'home': '/',
         'profile': '/employee/my-profile',
         'visaStatus': '/employee/visa-status',
         'housing': '/employee/housing-detail',
     }
+    const hrPaths = {
+        'home': '/hr/dashboard',
+        'visaStatus': '/hr/visa-status',
+        'housing': '',
+        'hiring': '',
+        'profile': ''
+    }
 
     const handleLogout = () => {
         dispatch(logoutThunk());
+        window.location.href = "/login"
     };
 
 
@@ -25,7 +34,8 @@ export default function MainLayout({ children }) {
         <HeaderWithDrawer
             badgeNum={badgeNum}
             auth={auth}
-            paths={paths}
+            employeePaths={employeePaths}
+            hrPaths={hrPaths}
             handleLogout={handleLogout}
             handleNotification={() => {
                 console.log("handleNotification"); //Todo
