@@ -69,11 +69,15 @@ const RegistrationPage = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // Check the username before dispatch
-    console.log('Submitting Username:', credentials.username);
-    dispatch(signupThunk({ ...credentials, email }));
+    e.preventDefault();  // Prevent default form submission
+    if (credentials.username && credentials.password) {
+      // Check the username before dispatch
+      console.log('Submitting Username:', credentials.username);
+      dispatch(signupThunk({ ...credentials, email })); // Dispatch signup only on manual submit
 
+    } else {
+      console.error('Username or password is missing'); // Handle missing fields
+    }
   };
 
   if (isLoading) {
