@@ -14,6 +14,8 @@ import Profile from "./pages/Profile/Profile";
 import EmployeeManagement from "./pages/EmployeeManagement/EmployeeManagement";
 import HousingManagement from "./pages/HousingManagement/HousingManagement";
 import HousingView from "./pages/HousingView/HousingView";
+import ApplicationTables from './pages/ViewOnboardingApplications';
+import ApplicationDetails from './pages/ApplicationDetails';
 
 const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
 
