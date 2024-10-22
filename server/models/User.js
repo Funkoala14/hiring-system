@@ -23,8 +23,8 @@ const userSchema = new Schema({
         required: true,
         minlength: 6,
     },
-    role: { type: String, enum: ['Employee', 'HR'], default: 'Employee', required: true },
-}, { timestamps: true });
+    role:     { type: String, enum: ['Employee', 'HR'], default: 'Employee', required: true },
+}, { timestamps: true } );
 
 // Hashing password before saving
 userSchema.pre('save', async function (next) {

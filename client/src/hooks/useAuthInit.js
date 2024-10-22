@@ -4,13 +4,13 @@ import { verifyThunk } from "../store/auth/auth.thunk.js";
 
 const useAuthInit = () => {
     const dispatch = useDispatch();
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true); 
 
     useEffect(() => {
         const initializeAuth = async () => {
             // On/Off useAuthInit
             await dispatch(verifyThunk());
-            setIsLoading(false);
+            setIsLoading(false); 
         };
 
         initializeAuth();

@@ -13,7 +13,7 @@ const newUserSchema = new Schema({
         match: [/.+@.+\..+/, 'Please provide a valid email'],
     },
     createdAt: { type: Date, default: Date.now },
-    activated: {
+    activated:{
         type: Boolean,
         required: true,
         default: false

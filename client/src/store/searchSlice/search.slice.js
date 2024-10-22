@@ -4,7 +4,7 @@ const searchSlice = createSlice({
     name: "search",
     initialState: {
         query: "",
-        baseQueryList: [],
+		baseQueryList: [],
         queryList: [],
         filteredList: [],
         searched: false,

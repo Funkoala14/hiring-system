@@ -11,7 +11,7 @@ const initialState = {
   isLoggedIn: false,
   username: null,
   id: null,
-  role: null,
+  role: null, 
   token: null,
   error: null,
 };
@@ -22,16 +22,16 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     resetAuth: (state) => {
-      // reset auth states
-      state.isLoading = false;
-      state.isLoggedIn = false;
-      state.username = null;
-      state.id = null;
-      state.role = null;
-      state.token = null;
-      state.error = null;
+        // reset auth states
+        state.isLoading = false;
+        state.isLoggedIn = false;
+        state.username = null;
+        state.id = null;
+        state.role = null;
+        state.token = null;
+        state.error = null;
     },
-  },
+},
   extraReducers: (builder) => {
     builder.addCase(logoutThunk.fulfilled, (state) => {
       state.isLoading = false;
@@ -67,8 +67,8 @@ const authSlice = createSlice({
         state.username = payload?.username;
         state.id = payload?.id;
         state.role = payload?.role;
-        state.token = payload?.token;
-
+        state.token = payload?.token;  
+        
         console.log('payload: ', payload);
       },
     );
@@ -79,8 +79,8 @@ const authSlice = createSlice({
         state.error = action.payload;
         state.isLoggedIn = false;
         state.username = null;
-        state.role = null;
-        state.token = null;
+        state.role = null; 
+        state.token = null; 
       },
     );
   },
