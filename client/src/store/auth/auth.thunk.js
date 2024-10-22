@@ -3,6 +3,7 @@ import axios from '../../interceptors/auth.interceptor';
 import {jwtDecode} from 'jwt-decode';
 import { get, post } from '../../services/api.js'
 import { resetProfileState } from '../profileSlice/profile.slice.js';
+import { resetProfileState } from '../profileSlice/profile.slice.js';
 
 const loginThunk = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
   try {
