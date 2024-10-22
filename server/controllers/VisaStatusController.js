@@ -172,8 +172,8 @@ export const getNextStep = (documents) => {
       return sortedDocuments[sortedDocuments.length - 1];
     }
 
-    // Get the last submitted document in the sequence
-    const lastDocument = sortedDocuments[sortedDocuments.length - 1];
+  // Get the last submitted document in the sequence
+  const lastDocument = sortedDocuments[sortedDocuments.length - 1];
 
     // If the last submitted document is not approved, return it
     if (lastDocument && lastDocument.status !== "approved") {
