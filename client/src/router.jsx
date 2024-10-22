@@ -146,6 +146,10 @@ function AppRouter() {
                             </MainLayout>
                         }
                     />
+
+                    {/* Review Applications Route */}
+                    <Route path="/onboarding-review" element={<MainLayout><ApplicationTables /></MainLayout>} />
+                    <Route path="/application/:id" element={<MainLayout><ApplicationDetails /></MainLayout>} /> 
                 </Route>
 
                 {/* Forbidden Route */}
