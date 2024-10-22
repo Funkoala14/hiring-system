@@ -179,7 +179,9 @@ const PersonalSection = ({ info, username, showEdit }) => {
 
         if (!phone) {
             errors.phone = 'Phone number is required';
+            errors.phone = 'Phone number is required';
         } else if (!phoneRegex.test(phone)) {
+            errors.phone = 'Invalid phone number format';
             errors.phone = 'Invalid phone number format';
         }
 
