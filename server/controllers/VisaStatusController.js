@@ -1,7 +1,10 @@
 import Document from "../models/Document.js";
 import Employee from "../models/Employee.js";
+import Document from "../models/Document.js";
+import Employee from "../models/Employee.js";
 import User from "../models/User.js";
 import VisaStatus from "../models/VisaStatus.js";
+import emailjs from "@emailjs/browser";
 import emailjs from "@emailjs/browser";
 
 export const submitDocument = async (req, res) => {
@@ -64,7 +67,6 @@ export const getVisaStatusNextStep = async (req, res) => {
 };
 
 export const getAllPendingStatuses = async (_req, res) => {
-  debugger;
   try {
     let allUsers = await User.find({ visaStatus: { $exists: true, $ne: null } })
       .populate({
@@ -114,7 +116,14 @@ export const getAllApprovedStatuses = async (_req, res) => {
 
     const approvedStatuses = allUsers.reduce((acc, employee) => {
       const nextStep = getNextStep(employee.visaStatus.documents);
+    const approvedStatuses = allUsers.reduce((acc, employee) => {
+      const nextStep = getNextStep(employee.visaStatus.documents);
 
+      if (nextStep.type === "I-20" && nextStep.status === "approved") {
+        acc.push(employee);
+        return acc;
+      }
+    }, []);
       if (nextStep.type === "I-20" && nextStep.status === "approved") {
         acc.push(employee);
         return acc;
@@ -134,6 +143,7 @@ export const getAllApprovedStatuses = async (_req, res) => {
 const appendPreviewUrl = (document) => {
   return { ...document, previewUrl: generatePresignedUrl(document.src) };
 };
+
 export const getNextStep = (documents) => {
   try {
     const sequence = ["OPT Receipt", "OPT EAD", "I-983", "I-20"];
