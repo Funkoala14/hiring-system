@@ -14,6 +14,8 @@ import Profile from "./pages/Profile/Profile";
 import EmployeeManagement from "./pages/EmployeeManagement/EmployeeManagement";
 import HousingManagement from "./pages/HousingManagement/HousingManagement";
 import HousingView from "./pages/HousingView/HousingView";
+import ApplicationTables from './pages/ViewOnboardingApplications';
+import ApplicationDetails from './pages/ApplicationDetails';
 
 const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
 
@@ -144,6 +146,10 @@ function AppRouter() {
                             </MainLayout>
                         }
                     />
+
+                    {/* Review Applications Route */}
+                    <Route path="onboarding-review" element={<MainLayout><ApplicationTables /></MainLayout>} />
+                    <Route path="application/:id" element={<MainLayout><ApplicationDetails /></MainLayout>} /> 
                 </Route>
 
                 {/* Forbidden Route */}
