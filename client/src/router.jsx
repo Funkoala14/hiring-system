@@ -52,15 +52,10 @@ function AppRouter() {
           path="employee"
           element={
             <PrivateRoute allowedRoles={["Employee"]}>
-              <Outlet /> {/* Outlet to render nested routes */}
+                <Outlet /> {/* Nested employee routes will be rendered here */}
             </PrivateRoute>
           }
         >
-          {/* Employee Details Route (for onboarding status check) */}
-          <Route
-            path="details"
-            element={<OnboardingStatus />} // OnboardingStatus will handle the redirect logic
-          />
           {/* Employee Personal Info Route (with MainLayout) */}
           <Route
             path="my-profile"
