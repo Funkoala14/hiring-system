@@ -1,15 +1,16 @@
-import User from "../models/User.js";
-import { compare } from "bcrypt";
-import jsonwebtoken from "jsonwebtoken";
+import User from '../models/User.js';
+import { compare } from 'bcrypt';
+import jsonwebtoken from 'jsonwebtoken';
 const { sign } = jsonwebtoken;
-import validator from "validator";
+import validator from 'validator';
 const { escape } = validator;
-import Employee from "../models/Employee.js";
-import config from "../config/config.js";
-import { Types } from "mongoose";
-import mongoose from "mongoose";
-import House from "../models/House.js";
-import OnboardingStatus from "../models/OnboardingStatus.js";
+import Employee from '../models/Employee.js';
+import config from '../config/config.js';
+import { Types } from 'mongoose';
+import mongoose from 'mongoose';
+import House from '../models/House.js';
+import OnboardingStatus from '../models/OnboardingStatus.js';
+import { deleteFileFn } from './S3BucketController.js';
 
 // Register new user
 export const register = async (req, res) => {
@@ -25,7 +26,7 @@ export const register = async (req, res) => {
             .exec();
 
         if (existingUser) {
-            return res.status(409).json({ message: "Username or email already exists" });
+            return res.status(409).json({ message: 'Username or email already exists' });
         }
 
         const employee = await Employee.create({
@@ -48,7 +49,7 @@ export const register = async (req, res) => {
         // Create OnboardingStatus for the user with default 'Not Started' status
         const onboardingStatus = new OnboardingStatus({
             employee: employee._id, // Link the onboarding status to the user
-            status: "Not Started", // Default status
+            status: 'Not Started', // Default status
         });
         await onboardingStatus.save();
         employee.onboardingStatus = onboardingStatus._id;
@@ -67,17 +68,17 @@ export const register = async (req, res) => {
                 role: employee.role,
             },
             config.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: '1d' }
         );
 
-        res.cookie("token", token, {
+        res.cookie('token', token, {
             httpOnly: true,
-            sameSite: "Strict",
+            sameSite: 'Strict',
             maxAge: 24 * 60 * 60 * 1000,
         });
 
         res.status(201).json({
-            message: "User registered successfully",
+            message: 'User registered successfully',
             data: {
                 id: employee._id,
                 username: employee.username,
@@ -91,7 +92,7 @@ export const register = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -104,12 +105,12 @@ export const login = async (req, res) => {
             .lean()
             .exec();
         if (!user) {
-            return res.status(401).json({ message: "Invalid username or email" });
+            return res.status(401).json({ message: 'Invalid username or email' });
         }
 
         const isPasswordValid = await compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Incorrect password" });
+            return res.status(401).json({ message: 'Incorrect password' });
         }
 
         const token = sign(
@@ -120,17 +121,17 @@ export const login = async (req, res) => {
                 role: user.role,
             },
             config.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: '1d' }
         );
 
-        res.cookie("token", token, {
+        res.cookie('token', token, {
             httpOnly: true,
-            sameSite: "Strict",
+            sameSite: 'Strict',
             maxAge: 24 * 60 * 60 * 1000,
         });
         console.log(user);
         return res.status(200).json({
-            message: "Login successful",
+            message: 'Login successful',
             data: {
                 id: user._id,
                 username: user.username,
@@ -143,14 +144,14 @@ export const login = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
 // Logout user by clearing the JWT cookie
 export const logout = (req, res) => {
-    res.clearCookie("token");
-    res.status(200).json({ message: "Logout successful" });
+    res.clearCookie('token');
+    res.status(200).json({ message: 'Logout successful' });
 };
 
 // Check if the user is logged in (token validation)
@@ -158,7 +159,7 @@ export const checkToken = (req, res) => {
     if (req.user) {
         return res.status(200).json({ code: 200, data: req.user });
     } else {
-        return res.status(401).json({ message: "Token has expired or is invalid." });
+        return res.status(401).json({ message: 'Token has expired or is invalid.' });
     }
 };
 
@@ -166,19 +167,19 @@ export const checkToken = (req, res) => {
 export const getEmployeeInfo = async (req, res) => {
     const { username } = req.body;
     if (!username) {
-        return res.status(400).json({ message: "Username is required" });
+        return res.status(400).json({ message: 'Username is required' });
     }
     try {
         const employee = await Employee.findOne({ username })
-            .select("-__v -password -__t")
+            .select('-__v -password -__t')
             .populate({
-                path: "housingAssignment",
+                path: 'housingAssignment',
                 populate: {
-                    path: "residents",
-                    select: "_id username firstName preferedName lastName phone email",
+                    path: 'residents',
+                    select: '_id username firstName preferedName lastName phone email',
                 },
             })
-            .populate("visaStatus onboardingStatus")
+            .populate('visaStatus onboardingStatus')
             .lean()
             .exec();
         if (!employee) {
@@ -186,13 +187,13 @@ export const getEmployeeInfo = async (req, res) => {
         }
 
         return res.status(200).json({
-            message: "success",
+            message: 'success',
             data: { id: employee._id, ...employee },
             code: 200,
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Internal server error", code: 500 });
+        return res.status(500).json({ message: 'Internal server error', code: 500 });
     }
 };
 
@@ -200,7 +201,7 @@ export const getEmployeeInfo = async (req, res) => {
 export const updateEmployeeInfo = async (req, res) => {
     const { user } = req;
     const { username, updateData } = req.body;
-    if (user.role !== "HR") {
+    if (user.role !== 'HR') {
         // Can only update itself info
         if (username !== user.username) {
             return res.status(403).json({
@@ -215,42 +216,92 @@ export const updateEmployeeInfo = async (req, res) => {
             new: true,
             lean: true,
         })
-            .select("-__v -password -__t")
+            .select('-__v -password -__t')
             .populate({
-                path: "housingAssignment",
+                path: 'housingAssignment',
                 populate: {
-                    path: "residents",
-                    select: "_id username firstName preferedName lastName phone email",
+                    path: 'residents',
+                    select: '_id username firstName preferedName lastName phone email',
                 },
             })
             .lean()
             .exec();
         if (!employee) {
-            return res.status(401).json({ message: "Invalid userid" });
+            return res.status(401).json({ message: 'Invalid userid', code: 401 });
         }
 
         return res.status(200).json({
-            message: "Employee info updated successfully",
+            message: 'Employee info updated successfully',
             data: { id: employee._id, ...employee },
             code: 200,
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Internal server error", code: 500 });
+        return res.status(500).json({ message: 'Internal server error', code: 500 });
     }
 };
 
 export const getEmployeeList = async (req, res) => {
     const { user } = req;
     try {
-        const employees = await Employee.find({ role: "Employee" })
-            .select("-__v -password -__t")
+        const employees = await Employee.find({ role: 'Employee' })
+            .select('-__v -password -__t')
             .sort({ lastName: 1 })
             .lean()
             .exec();
-        return res.status(200).json({ message: "success", data: employees, code: 200 });
+        return res.status(200).json({ message: 'success', data: employees, code: 200 });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Internal server error", code: 500 });
+        return res.status(500).json({ message: 'Internal server error', code: 500 });
+    }
+};
+
+export const updateAvatar = async (req, res) => {
+    const { id, username } = req.user;
+    const file = req.file;
+
+    if (!file) {
+        return res.status(400).send({
+            message: 'No file uploaded',
+            code: 400,
+        });
+    }
+
+    try {
+        console.log(file);
+        const employee = await Employee.findOne({ username }).lean().exec();
+        if (!employee) {
+            return res.status(401).json({ message: 'Invalid userid', code: 401 });
+        }
+
+        const { name } = employee.image;
+
+        const updatedEmployee = await Employee.findOneAndUpdate(
+            { username },
+            { image: { src: file.location, name: file.key } },
+            { new: true, lean: true }
+        )
+            .select('-__v -password -__t')
+            .populate({
+                path: 'housingAssignment',
+                populate: {
+                    path: 'residents',
+                    select: '_id username firstName preferedName lastName phone email',
+                },
+            })
+            .lean()
+            .exec();
+
+        // delete previous image
+        name && (await deleteFileFn(name));
+
+        return res.status(200).json({
+            message: 'User avatar updated successfully',
+            data: { id: updatedEmployee._id, ...updatedEmployee },
+            code: 200,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error', code: 500 });
     }
 };

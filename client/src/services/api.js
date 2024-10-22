@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "/v1/api",
+    baseURL: '/v1/api',
     headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
     },
 });
 
@@ -13,7 +13,7 @@ api.interceptors.request.use(
         return config;
     },
     (error) => {
-        console.error("Request error:", error);
+        console.error('Request error:', error);
         return Promise.reject(error);
     }
 );
@@ -27,22 +27,22 @@ api.interceptors.response.use(
         // Handle errors in the response
         if (error.response) {
             // monitor /verify
-            if (error.response.status === 401 && error.config.url === "/user/verify") {
-                if (window.location.pathname !== "/login" && window.location.pathname !== "/register") {
-                    window.location.href = "/login";
+            if (error.response.status === 401 && error.config.url === '/user/verify') {
+                if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+                    window.location.href = '/login';
                 }
             }
 
             // The request was made and the server responded with a status code
-            console.error("API Error Response:", error.response.status, error.response.data.message);
+            console.error('API Error Response:', error.response.status, error.response.data.message);
             // alert(`Error: ${error.response.status} - ${error.response.data.message || 'Something went wrong'}`);
         } else if (error.request) {
             // The request was made but no response was received
-            console.error("API Error Request:", error.request);
+            console.error('API Error Request:', error.request);
             // alert('Network error: No response from server');
         } else {
             // Something happened in setting up the request
-            console.error("API Error Message:", error.message);
+            console.error('API Error Message:', error.message);
             // alert('Error: ' + error.message);
         }
         return Promise.reject(error); // Reject the promise
@@ -70,4 +70,14 @@ const del = async (url) => {
     return res.data;
 };
 
-export { get, post, put, del };
+const upload = async (url, data) => {
+    const axiosInstance = await axios.create({
+        baseURL: '/v1/api',
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    const res = await axiosInstance.post(url, data);
+    return res.data;
+};
+export { get, post, put, del, upload };
