@@ -1,38 +1,54 @@
 import { useEffect, useState } from 'react'
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import { selectDocumentFeedback, selectDocumentStatus } from '../../store/visaSlice/visa.selectors';
+import { Typography, Button, Box } from '@mui/material';
+import { selectVisaState } from '../../store/visaSlice/visa.selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import DropZone from '../../components/DropZone';
 import FileList from '../../components/FileList';
+import { visaStatusInit, updateVisaStatus } from '../../store/visaSlice/visa.thunk';
+import CustomizedStepper from '../../components/CustomizedStepper';
+
 
 const VisaStatus = () => {
-    const [file, setFile] = useState(null)
-    const status = useSelector(selectDocumentStatus)
-    const feedback = useSelector(selectDocumentFeedback)
+    const [uploadedFile, setUploadedFile] = useState(null)
+    const { status, feedback, type, file } = useSelector(selectVisaState)
+
     const dispatch = useDispatch()
 
-    const handleUpload = (e) => {
-        if (e.target.files) { setFile(e.target.files[0]) }
+    const handleSubmit = () => {
+        dispatch(updateVisaStatus({ type, uploadedFile }))
+        setUploadedFile(null)
     }
 
     useEffect(() => {
-        // dispatch(visaStatusInit)
-    }, [])
+        dispatch(visaStatusInit())
+    }, [dispatch])
 
     return (
         <>
             <Typography variant="h5" sx={{ pb: 2 }}>
                 Visa Status
             </Typography>
-            <Typography sx={{ textTransform: 'capitalize' }}>Approval Status: {status}</Typography>
-            <Typography sx={{ textTransform: 'capitalize' }}>HR Feedback: {feedback}</Typography>
 
-            <DropZone setFile={setFile} />
+            <CustomizedStepper nextStep={({ status, feedback, type, file })} />
+
+            <Box sx={{ my: 2 }}>
+                <Typography sx={{ textTransform: 'capitalize', lineHeight: 2 }}>
+                    <strong>Approval Status:</strong> {status}
+                </Typography>
+                <Typography sx={{ textTransform: 'capitalize', lineHeight: 2 }}>
+                    <strong> HR Feedback:</strong>  {feedback}
+                </Typography>
+            </Box>
+
+            {status === "not-submitted" &&
+                <Box sx={{ display: 'flex', flexDirection: "column" }}>
+                    <DropZone setFile={setUploadedFile} />
+                    {uploadedFile && <FileList files={[uploadedFile]}></FileList>}
+                    <Button onClick={handleSubmit} variant="contained" size="large" sx={{ margin: "auto" }}>Submit</Button>
+                </Box>
+            }
             {file && <FileList files={[file]}></FileList>}
+
         </>
     )
 }
