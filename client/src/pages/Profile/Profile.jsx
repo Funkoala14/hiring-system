@@ -16,7 +16,7 @@ import { STATES } from '../../store/constant';
 import FormControl from '@mui/material/FormControl';
 import { selectIsLoggedIn } from '../../store/auth/auth.selector';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Breadcrumbs, IconButton, Link, styled, Typography } from '@mui/material';
+import { Breadcrumbs, Chip, IconButton, Link, styled, Typography } from '@mui/material';
 import { post, upload } from '../../services/api';
 
 const Profile = ({ parent }) => {
@@ -72,6 +72,7 @@ const Profile = ({ parent }) => {
                 <ContactSection info={info} username={username} showEdit={parent === 'employee'} />
                 <EmploymentSetcion info={info} username={username} showEdit={parent === 'employee'} />
                 <EmergencySection info={info} username={username} showEdit={parent === 'employee'} />
+                <DocumentSection info={info} username={username} showEdit={parent === 'employee'} />
             </Stack>
             <div className='profile-container'></div>
         </section>
@@ -123,7 +124,7 @@ const AvatarSection = ({ info, username, showEdit }) => {
                     showEdit && (
                         <IconButton component='label'>
                             <DriveFileRenameOutlineOutlinedIcon />
-                            <VisuallyHiddenInput type='file' accept='image/*' onChange={handleImageChange} multiple />
+                            <VisuallyHiddenInput type='file' accept='image/*' onChange={handleImageChange} />
                         </IconButton>
                     )
                 }
@@ -712,29 +713,50 @@ const EmploymentSetcion = ({ info, username, showEdit }) => {
 const EmergencySection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [errors, setErrors] = useState({});
-    const [formData, setFormData] = useState(info);
+    const [formData, setFormData] = useState(info || { emergencyContacts: [] });
     const [edit, setEdit] = useState(false);
 
-    const handleChange = (key) => {
-        return (event) => {
-            const value = event.target.value;
+    const handleChange = (index, key) => (event) => {
+        const value = event.target.value;
+        console.log(value);
 
+        setFormData((prev) => {
+            const updatedContacts = [...prev.emergencyContacts];
             if (key.includes('.')) {
                 const keys = key.split('.');
-                setFormData((prev) => {
-                    return {
-                        ...prev,
-                        [keys[0]]: { ...prev[keys[0]], [keys[1]]: value },
-                    };
-                });
+                updatedContacts[index] = {
+                    ...updatedContacts[index],
+                    [keys[0]]: { ...updatedContacts[index][keys[0]], [keys[1]]: value },
+                };
             } else {
-                setFormData((prev) => ({ ...prev, [key]: value }));
+                updatedContacts[index] = { ...updatedContacts[index], [key]: value };
             }
-        };
+            return { ...prev, emergencyContacts: updatedContacts };
+        });
+    };
+
+    const handleAddContact = () => {
+        setFormData((prev) => ({
+            ...prev,
+            emergencyContacts: [
+                ...prev.emergencyContacts,
+                { firstName: '', middleName: '', lastName: '', phone: '', email: '', relationship: '' },
+            ],
+        }));
+    };
+
+    const handleRemoveContact = (index) => {
+        setFormData((prev) => {
+            const updatedContacts = [...prev.emergencyContacts];
+            updatedContacts.splice(index, 1);
+            return { ...prev, emergencyContacts: updatedContacts };
+        });
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        console.log('submit', formData);
+
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
             setErrors(errors);
@@ -746,30 +768,118 @@ const EmergencySection = ({ info, username, showEdit }) => {
     };
 
     const validateForm = () => {
-        const { phone } = formData.emergencyContact;
         const errors = {};
         const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
 
-        if (!phone) {
-            errors.phone = 'Phone number is required';
-        } else if (!phoneRegex.test(phone)) {
-            errors.phone = 'Invalid phone number format';
-        }
+        formData.emergencyContacts.forEach((contact, index) => {
+            const { phone } = contact;
+
+            if (!phone) {
+                errors[`phone_${index}`] = 'Phone number is required';
+            } else if (!phoneRegex.test(phone)) {
+                errors[`phone_${index}`] = 'Invalid phone number format';
+            }
+        });
 
         return errors;
     };
 
     return (
-        <div className='outlined-container'>
+        <div className='outlined-container multi-container'>
             <div className='title'>Emergency Contact</div>
             {edit ? (
                 <>
-                    <form className='input-container' onSubmit={handleSubmit}>
+                    <form className='contact-form' onSubmit={handleSubmit}>
+                        {formData.emergencyContacts.map((contact, index) => (
+                            <div key={index} className='input-container'>
+                                <label className='input-item'>
+                                    First Name
+                                    <TextField
+                                        required
+                                        value={contact.firstName || ''}
+                                        onChange={handleChange(index, 'firstName')}
+                                        variant='standard'
+                                        maxLength='30'
+                                    />
+                                </label>
+                                <label className='input-item'>
+                                    Middle Name
+                                    <TextField
+                                        value={contact.middleName || ''}
+                                        onChange={handleChange(index, 'middleName')}
+                                        variant='standard'
+                                        maxLength='30'
+                                    />
+                                </label>
+                                <label className='input-item'>
+                                    Last Name
+                                    <TextField
+                                        required
+                                        value={contact.lastName || ''}
+                                        onChange={handleChange(index, 'lastName')}
+                                        variant='standard'
+                                        maxLength='30'
+                                    />
+                                </label>
+                                <label className='input-item'>
+                                    Phone
+                                    <TextField
+                                        required
+                                        value={contact.phone || ''}
+                                        onChange={handleChange(index, 'phone')}
+                                        variant='standard'
+                                        error={!!errors[`phone_${index}`]}
+                                        helperText={errors[`phone_${index}`]}
+                                        maxLength='10'
+                                    />
+                                </label>
+                                <label className='input-item'>
+                                    Email Address
+                                    <TextField
+                                        required
+                                        value={contact.email || ''}
+                                        onChange={handleChange(index, 'email')}
+                                        variant='standard'
+                                        type='email'
+                                        maxLength='50'
+                                    />
+                                </label>
+                                <label className='input-item'>
+                                    Relationship
+                                    <Select
+                                        label='relationship'
+                                        value={contact.relationship || ''}
+                                        onChange={handleChange(index, 'relationship')}
+                                    >
+                                        <MenuItem value='parent'>Parent</MenuItem>
+                                        <MenuItem value='sibling'>Sibling</MenuItem>
+                                        <MenuItem value='spouse'>Spouse</MenuItem>
+                                        <MenuItem value='child'>Child</MenuItem>
+                                        <MenuItem value='relative'>Relative</MenuItem>
+                                        <MenuItem value='friend'>Friend</MenuItem>
+                                        <MenuItem value='colleague'>Colleague</MenuItem>
+                                        <MenuItem value='other'>Other</MenuItem>
+                                    </Select>
+                                </label>
+                                <div className='remove-btn'>
+                                    <Button
+                                        variant='outlined'
+                                        color='error'
+                                        size='small'
+                                        onClick={() => handleRemoveContact(index)}
+                                    >
+                                        Remove Contact
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
                         <div className='buttons'>
+                            <Button variant='outlined' color='primary' onClick={handleAddContact}>
+                                Add Contact
+                            </Button>
                             <Button
                                 variant='outlined'
-                                color='error'
-                                endIcon={<CancelOutlinedIcon />}
+                                color='primary'
                                 onClick={() => {
                                     setEdit(false);
                                     setFormData(info);
@@ -777,80 +887,10 @@ const EmergencySection = ({ info, username, showEdit }) => {
                             >
                                 Cancel
                             </Button>
-                            <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
+                            <Button variant='outlined' type='submit' endIcon={<SaveAsOutlinedIcon />}>
                                 Save
                             </Button>
                         </div>
-                        <label className='input-item'>
-                            First Name
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.emergencyContact?.firstName || ''}
-                                onChange={handleChange('emergencyContact.firstName')}
-                                variant='standard'
-                            />
-                        </label>
-                        <label className='input-item'>
-                            Middle Name
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.emergencyContact?.middleName || ''}
-                                onChange={handleChange('emergencyContact.middleName')}
-                                variant='standard'
-                            />
-                        </label>
-                        <label className='input-item'>
-                            Last Name
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.emergencyContact?.lastName || ''}
-                                onChange={handleChange('emergencyContact.lastName')}
-                                variant='standard'
-                            />
-                        </label>
-                        <label className='input-item'>
-                            Phone
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.emergencyContact?.phone || ''}
-                                onChange={handleChange('emergencyContact.phone')}
-                                variant='standard'
-                                error={!!errors.phone}
-                                helperText={errors.phone}
-                            />
-                        </label>
-                        <label className='input-item'>
-                            Email Address
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.emergencyContact?.email || ''}
-                                onChange={handleChange('emergencyContact.email')}
-                                variant='standard'
-                                type='email'
-                            />
-                        </label>
-                        <label className='input-item'>
-                            Relationship
-                            <Select
-                                label='gender'
-                                value={formData?.emergencyContact.relationship || ''}
-                                onChange={handleChange('emergencyContact.relationship')}
-                            >
-                                <MenuItem value='parent'>Parent</MenuItem>
-                                <MenuItem value='sibling'>Sibling</MenuItem>
-                                <MenuItem value='spouse'>Spouse</MenuItem>
-                                <MenuItem value='child'>Child</MenuItem>
-                                <MenuItem value='relative'>Relative</MenuItem>
-                                <MenuItem value='friend'>Friend</MenuItem>
-                                <MenuItem value='colleague'>Colleague</MenuItem>
-                                <MenuItem value='other'>Other</MenuItem>
-                            </Select>
-                        </label>
                     </form>
                 </>
             ) : (
@@ -866,31 +906,39 @@ const EmergencySection = ({ info, username, showEdit }) => {
                             </Button>
                         )}
                     </div>
-                    <div className='view-container'>
-                        <label className='view-item'>
-                            First Name
-                            <span>{info?.emergencyContact?.firstName}</span>
-                        </label>
-                        <label className='view-item'>
-                            Middle Name
-                            <span>{info?.emergencyContact?.middleName}</span>
-                        </label>
-                        <label className='view-item'>
-                            Last Name
-                            <span>{info?.emergencyContact?.lastName}</span>
-                        </label>
-                        <label className='view-item'>
-                            Phone
-                            <span>{info?.emergencyContact?.phone}</span>
-                        </label>
-                        <label className='view-item'>
-                            Email
-                            <span>{info?.emergencyContact?.email}</span>
-                        </label>
-                        <label className='view-item'>
-                            Relationship
-                            <span>{info?.emergencyContact?.relationship}</span>
-                        </label>
+                    <div className='contact-container'>
+                        {info.emergencyContacts.map((contact, index) => (
+                            <>
+                                <Chip variant='outlined' sx={{width: "fit-content"}} label={`Emergency ${index + 1}`}></Chip>
+                                <div className='view-container' key={index}>
+                                    <label className='view-item'>
+                                        First Name
+                                        <span>{contact?.firstName}</span>
+                                    </label>
+                                    <label className='view-item'>
+                                        Middle Name
+                                        <span>{contact?.middleName}</span>
+                                    </label>
+                                    <label className='view-item'>
+                                        Last Name
+                                        <span>{contact?.lastName}</span>
+                                    </label>
+                                    <label className='view-item'>
+                                        Phone
+                                        <span>{contact?.phone}</span>
+                                    </label>
+                                    <label className='view-item'>
+                                        Email
+                                        <span>{contact?.email}</span>
+                                    </label>
+                                    <label className='view-item'>
+                                        Relationship
+                                        <span>{contact?.relationship}</span>
+                                    </label>
+                                    <hr />
+                                </div>
+                            </>
+                        ))}
                     </div>
                 </>
             )}
@@ -916,7 +964,7 @@ const DocumentSection = ({ info, username, showEdit }) => {
 
     return (
         <div className='outlined-container'>
-            <div className='title'>Personal Information</div>
+            <div className='title'>Documents</div>
             {edit ? (
                 <>
                     <div className='buttons'>
