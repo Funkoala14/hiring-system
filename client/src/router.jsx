@@ -7,7 +7,6 @@ import Login from "./pages/Home/Login";
 import Dashboard from "./pages/Home/Dashboard";
 import NotFound from "./pages/Home/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
-import OnboardingStatus from "./components/OnboardingStatus";
 import Forbidden from "./pages/Home/Forbidden";
 import OnBoarding from "./pages/OnBoarding";
 import Profile from "./pages/Profile/Profile";
@@ -17,7 +16,8 @@ import HousingView from "./pages/HousingView/HousingView";
 import ApplicationTables from './pages/ViewOnboardingApplications';
 import ApplicationDetails from './pages/ApplicationDetails';
 
-const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
+const RegistrationPage = lazy(() => import('/pages/Registration/Registration'));
+
 
 const Home = lazy(() => import("/pages/Home/Home"));
 
@@ -45,11 +45,11 @@ function AppRouter() {
                     }
                 />
 
-                {/* RegistrationPage Route */}
-                <Route path="/register" element={<RegistrationPage />} />
+        {/* RegistrationPage Route */}
+        <Route path="/register" element={<RegistrationPage />} />
 
-                {/* Login Route */}
-                <Route path='/login' element={<Login />} />
+        {/* Login Route */}
+        <Route path='/login' element={<Login />} />
 
                 {/* Employee Routes */}
                 <Route
