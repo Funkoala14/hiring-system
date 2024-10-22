@@ -18,6 +18,12 @@ const houseSchema = new Schema({
     phone: { type: String, required: true },
     email: { type: String, required: true },
   },
+  facilityInfo: {
+    numberOfBeds: { type: Number, default: 0 },
+    numberOfMattresses: { type: Number, default: 0 },
+    numberOfTables: { type: Number, default: 0 },
+    numberOfChairs: { type: Number, default: 0 },
+  },
   residents: [{ 
     type: Schema.Types.ObjectId, ref: 'Employee'
   }],
