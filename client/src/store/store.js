@@ -19,9 +19,9 @@ const rootReducer = combineReducers({
 
 // Persist configuration
 const persistConfig = {
-    key: 'root', 
+    key: 'root',
     storage, // Use localStorage to persist the state
-    whitelist: ['auth', 'profile', 'visa', 'employee', 'search', 'housing'],
+    whitelist: ['auth', 'profile', 'employee', 'search', 'housing'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

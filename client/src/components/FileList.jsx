@@ -6,7 +6,7 @@ const FileList = ({ files }) => {
 
     return (
         files.map((file) =>
-            <Accordion key={file.name} sx={{ backgroundColor: 'white' }} sx={{ my: 2 }}>
+            <Accordion key={file.name} sx={{ backgroundColor: 'white', my: 0 }}>
                 <AccordionSummary
                     expandIcon={<PreviewIcon />}
                     aria-controls="panel1-content"

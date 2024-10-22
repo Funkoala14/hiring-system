@@ -24,10 +24,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MapsHomeWorkIcon from '@mui/icons-material/MapsHomeWork';
 import { blueGrey } from '@mui/material/colors';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import Groups3Icon from '@mui/icons-material/Groups3';
 
-const drawerWidth = 245;
+const drawerWidth = 280;
 
 const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -107,27 +108,52 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
-export default function HeaderWithDrawer({ children, auth, badgeNum, paths, handleLogout, handleNotification }) {
+export default function HeaderWithDrawer({ children, auth, badgeNum, employeePaths, hrPaths, handleLogout, handleNotification }) {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
-    const drawerItems = [
+    const employeeLinks = [
         {
             text: "My Profile",
-            icon: <AccountBoxIcon />,
-            path: paths.profile,
+            icon: <Groups3Icon />,
+            path: employeePaths.profile,
         },
         {
-            text: "Visa Status",
+            text: "Visa Status Management",
             icon: <TravelExploreIcon />,
-            path: paths.visaStatus,
+            path: employeePaths.visaStatus,
         },
         {
             text: "Housing",
             icon: <MapsHomeWorkIcon />,
-            path: paths.housing,
+            path: employeePaths.housing,
         },
     ];
 
+    console.log(auth);
+
+
+    const hrLinks = [
+        {
+            text: "Employee Profiles",
+            icon: <Groups3Icon />,
+            path: hrPaths.profile,
+        },
+        {
+            text: "Visa Status Management",
+            icon: <TravelExploreIcon />,
+            path: hrPaths.visaStatus,
+        },
+        {
+            text: "Hiring Management",
+            icon: <AssignmentIndIcon />,
+            path: hrPaths.hiring,
+        },
+        {
+            text: "Housing Management",
+            icon: <MapsHomeWorkIcon />,
+            path: hrPaths.housing,
+        },
+    ];
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -196,13 +222,64 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
         </Box>
     );
 
+    const renderNavLinks = (links) => <List>
+        {links.map(({ text, icon, path }) => (
+            <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                    component="a"
+                    href={path}
+                    sx={[
+                        {
+                            minHeight: 48,
+                            px: 2.5,
+                        },
+                        open
+                            ? {
+                                justifyContent: "initial",
+                            }
+                            : {
+                                justifyContent: "center",
+                            },
+                    ]}
+                >
+                    <ListItemIcon
+                        sx={[
+                            {
+                                minWidth: 0,
+                                justifyContent: "center",
+                            },
+                            open
+                                ? {
+                                    mr: 3,
+                                }
+                                : {
+                                    mr: "auto",
+                                },
+                        ]}
+                    >
+                        {icon}
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={text}
+                        sx={[
+                            open
+                                ? {
+                                    opacity: 1,
+                                }
+                                : {
+                                    opacity: 0,
+                                },
+                        ]}
+                    />
+                </ListItemButton>
+            </ListItem>))}
+    </List>
+
+
     const renderLoginOrSignup = (
         <Box sx={{ display: "flex" }}>
             <Link href="/login" color="inherit" sx={{ textDecoration: "none", marginRight: 2 }}>
                 Login
-            </Link>
-            <Link href="/register" color="inherit" sx={{ textDecoration: "none" }}>
-                Signup
             </Link>
         </Box>
     );
@@ -226,9 +303,12 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
+                    <Link
+                        underline="none"
+                        href={auth.role === "Employee" ? employeePaths.home : hrPaths.home}
+                        sx={{ color: 'white' }}>
                         HR Management System
-                    </Typography>
+                    </Link>
                     <Box sx={{ flexGrow: 1 }} />
                     {auth.isLoggedIn ? renderUserActions : renderLoginOrSignup}
                 </Toolbar>
@@ -240,59 +320,7 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, paths, hand
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <List>
-                    {drawerItems.map(({ text, icon, path }) => (
-                        <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                            <ListItemButton
-                                component="a"
-                                href={path}
-                                sx={[
-                                    {
-                                        minHeight: 48,
-                                        px: 2.5,
-                                    },
-                                    open
-                                        ? {
-                                            justifyContent: "initial",
-                                        }
-                                        : {
-                                            justifyContent: "center",
-                                        },
-                                ]}
-                            >
-                                <ListItemIcon
-                                    sx={[
-                                        {
-                                            minWidth: 0,
-                                            justifyContent: "center",
-                                        },
-                                        open
-                                            ? {
-                                                mr: 3,
-                                            }
-                                            : {
-                                                mr: "auto",
-                                            },
-                                    ]}
-                                >
-                                    {icon}
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={text}
-                                    sx={[
-                                        open
-                                            ? {
-                                                opacity: 1,
-                                            }
-                                            : {
-                                                opacity: 0,
-                                            },
-                                    ]}
-                                />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
+                {auth.role === "Employee" ? renderNavLinks(employeeLinks) : renderNavLinks(hrLinks)}
             </Drawer>
 
             <Box component="main" sx={{ flexGrow: 1, p: 4, backgroundColor: blueGrey[50], pt: 12, height: "fit-content", minHeight: '100vh' }}>

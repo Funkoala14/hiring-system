@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -27,7 +26,7 @@ const generateSteps = ({ type, status }) => {
 
 
 export default function CustomizedStepper({ nextStep }) {
-    const { steps, activeStep } = useMemo(() => generateSteps(nextStep), [nextStep])
+    const { steps, activeStep } = generateSteps(nextStep)
 
 
     return (
