@@ -21,6 +21,7 @@ const rootReducer = combineReducers({
   hrVisa: hrVisaSlice,
 });
 
+
 // Persist configuration
 const persistConfig = {
   key: "root",
