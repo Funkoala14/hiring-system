@@ -20,7 +20,9 @@ const housingSlice = createSlice({
     name: 'housing',
     initialState: {
         list: [],
-        reportsInfo: {},
+        reportsInfo: {
+            facilityReports: [],
+        },
         loading: false,
         error: null,
     },

@@ -17,7 +17,6 @@ import FormControl from '@mui/material/FormControl';
 import { selectIsLoggedIn } from '../../store/auth/auth.selector';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumbs, Chip, IconButton, Link, styled, Typography } from '@mui/material';
-import { post, upload } from '../../services/api';
 
 const Profile = ({ parent }) => {
     const navigate = useNavigate();
@@ -129,7 +128,7 @@ const AvatarSection = ({ info, username, showEdit }) => {
                     )
                 }
             >
-                <Avatar alt='Travis Howard' src={info.image.src} sx={{ width: 100, height: 100 }} />
+                <Avatar alt='Travis Howard' src={info?.image?.src} sx={{ width: 100, height: 100 }} />
             </Badge>
             <div className='infos flex-col justify-between'>
                 <div className='name'>
@@ -909,7 +908,7 @@ const EmergencySection = ({ info, username, showEdit }) => {
                         )}
                     </div>
                     <div className='contact-container'>
-                        {info.emergencyContacts.map((contact, index) => (
+                        {info?.emergencyContacts && info?.emergencyContacts?.map((contact, index) => (
                             <>
                                 <Chip variant='outlined' sx={{width: "fit-content"}} label={`Emergency ${index + 1}`}></Chip>
                                 <div className='view-container' key={index}>
