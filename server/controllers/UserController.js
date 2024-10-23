@@ -197,6 +197,36 @@ export const getEmployeeInfo = async (req, res) => {
     }
 };
 
+export const getEmployeeDocs = async (req, res) => {
+    const { username } = req.body;
+    if (!username) {
+        return res.status(400).json({ message: 'Username is required' });
+    }
+    try {
+        const employee = await Employee.findOne({ username })
+            .select('visaStatus')
+            .populate({
+                path: 'visaStatus',
+                populate: {
+                    path: 'documents',
+                },
+            })
+            .lean()
+            .exec();
+
+        if (!employee) {
+            return res.status(404).json({ message: `Can not find user ${username}` });
+        }
+
+        return res.status(200).json({
+            message: 'success',
+            data: { documents: employee.visaStatus.documents },
+            code: 200,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error', code: 500 });
+    }
+};
 // Update specified one User info
 export const updateEmployeeInfo = async (req, res) => {
     const { user } = req;

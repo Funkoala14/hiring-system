@@ -50,8 +50,6 @@ const verifyThunk = createAsyncThunk('auth/verify', async (_, { rejectWithValue 
     if (!data) {
       throw new Error(message || 'No token found');
     }
-    console.log('verify passed: ', data);
-      
     return data;
   } catch (error) {
     return rejectWithValue(error.response?.data || 'Token verification failed');
