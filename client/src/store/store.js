@@ -6,6 +6,7 @@ import profileReducer from './profileSlice/profile.slice.js';
 import visaReducer from './visaSlice/visa.slice.js';
 import employeeSlice from './employeeSlice/employee.slice.js';
 import searchSlice from './searchSlice/search.slice.js';
+import onboardingSlice from './onboardingSlice/onboarding.slice.js';
 import housingSlice from './housingSlice/housing.slice.js';
 
 const rootReducer = combineReducers({
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
     search: searchSlice,
     housing: housingSlice,
 });
+
 
 // Persist configuration
 const persistConfig = {
