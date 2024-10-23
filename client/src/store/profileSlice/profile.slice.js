@@ -1,6 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchEmployeeInfo, updateEmployeeAvatar, updateEmployeeInfo } from './profile.thunk';
 
+const setPending = (state) => {
+    state.loading = true;
+    state.error = null;
+};
+
+const setFulfilled = (state, action) => {
+    state.loading = false;
+    state.info = action.payload;
+};
+
+const setRejected = (state, action) => {
+    state.loading = false;
+    state.error = action.payload;
+};
+
 const profileSlice = createSlice({
     name: 'profile',
     initialState: {
@@ -11,42 +26,17 @@ const profileSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchEmployeeInfo.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchEmployeeInfo.fulfilled, (state, action) => {
-                state.loading = false;
-                state.info = action.payload;
-            })
-            .addCase(fetchEmployeeInfo.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || 'Failed to fetch data';
-            })
-            .addCase(updateEmployeeInfo.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(updateEmployeeInfo.fulfilled, (state, action) => {
-                state.loading = false;
-                state.info = action.payload;
-            })
-            .addCase(updateEmployeeInfo.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || 'Failed to fetch data';
-            })
-            .addCase(updateEmployeeAvatar.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(updateEmployeeAvatar.fulfilled, (state, action) => {
-                state.loading = false;
-                state.info = action.payload;
-            })
-            .addCase(updateEmployeeAvatar.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || 'Failed to fetch data';
-            });
+            .addCase(fetchEmployeeInfo.pending, setPending)
+            .addCase(fetchEmployeeInfo.fulfilled, setFulfilled)
+            .addCase(fetchEmployeeInfo.rejected, setRejected)
+
+            .addCase(updateEmployeeInfo.pending, setPending)
+            .addCase(updateEmployeeInfo.fulfilled, setFulfilled)
+            .addCase(updateEmployeeInfo.rejected, setRejected)
+            
+            .addCase(updateEmployeeAvatar.pending, setPending)
+            .addCase(updateEmployeeAvatar.fulfilled, setFulfilled)
+            .addCase(updateEmployeeAvatar.rejected, setRejected);
     },
     selectors: {},
 });

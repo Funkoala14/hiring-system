@@ -2,20 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { selectHousingByTitle } from '../../store/housingSlice/housing.selectors';
+import CloseIcon from '@mui/icons-material/Close';
 import {
     Breadcrumbs,
     Button,
+    Card,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    Pagination,
     Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
+    TableFooter,
     TableHead,
     TableRow,
+    TextField,
     Typography,
 } from '@mui/material';
-import { getReportList } from '../../store/housingSlice/housing.thunk';
+import { getReportList, postNewReport } from '../../store/housingSlice/housing.thunk';
 import ChatBox from '../../components/ChatBox';
+import { pageChange } from '../../store/housingSlice/housing.slice';
 
 const HousingView = ({ parent }) => {
     const navigate = useNavigate();
@@ -44,16 +55,18 @@ const HousingView = ({ parent }) => {
 
     return (
         <section>
-            <Breadcrumbs aria-label='breadcrumb' sx={{ margin: '16px 0' }}>
-                <Link underline='hover' color='inherit' onClick={handleGoBack} sx={{ cursor: 'pointer' }}>
-                    Go Back
-                </Link>
-                <Typography sx={{ color: 'text.primary' }}>Housing Detail</Typography>
-            </Breadcrumbs>
+            {parent === 'hr' && (
+                <Breadcrumbs aria-label='breadcrumb' sx={{ margin: '16px 0' }}>
+                    <Link underline='hover' color='inherit' onClick={handleGoBack} sx={{ cursor: 'pointer' }}>
+                        Go Back
+                    </Link>
+                    <Typography sx={{ color: 'text.primary' }}>Housing Detail</Typography>
+                </Breadcrumbs>
+            )}
             {housing ? (
                 <div className='flex-col g-1'>
                     <HousingDetail housing={housing} />
-                    <HousingFaicilityReport houseId={houseId} />
+                    <HousingFaicilityReport houseId={houseId} parent={parent} />
                 </div>
             ) : (
                 <div>Housing item not found.</div>
@@ -71,7 +84,7 @@ const HousingDetail = ({ housing }) => {
             <Typography variant='h5' sx={{ m: '1rem 0', borderBottom: '1px solid #aaa' }}>
                 Address
             </Typography>
-            <div className='view-container' sx={{ p: '1rem' }}>
+            <Card className='view-container' sx={{ p: '1rem' }}>
                 <label className='view-item'>
                     Building/Apartment #<span>{housing?.address?.building}</span>
                 </label>
@@ -88,11 +101,11 @@ const HousingDetail = ({ housing }) => {
                 <label className='view-item'>
                     Zipcode<span>{housing?.address?.zip}</span>
                 </label>
-            </div>
+            </Card>
             <Typography variant='h5' sx={{ m: '1rem 0', borderBottom: '1px solid #aaa' }}>
                 Landlord
             </Typography>
-            <div className='view-container'>
+            <Card className='view-container' sx={{ p: '1rem' }}>
                 <label className='view-item'>
                     Landloard Legal Full Name
                     <span>{housing?.landlord?.name}</span>
@@ -105,7 +118,7 @@ const HousingDetail = ({ housing }) => {
                     Landloard Email Address
                     <span>{housing?.landlord?.email}</span>
                 </label>
-            </div>
+            </Card>
             <Typography variant='h5' sx={{ m: '1rem 0', borderBottom: '1px solid #aaa' }}>
                 Residents
             </Typography>
@@ -150,9 +163,10 @@ const HousingDetail = ({ housing }) => {
     );
 };
 
-const HousingFaicilityReport = ({ houseId }) => {
+const HousingFaicilityReport = ({ houseId, parent }) => {
     const dispatch = useDispatch();
-    const [currPage, setPage] = useState(1);
+    const [open, setOpen] = useState(false);
+    const [formData, setFormData] = useState({ title: '', description: '' });
     const [selectedReport, setSelectedReport] = useState(null); // store the selected report for comments
     const [chatboxOpen, setChatboxOpen] = useState(false); 
     const { facilityReports, page, limit, totalPages, totalReports } = useSelector(
@@ -160,7 +174,7 @@ const HousingFaicilityReport = ({ houseId }) => {
     );
 
     const getHouseReport = async () => {
-        const config = { page: currPage, limit: 3, houseId };
+        const config = { page, limit, houseId };
         await dispatch(getReportList(config));
     };
 
@@ -224,6 +238,21 @@ const HousingFaicilityReport = ({ houseId }) => {
     };
     
 
+    const handleSubmit = async () => {
+        const config = { limit, houseId, ...formData };
+        await dispatch(postNewReport(config));
+        setFormData({});
+        setOpen(false);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        dispatch(pageChange(newPage));
+    };
+
     return (
         <div className='facility-reports outlined-container'>
             <header>
@@ -249,11 +278,11 @@ const HousingFaicilityReport = ({ houseId }) => {
                                     </TableCell>
                                     <TableCell>{row.description}</TableCell>
                                     <TableCell>{row.createdAt}</TableCell>
-                                    <TableCell>{`${row.createdBy.preferedName || row.createdBy.firstName} ${
-                                        row.createdBy.lastName
+                                    <TableCell>{`${row?.createdBy?.preferedName || row?.createdBy?.firstName} ${
+                                        row?.createdBy?.lastName
                                     }`}</TableCell>
                                     <TableCell>
-                                    <Button variant='outlined' onClick={() => handleCommentButtonClick(row._id)}>Comment</Button>
+                                    <Button variant='outlined' onClick={() => handleCommentButtonClick(row._id)}>View</Button>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -267,9 +296,23 @@ const HousingFaicilityReport = ({ houseId }) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Button variant='outlined' sx={{ display: 'block' }}>
-                Request New Report
-            </Button>
+            <div className='flex justify-center p-1'>
+                <Pagination count={totalPages} color='primary' onChange={handleChangePage} />
+            </div>
+            {parent === 'employee' && (
+                <>
+                    <Button variant='contained' sx={{ display: 'block', mt: '1rem' }} onClick={() => setOpen(true)}>
+                        Request New Report
+                    </Button>
+                    <NewReportForm
+                        handleClose={handleClose}
+                        open={open}
+                        handleSubmit={handleSubmit}
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
+                </>
+            )}
             {/* Chatbox Drawer */}
             <ChatBox
                 open={chatboxOpen}
@@ -278,6 +321,50 @@ const HousingFaicilityReport = ({ houseId }) => {
                 onAddComment={handleAddComment}
             />
         </div>
+    );
+};
+
+const NewReportForm = ({ handleClose, open, handleSubmit, formData, setFormData }) => {
+    return (
+        <Dialog onClose={handleClose} open={open}>
+            <DialogTitle sx={{ m: 0, p: 2 }}>Request Newq Facility Report</DialogTitle>
+            <IconButton
+                aria-label='close'
+                onClick={handleClose}
+                sx={(theme) => ({
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                    color: theme.palette.grey[500],
+                })}
+            >
+                <CloseIcon />
+            </IconButton>
+            <DialogContent dividers sx={{ width: '30vw' }}>
+                <form className='input-container flex-col g-1'>
+                    <TextField
+                        required
+                        label='Title'
+                        value={formData.title}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+                    />
+                    <TextField
+                        required
+                        label='Description'
+                        multiline
+                        rows={4}
+                        value={formData.description}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                    />
+                </form>
+            </DialogContent>
+            <DialogActions>
+                <Button color='error'>Cancel</Button>
+                <Button type='submit' autoFocus onClick={handleSubmit}>
+                    Submit
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };
 export default HousingView;

@@ -19,9 +19,9 @@ export default function MainLayout({ children }) {
     const hrPaths = {
         'home': '/hr/dashboard',
         'visaStatus': '/hr/visa-status',
-        'housing': '',
-        'hiring': '',
-        'profile': ''
+        'housing': '/hr/housing-management',
+        'hiring': '/hr/onboarding-review',
+        'profile': '/hr/employee-management'
     }
 
     const handleLogout = () => {

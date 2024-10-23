@@ -205,7 +205,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                             >
                                 Cancel
                             </Button>
-                            <Button variant='outlined' color='secondary' endIcon={<SaveAsOutlinedIcon />} type='submit'>
+                            <Button variant='outlined' type='submit' endIcon={<SaveAsOutlinedIcon />}>
                                 Save
                             </Button>
                         </div>
@@ -353,6 +353,7 @@ const AddressSection = ({ info, username, showEdit }) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(info);
     const [edit, setEdit] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const handleChange = (key) => {
         return (event) => {
@@ -374,8 +375,27 @@ const AddressSection = ({ info, username, showEdit }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
+        }
         dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
+    };
+
+    const validateForm = () => {
+        const { zipcode } = formData.address;
+        const errors = {};
+        const zipCodePattern = /^\d{5}(-\d{4})?$/;
+
+        if (!zipcode) {
+            errors.zipcode = 'Zipcode is required';
+        } else if (!zipCodePattern.test(zipcode)) {
+            errors.zipcode = 'Invalid zipcode format';
+        }
+
+        return errors;
     };
 
     return (
@@ -396,7 +416,7 @@ const AddressSection = ({ info, username, showEdit }) => {
                             >
                                 Cancel
                             </Button>
-                            <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
+                            <Button variant='outlined' type='submit' endIcon={<SaveAsOutlinedIcon />}>
                                 Save
                             </Button>
                         </div>
@@ -456,7 +476,9 @@ const AddressSection = ({ info, username, showEdit }) => {
                                 value={formData?.address?.zipcode || ''}
                                 onChange={handleChange('address.zipcode')}
                                 variant='standard'
-                                maxLength='6'
+                                maxLength='5'
+                                error={!!errors.zipcode}
+                                helperText={errors.zipcode}
                             />
                         </label>
                     </form>
@@ -522,7 +544,7 @@ const ContactSection = ({ info, username, showEdit }) => {
     };
 
     const validateForm = () => {
-        const { phone, workPhonephone } = formData;
+        const { phone } = formData;
         const errors = {};
         const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
 
@@ -531,11 +553,7 @@ const ContactSection = ({ info, username, showEdit }) => {
         } else if (!phoneRegex.test(phone)) {
             errors.phone = 'Invalid phone number format';
         }
-        if (!workPhonephone) {
-            errors.workPhonephone = 'Phone number is required';
-        } else if (!phoneRegex.test(phone)) {
-            errors.workPhonephone = 'Invalid phone number format';
-        }
+       
 
         return errors;
     };
@@ -558,7 +576,7 @@ const ContactSection = ({ info, username, showEdit }) => {
                             >
                                 Cancel
                             </Button>
-                            <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
+                            <Button variant='outlined' type='submit' endIcon={<SaveAsOutlinedIcon />}>
                                 Save
                             </Button>
                         </div>
@@ -578,14 +596,11 @@ const ContactSection = ({ info, username, showEdit }) => {
                         <label className='input-item'>
                             Work Phone Number
                             <TextField
-                                required
                                 id='standard-required'
                                 value={formData?.workPhone || ''}
                                 onChange={handleChange('workPhone')}
                                 variant='standard'
                                 maxLength='10'
-                                error={!!errors.workPhonephone}
-                                helperText={errors.workPhonephone}
                             />
                         </label>
                     </form>
@@ -620,93 +635,36 @@ const ContactSection = ({ info, username, showEdit }) => {
 };
 
 const EmploymentSetcion = ({ info, username, showEdit }) => {
-    const dispatch = useDispatch();
-    const [formData, setFormData] = useState(info);
-    const [edit, setEdit] = useState(false);
-
-    const handleChange = (key) => {
-        if (key.includes('.')) {
-            const keys = key.split('.');
-            setFormData((prev) => {
-                return {
-                    ...prev,
-                    [keys[0]]: { ...prev[keys[0]], [keys[1]]: value },
-                };
-            });
-        } else {
-            setFormData((prev) => ({ ...prev, [key]: value }));
-        }
-    };
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        dispatch(updateEmployeeInfo({ username, updateData: formData }));
-        setEdit(false);
-    };
+    const navigate = useNavigate();
 
     return (
         <div className='outlined-container'>
             <div className='title'>Employment</div>
-            {edit ? (
-                <>
-                    <form className='input-container' onSubmit={handleSubmit}>
-                        <div className='buttons'>
-                            <Button
-                                variant='outlined'
-                                color='error'
-                                endIcon={<CancelOutlinedIcon />}
-                                onClick={() => {
-                                    setEdit(false);
-                                    setFormData(info);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
-                                Save
-                            </Button>
-                        </div>
-                        <label className='input-item'>
-                            Visa Title
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.visaStatus.visaTitle || ''}
-                                onChange={handleChange('visaStatus.visaTitle')}
-                                variant='standard'
-                            />
-                        </label>
-                    </form>
-                </>
-            ) : (
-                <>
-                    <div className='buttons'>
-                        {showEdit && (
-                            <Button
-                                variant='outlined'
-                                endIcon={<DriveFileRenameOutlineOutlinedIcon />}
-                                onClick={() => setEdit(true)}
-                            >
-                                Edit
-                            </Button>
-                        )}
-                    </div>
-                    <div className='view-container'>
-                        <label className='view-item'>
-                            Visa Title
-                            <span>{info?.visaStatus?.visaTitle}</span>
-                        </label>
-                        <label className='view-item'>
-                            Start Date
-                            <span>{info?.visaStatus?.startDate}</span>
-                        </label>
-                        <label className='view-item'>
-                            End Date
-                            <span>{info?.visaStatus?.endDate}</span>
-                        </label>
-                    </div>
-                </>
-            )}
+            <div className='buttons'>
+                {showEdit && (
+                    <Button
+                        variant='outlined'
+                        endIcon={<DriveFileRenameOutlineOutlinedIcon />}
+                        onClick={() => navigate('/employee/visa-status')}
+                    >
+                        Edit
+                    </Button>
+                )}
+            </div>
+            <div className='view-container'>
+                <label className='view-item'>
+                    Visa Title
+                    <span>{info?.visaStatus?.visaTitle}</span>
+                </label>
+                <label className='view-item'>
+                    Start Date
+                    <span>{info?.visaStatus?.startDate}</span>
+                </label>
+                <label className='view-item'>
+                    End Date
+                    <span>{info?.visaStatus?.endDate}</span>
+                </label>
+            </div>
         </div>
     );
 };
@@ -908,38 +866,43 @@ const EmergencySection = ({ info, username, showEdit }) => {
                         )}
                     </div>
                     <div className='contact-container'>
-                        {info?.emergencyContacts && info?.emergencyContacts?.map((contact, index) => (
-                            <>
-                                <Chip variant='outlined' sx={{width: "fit-content"}} label={`Emergency ${index + 1}`}></Chip>
-                                <div className='view-container' key={index}>
-                                    <label className='view-item'>
-                                        First Name
-                                        <span>{contact?.firstName}</span>
-                                    </label>
-                                    <label className='view-item'>
-                                        Middle Name
-                                        <span>{contact?.middleName}</span>
-                                    </label>
-                                    <label className='view-item'>
-                                        Last Name
-                                        <span>{contact?.lastName}</span>
-                                    </label>
-                                    <label className='view-item'>
-                                        Phone
-                                        <span>{contact?.phone}</span>
-                                    </label>
-                                    <label className='view-item'>
-                                        Email
-                                        <span>{contact?.email}</span>
-                                    </label>
-                                    <label className='view-item'>
-                                        Relationship
-                                        <span>{contact?.relationship}</span>
-                                    </label>
-                                    <hr />
+                        {info?.emergencyContacts &&
+                            info?.emergencyContacts?.map((contact, index) => (
+                                <div key={contact._id} className='contact-item'>
+                                    <Chip
+                                        variant='outlined'
+                                        sx={{ width: 'fit-content' }}
+                                        label={`Emergency ${index + 1}`}
+                                    ></Chip>
+                                    <div className='view-container'>
+                                        <label className='view-item'>
+                                            First Name
+                                            <span>{contact?.firstName}</span>
+                                        </label>
+                                        <label className='view-item'>
+                                            Middle Name
+                                            <span>{contact?.middleName}</span>
+                                        </label>
+                                        <label className='view-item'>
+                                            Last Name
+                                            <span>{contact?.lastName}</span>
+                                        </label>
+                                        <label className='view-item'>
+                                            Phone
+                                            <span>{contact?.phone}</span>
+                                        </label>
+                                        <label className='view-item'>
+                                            Email
+                                            <span>{contact?.email}</span>
+                                        </label>
+                                        <label className='view-item'>
+                                            Relationship
+                                            <span>{contact?.relationship}</span>
+                                        </label>
+                                        <hr />
+                                    </div>
                                 </div>
-                            </>
-                        ))}
+                            ))}
                     </div>
                 </>
             )}
@@ -980,7 +943,7 @@ const DocumentSection = ({ info, username, showEdit }) => {
                         >
                             Cancel
                         </Button>
-                        <Button variant='outlined' endIcon={<SaveAsOutlinedIcon />}>
+                        <Button variant='outlined' type='submit' endIcon={<SaveAsOutlinedIcon />}>
                             Save
                         </Button>
                     </div>

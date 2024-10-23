@@ -28,14 +28,10 @@ const RegistrationPage = () => {
     const verifyToken = async () => {
       try {
         const response = await post('/user/verify-token', { token });
-
-        const data = await response.json();
-        if (response.ok) {
-          setEmail(data.email);
-          setIsTokenValid(true);
-        } else {
-          console.error('Token validation failed:', data.message);
-        }
+        const { email} = response
+        setEmail(email);
+        setIsTokenValid(true);
+        
       } catch (error) {
         console.error('Error validating token:', error);
       }
@@ -44,7 +40,7 @@ const RegistrationPage = () => {
     if (token) {
       verifyToken();
     }
-  }, [location.search]);
+  }, []);
 
   // Handle navigation after successful login
   useEffect(() => {

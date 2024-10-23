@@ -19,11 +19,13 @@ import {
     TableRow,
     TextField,
     Typography,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addHousing, deleteHousing, fetchHousingList } from "../../store/housingSlice/housing.thunk";
-import { STATES } from "../../store/constant";
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addHousing, deleteHousing, fetchHousingList } from '../../store/housingSlice/housing.thunk';
+import { STATES } from '../../store/constant';
+import { NotificationSnackbar } from '../../components/NotificationSnackBar/NotificationSnackBar';
+import { showNotification } from '../../store/notificationSlice/notification.slice';
 
 const HousingManagement = () => {
     const dispatch = useDispatch();
@@ -59,7 +61,7 @@ const HousingManagement = () => {
     }
 
     if (error) {
-        return <p>Error: {error}</p>;
+        dispatch(showNotification({ message: error, severity: 'error' }));
     }
 
     return (
@@ -76,14 +78,14 @@ const HousingManagement = () => {
                             <TableCell>Landlord Name</TableCell>
                             <TableCell>Landlord Phone</TableCell>
                             <TableCell>Landlord Email</TableCell>
-                            <TableCell align="center">Residents Number</TableCell>
+                            <TableCell align='center'>Residents Number</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {list.length ? (
                             list.map((row) => (
-                                <TableRow key={row._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
                                         <Link href={`/hr/housing-detail?title=${row.title}`}>{row.title}</Link>
                                     </TableCell>
@@ -94,14 +96,14 @@ const HousingManagement = () => {
                                     <TableCell>{row.landlord.name}</TableCell>
                                     <TableCell>{row.landlord.phone}</TableCell>
                                     <TableCell>{row.landlord.email}</TableCell>
-                                    <TableCell align="center">{row.residents.length || 0}</TableCell>
+                                    <TableCell align='center'>{row.residents.length || 0}</TableCell>
                                     <TableCell>
                                         <Button onClick={() => handleClickOpen(row._id)}>Delete</Button>
                                     </TableCell>
                                 </TableRow>
                             ))
                         ) : (
-                            <TableRow sx={{ textAlign: "center" }}>
+                            <TableRow sx={{ textAlign: 'center' }}>
                                 <TableCell colSpan={5} align='center'>
                                     No data found
                                 </TableCell>
@@ -117,7 +119,7 @@ const HousingManagement = () => {
                 aria-labelledby='alert-dialog-title'
                 aria-describedby='alert-dialog-description'
             >
-                <DialogTitle id='alert-dialog-title'>{"Delete Housing"}</DialogTitle>
+                <DialogTitle id='alert-dialog-title'>{'Delete Housing'}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id='alert-dialog-description'>
                         Are you sure to delete this housing? This action cannot be undone.
@@ -140,26 +142,26 @@ const AddHousing = () => {
     const dispatch = useDispatch();
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
-        title: "House 3",
+        title: 'House 3',
         address: {
-            building: "Building A",
-            street: "123 Main St",
-            city: "Springfield",
-            state: "IL",
-            zip: "62701",
+            building: 'Building A',
+            street: '123 Main St',
+            city: 'Springfield',
+            state: 'IL',
+            zip: '62701',
         },
         landlord: {
-            name: "John Smith",
-            phone: "6083654562",
-            email: "landlord1@mail.com",
+            name: 'John Smith',
+            phone: '6083654562',
+            email: 'landlord1@mail.com',
         },
     });
     const handleChange = (key) => {
         return (event) => {
             const value = event.target.value;
 
-            if (key.includes(".")) {
-                const keys = key.split(".");
+            if (key.includes('.')) {
+                const keys = key.split('.');
                 setFormData((prev) => {
                     return {
                         ...prev,
@@ -178,9 +180,9 @@ const AddHousing = () => {
         const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
 
         if (!phone) {
-            errors.phone = "Phone number is required";
+            errors.phone = 'Phone number is required';
         } else if (!phoneRegex.test(phone)) {
-            errors.phone = "Invalid phone number format";
+            errors.phone = 'Invalid phone number format';
         }
 
         return errors;
@@ -197,9 +199,9 @@ const AddHousing = () => {
     };
 
     return (
-        <Card sx={{ width: "100%", padding: "1rem" }}>
+        <Card sx={{ width: '100%', padding: '1rem' }}>
             <header>
-                <Typography variant='subtitle1' sx={{ pb: "0.5rem" }}>
+                <Typography variant='subtitle1' sx={{ pb: '0.5rem' }}>
                     Add Housing
                 </Typography>
             </header>
@@ -209,8 +211,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.title || ""}
-                        onChange={handleChange("title")}
+                        value={formData?.title || ''}
+                        onChange={handleChange('title')}
                         variant='standard'
                         maxLength='50'
                     />
@@ -220,8 +222,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.address?.building || ""}
-                        onChange={handleChange("address.building")}
+                        value={formData?.address?.building || ''}
+                        onChange={handleChange('address.building')}
                         variant='standard'
                         maxLength='10'
                     />
@@ -231,8 +233,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.address?.street || ""}
-                        onChange={handleChange("address.street")}
+                        value={formData?.address?.street || ''}
+                        onChange={handleChange('address.street')}
                         variant='standard'
                         maxLength='50'
                     />
@@ -242,8 +244,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.address?.city || ""}
-                        onChange={handleChange("address.city")}
+                        value={formData?.address?.city || ''}
+                        onChange={handleChange('address.city')}
                         variant='standard'
                         maxLength='50'
                     />
@@ -253,8 +255,8 @@ const AddHousing = () => {
                     <FormControl sx={{ minWidth: 120 }} variant='standard' size='small'>
                         <Select
                             label='state'
-                            value={formData?.address?.state || ""}
-                            onChange={handleChange("address.state")}
+                            value={formData?.address?.state || ''}
+                            onChange={handleChange('address.state')}
                         >
                             {STATES.map((state) => (
                                 <MenuItem key={state.code} value={state.code}>
@@ -269,8 +271,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.address?.zip || ""}
-                        onChange={handleChange("address.zip")}
+                        value={formData?.address?.zip || ''}
+                        onChange={handleChange('address.zip')}
                         variant='standard'
                         maxLength='6'
                     />
@@ -280,8 +282,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.landlord?.name || ""}
-                        onChange={handleChange("landlord.name")}
+                        value={formData?.landlord?.name || ''}
+                        onChange={handleChange('landlord.name')}
                         variant='standard'
                     />
                 </label>
@@ -290,8 +292,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.landlord?.phone || ""}
-                        onChange={handleChange("landlord.phone")}
+                        value={formData?.landlord?.phone || ''}
+                        onChange={handleChange('landlord.phone')}
                         variant='standard'
                         error={!!errors.phone}
                         helperText={errors.phone}
@@ -302,8 +304,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.landlord?.email || ""}
-                        onChange={handleChange("landlord.email")}
+                        value={formData?.landlord?.email || ''}
+                        onChange={handleChange('landlord.email')}
                         variant='standard'
                         type='email'
                     />

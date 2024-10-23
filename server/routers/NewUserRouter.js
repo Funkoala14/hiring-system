@@ -12,7 +12,7 @@ router.post('/generate-token', async (req, res) => {
   const { name, email } = req.body;
 
   if (!email) {
-    return res.status(400).json({ message: 'Email is required' });
+    return res.status(400).json({ message: 'Email is required', code: 400 });
   }
 
   try {
@@ -25,10 +25,10 @@ router.post('/generate-token', async (req, res) => {
 
     const token = generateRegistrationToken(email);
     
-    res.json({ token });
+    res.status(201).json({ data: {token} , message: 'Email is required', code: 201});
   } catch (error) {
     console.error('Error creating new user:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', code:500 });
   }
 });
 
