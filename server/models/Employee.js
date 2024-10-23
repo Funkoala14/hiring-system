@@ -9,27 +9,27 @@ const EmployeeSchema = new Schema({
     firstName: { type: String, trim: true, default: "" },
     lastName: { type: String, trim: true, default: "" },
     middleName: { type: String, trim: true, default: "" },
-    preferedName: { type: String, trim: true, default: "" },
+    preferredName: { type: String, trim: true, default: "" },
     image: { type: String, trim: true, default: "" },
     ssn: { type: String, trim: true, default: "" },
-    birth: { type: Date, default: null },
+    dob: { type: Date, default: null },
     gender: { type: String, enum: ["male", "female", "other", ""], default: "" },
-    phone: { type: String, trim: true, default: "" },
+    cellPhone: { type: String, trim: true, default: "" },
     workPhone: { type: String, trim: true, default: "" },
-    emergencyContact: {
+    emergencyContacts: [{
         firstName: { type: String, trim: true, default: "" },
         lastName: { type: String, trim: true, default: "" },
         middleName: { type: String, trim: true, default: "" },
         phone: { type: String, trim: true, default: "" },
         email: { type: String, trim: true, default: "" },
         relationship: { type: String, trim: true, default: "" },
-    },
+    }],
     address: {
         buildingOrAptNumber: { type: String, trim: true, default: "", maxlength: 10 },
         street: { type: String, trim: true, default: "" },
         city: { type: String, trim: true, default: "" },
         state: { type: String, trim: true, default: "", maxlength: 2 },
-        zipcode: {
+        zipCode: {
             type: String,
             trim: true,
             default: "",
@@ -37,7 +37,24 @@ const EmployeeSchema = new Schema({
     },
     housingAssignment: { type: refType, ref: "House" },
     visaStatus: { type: refType, ref: 'VisaStatus' },
-    onboardingStatus: { type: refType, ref: 'OnboardingStatus' },  // Reference to OnboardingStatus
+    onboardingStatus: { type: refType, ref: 'OnboardingStatus' },
+    driverLicense: {
+        number: { type: String, trim: true, default: ""  },
+        expirationDate: { type: Date, default: null  },
+        copy: { type: String, trim: true, default: "" }, // Driver license file URL
+    },
+    reference: {
+        firstName: { type: String, trim: true, default: ""},
+        lastName: { type: String, trim: true, default: "" },
+        phone: { type: String, trim: true, default: "" },
+        email: { type: String, trim: true, default: "" },
+        relationship: { type: String, trim: true, default: "" },
+    },
+    carInfo: {
+        make: { type: String, trim: true, default: ""},
+        model: { type: String, trim: true, default: ""},
+        color: { type: String, trim: true, default: ""},
+      },
 });
 
 // Pre-save hook for phone and email validation
