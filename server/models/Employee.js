@@ -10,7 +10,7 @@ const EmployeeSchema = new Schema({
     firstName: { type: String, trim: true, default: '' },
     lastName: { type: String, trim: true, default: '' },
     middleName: { type: String, trim: true, default: '' },
-    preferedName: { type: String, trim: true, default: '' },
+    preferredName: { type: String, trim: true, default: '' },
     image: {
         src: { type: String, trim: true, default: '' },
         name: { type: String, trim: true, default: '' },
@@ -33,7 +33,6 @@ const EmployeeSchema = new Schema({
         street: { type: String, trim: true, default: "" },
         city: { type: String, trim: true, default: "" },
         state: { type: String, trim: true, default: "", maxlength: 2 },
-        zipCode: {
         zipCode: {
             type: String,
             trim: true,
@@ -77,7 +76,7 @@ const EmployeeSchema = new Schema({
         make: { type: String, trim: true, default: ""},
         model: { type: String, trim: true, default: ""},
         color: { type: String, trim: true, default: ""},
-      },
+    },
 });
 
 // Pre-save hook for phone and email validation
