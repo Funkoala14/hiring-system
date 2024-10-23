@@ -6,6 +6,7 @@ import profileReducer from './profileSlice/profile.slice.js';
 import visaReducer from './visaSlice/visa.slice.js';
 import employeeSlice from './employeeSlice/employee.slice.js';
 import searchSlice from './searchSlice/search.slice.js';
+import onboardingSlice from './onboardingSlice/onboarding.slice.js';
 
 // Persist configuration for the auth state
 const persistConfig = {
@@ -25,6 +26,7 @@ const store = configureStore({
         visa: visaReducer,
         employee: employeeSlice,
         search: searchSlice,
+        onboarding: onboardingSlice,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
