@@ -25,6 +25,7 @@ import {
     Typography,
 } from '@mui/material';
 import { getReportList, postNewReport } from '../../store/housingSlice/housing.thunk';
+import ChatBox from '../../components/ChatBox';
 import { pageChange } from '../../store/housingSlice/housing.slice';
 
 const HousingView = ({ parent }) => {
@@ -166,6 +167,8 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({ title: '', description: '' });
+    const [selectedReport, setSelectedReport] = useState(null); // store the selected report for comments
+    const [chatboxOpen, setChatboxOpen] = useState(false); 
     const { facilityReports, page, limit, totalPages, totalReports } = useSelector(
         (state) => state.housing.reportsInfo
     );
@@ -178,6 +181,62 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
     useEffect(() => {
         getHouseReport();
     }, [page]);
+
+    const handleCommentButtonClick = async (reportId) => {
+        try {
+            const response = await fetch(`http://localhost:5000/v1/api/housing/report/${reportId}`, {
+                headers: {
+                    'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
+                },
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const updatedReport = await response.json();
+                setSelectedReport(updatedReport);
+                setChatboxOpen(true);
+            } else {
+                console.error('Error fetching report:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching report:', error);
+        }
+    };
+    
+
+    const handleAddComment = async (newComment) => {
+        try {
+            const response = await fetch(`http://localhost:5000/v1/api/housing/report/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
+                },
+                body: JSON.stringify({
+                    reportId: selectedReport._id,
+                    description: newComment,
+                }),
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                const updatedReportResponse = await fetch(`http://localhost:5000/v1/api/housing/report/${selectedReport._id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
+                    },
+                    credentials: 'include'
+                });
+    
+                const updatedReport = await updatedReportResponse.json();
+                setSelectedReport(updatedReport);
+            } else {
+                console.error('Error saving comment:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error adding comment:', error);
+        }
+    };
+    
 
     const handleSubmit = async () => {
         const config = { limit, houseId, ...formData };
@@ -223,7 +282,7 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
                                         row?.createdBy?.lastName
                                     }`}</TableCell>
                                     <TableCell>
-                                        <Button variant='outlined'>View</Button>
+                                    <Button variant='outlined' onClick={() => handleCommentButtonClick(row._id)}>View</Button>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -254,6 +313,13 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
                     />
                 </>
             )}
+            {/* Chatbox Drawer */}
+            <ChatBox
+                open={chatboxOpen}
+                onClose={() => setChatboxOpen(false)}
+                comments={selectedReport?.comments || []}
+                onAddComment={handleAddComment}
+            />
         </div>
     );
 };
