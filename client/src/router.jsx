@@ -3,6 +3,11 @@ import { Routes, Route, Outlet } from "react-router-dom";
 import MainLayout from "/layouts/MainLayout";
 import VisaStatus from "./pages/VisaStatus/VisaStatus";
 import { SendLink } from "./pages/Registration/SendRegistration";
+import React, { Suspense, lazy } from "react";
+import { Routes, Route, Outlet } from "react-router-dom";
+import MainLayout from "/layouts/MainLayout";
+import VisaStatus from "./pages/VisaStatus/VisaStatus";
+import { SendLink } from "./pages/Registration/SendRegistration";
 import Login from "./pages/Home/Login";
 import Dashboard from "./pages/Home/Dashboard";
 import NotFound from "./pages/Home/NotFound";
@@ -47,6 +52,8 @@ function AppRouter() {
 
         {/* RegistrationPage Route */}
         <Route path="/register" element={<RegistrationPage />} />
+        {/* RegistrationPage Route */}
+        <Route path="/register" element={<RegistrationPage />} />
 
         {/* Login Route */}
         <Route path='/login' element={<Login />} />
@@ -82,9 +89,35 @@ function AppRouter() {
                             </MainLayout>
                         }
                     />
+        {/* Employee Routes */}
+        <Route
+          path="employee"
+          element={
+            <PrivateRoute allowedRoles={["Employee"]}>
+              <Outlet /> {/* Nested employee routes will be rendered here */}
+            </PrivateRoute>
+          }
+        >
+          {/* Employee Personal Info Route (with MainLayout) */}
+          <Route
+            path="my-profile"
+            element={
+              <MainLayout>
+                <Profile parent={"employee"} />
+              </MainLayout>
+            }
+          />
 
-                    {/* On-Boarding Route (without Header and Navbar) */}
-                    <Route path='on-boarding' element={<OnBoarding />} />
+          {/* On-Boarding Route (without Header and Navbar) */}
+
+          <Route path="on-boarding" element={<OnBoarding/>} /> 
+
+          {/* Confirmation Route */}
+          <Route
+            path="on-boarding/confirmation"
+            element={<Confirmation parent={"on-boarding"} />}
+          />
+ 
 
                     {/* Visa-Status Route */}
                     <Route

@@ -34,6 +34,7 @@ const EmployeeSchema = new Schema({
         city: { type: String, trim: true, default: "" },
         state: { type: String, trim: true, default: "", maxlength: 2 },
         zipCode: {
+        zipCode: {
             type: String,
             trim: true,
             default: '',
@@ -41,6 +42,24 @@ const EmployeeSchema = new Schema({
     },
     housingAssignment: { type: refType, ref: 'House' },
     visaStatus: { type: refType, ref: 'VisaStatus' },
+    onboardingStatus: { type: refType, ref: 'OnboardingStatus' },
+    driverLicense: {
+        number: { type: String, trim: true, default: ""  },
+        expirationDate: { type: Date, default: null  },
+        copy: { type: String, trim: true, default: "" }, // Driver license file URL
+    },
+    reference: {
+        firstName: { type: String, trim: true, default: ""},
+        lastName: { type: String, trim: true, default: "" },
+        phone: { type: String, trim: true, default: "" },
+        email: { type: String, trim: true, default: "" },
+        relationship: { type: String, trim: true, default: "" },
+    },
+    carInfo: {
+        make: { type: String, trim: true, default: ""},
+        model: { type: String, trim: true, default: ""},
+        color: { type: String, trim: true, default: ""},
+      },
     onboardingStatus: { type: refType, ref: 'OnboardingStatus' },
     driverLicense: {
         number: { type: String, trim: true, default: ""  },

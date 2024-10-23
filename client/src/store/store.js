@@ -16,6 +16,7 @@ const rootReducer = combineReducers({
     employee: employeeSlice,
     search: searchSlice,
     housing: housingSlice,
+    onboarding: onboardingSlice,
 });
 
 
