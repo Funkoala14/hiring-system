@@ -7,6 +7,7 @@ import visaReducer from './visaSlice/visa.slice.js';
 import employeeSlice from './employeeSlice/employee.slice.js';
 import searchSlice from './searchSlice/search.slice.js';
 import housingSlice from './housingSlice/housing.slice.js';
+import notificationReducer from './notificationSlice/notification.slice.js';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
     employee: employeeSlice,
     search: searchSlice,
     housing: housingSlice,
+    notification: notificationReducer,
 });
 
 // Persist configuration

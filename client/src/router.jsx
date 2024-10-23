@@ -1,10 +1,10 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import MainLayout from "/layouts/MainLayout";
-import { SendLink } from "./pages/Registration/SendRegistration";
 
 const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
 const Home = lazy(() => import("/pages/Home/Home"));
+const SendLink = lazy(() => import("/pages/Registration/SendRegistration"));
 const Profile = lazy(() => import("/pages/Profile/Profile"));
 const Login = lazy(() => import("/pages/Home/Login"));
 const Dashboard = lazy(() => import("/pages/Home/Dashboard"));
@@ -30,16 +30,6 @@ function AppRouter() {
                     element={
                         <MainLayout>
                             <Home />
-                        </MainLayout>
-                    }
-                />
-
-                {/* SendLink Route */}
-                <Route
-                    path='/contact'
-                    element={
-                        <MainLayout>
-                            <SendLink />
                         </MainLayout>
                     }
                 />
@@ -110,6 +100,15 @@ function AppRouter() {
                         element={
                             <MainLayout>
                                 <Dashboard />
+                            </MainLayout>
+                        }
+                    />
+                    {/* SendLink Route */}
+                    <Route
+                        path='contact'
+                        element={
+                            <MainLayout>
+                                <SendLink />
                             </MainLayout>
                         }
                     />

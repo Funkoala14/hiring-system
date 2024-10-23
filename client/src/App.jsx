@@ -3,6 +3,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
 import useAuthInit from "./hooks/useAuthInit";
+import { NotificationSnackbar } from "./components/NotificationSnackBar/NotificationSnackBar";
 
 const theme = createTheme({
   palette: {
@@ -23,6 +24,7 @@ function App() {
   
   return (
     <ThemeProvider theme={theme}>
+      <NotificationSnackbar/>
       <CssBaseline /> {/* This will apply Material-UI's baseline styles */}
       <AppRouter></AppRouter>
     </ThemeProvider>

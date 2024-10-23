@@ -544,7 +544,7 @@ const ContactSection = ({ info, username, showEdit }) => {
     };
 
     const validateForm = () => {
-        const { phone, workPhonephone } = formData;
+        const { phone } = formData;
         const errors = {};
         const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
 
@@ -553,11 +553,7 @@ const ContactSection = ({ info, username, showEdit }) => {
         } else if (!phoneRegex.test(phone)) {
             errors.phone = 'Invalid phone number format';
         }
-        if (!workPhonephone) {
-            errors.workPhonephone = 'Phone number is required';
-        } else if (!phoneRegex.test(phone)) {
-            errors.workPhonephone = 'Invalid phone number format';
-        }
+       
 
         return errors;
     };
@@ -600,14 +596,11 @@ const ContactSection = ({ info, username, showEdit }) => {
                         <label className='input-item'>
                             Work Phone Number
                             <TextField
-                                required
                                 id='standard-required'
                                 value={formData?.workPhone || ''}
                                 onChange={handleChange('workPhone')}
                                 variant='standard'
                                 maxLength='10'
-                                error={!!errors.workPhonephone}
-                                helperText={errors.workPhonephone}
                             />
                         </label>
                     </form>

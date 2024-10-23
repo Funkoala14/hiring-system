@@ -22,6 +22,12 @@ const Dashboard = () => {
             <Box mt={4} display="flex" justifyContent="space-around">
                 <Button
                     variant="contained"
+                    onClick={() => navigate('/hr/contact')}
+                >
+                    Add New Employee
+                </Button>
+                <Button
+                    variant="contained"
                     onClick={() => navigate('/hr/employee-management')}
                 >
                     Employees
