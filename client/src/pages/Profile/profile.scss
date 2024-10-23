@@ -18,39 +18,8 @@
     gap: 1rem;
 }
 
-.view-container {
-    display: flex;
-    flex-flow: row wrap;
-    gap: 2rem;
+.remove-btn {
     width: 100%;
-    
-    .view-item {
-        display: flex;
-        flex-flow: column nowrap;
-        width: 30%;
-        color: #69748a;
-        font-size: 0.875rem;
-        span {
-            font-size: 1rem;
-            min-height: 2rem;
-            line-height: 2rem;
-            color: #000;
-        }
-    }
 }
 
-.input-container {
-    display: flex;
-    flex-flow: row wrap;
-    gap: 2rem;
-    width: 100%;
 
-    .input-item {
-        display: flex;
-        flex-flow: column nowrap;
-        width: 30%;
-        color: #69748a;
-        justify-content: space-between;
-        font-size: 0.875rem;
-    }
-}

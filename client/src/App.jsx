@@ -3,18 +3,18 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
 import useAuthInit from "./hooks/useAuthInit";
+import { NotificationSnackbar } from "./components/NotificationSnackBar/NotificationSnackBar";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#ff5733", // Primary color (red)
+      main: "#607d8b", // Primary color (red)
     },
     secondary: {
-      main: "#dc004e", // Secondary color
+      main: "#6ba5c1", // Secondary color
     },
   },
 });
-
 function App() {
   const { isLoading } = useAuthInit();
 
@@ -24,6 +24,7 @@ function App() {
   
   return (
     <ThemeProvider theme={theme}>
+      <NotificationSnackbar/>
       <CssBaseline /> {/* This will apply Material-UI's baseline styles */}
       <AppRouter></AppRouter>
     </ThemeProvider>

@@ -87,5 +87,29 @@ export const housingValidation = (req, res, next) => {
         return res.status(400).json({ message: "Missing required info!", code: 400});
     }
 };
+
+export const reportValidation = (req, res, next) => {
+    try {
+        const { houseId, title, description } = req.body;
+        if (!houseId) return res.status(400).json({ message: 'Missing houseId!' });
+        if (!title) return res.status(400).json({ message: 'Missing houseId!' });
+        if (!description) return res.status(400).json({ message: 'Missing houseId!' });
+        next();
+    } catch (error) {
+        return res.status(400).json({ message: 'Missing required info!', code: 400 });
+    }
+};
+
+export const commentValidation = (req, res, next) => {
+    try {
+        const { reportId, description } = req.body;
+        if (!reportId) return res.status(400).json({ message: 'Missing reportId!' });
+        if (!description) return res.status(400).json({ message: 'Missing houseId!' });
+        next();
+    } catch (error) {
+        return res.status(400).json({ message: 'Missing required info!', code: 400 });
+    }
+};
+
 export default { createUserValidation, loginUserValidation };
 

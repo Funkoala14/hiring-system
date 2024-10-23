@@ -63,7 +63,7 @@ const logoutThunk = createAsyncThunk('auth/logout', async (_, { rejectWithValue 
   try {
     // Send the logout request to the server (this assumes your server clears any session-related info)
     await get('/user/logout');
-
+    localStorage.removeItem('persist:root');
   } catch (error) {
     return rejectWithValue(error.response?.data || 'Logout failed');
   }
