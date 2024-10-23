@@ -7,14 +7,13 @@ import useAuthInit from "./hooks/useAuthInit";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#ff5733", // Primary color (red)
+      main: "#607d8b", // Primary color (red)
     },
     secondary: {
-      main: "#dc004e", // Secondary color
+      main: "#6ba5c1", // Secondary color
     },
   },
 });
-
 function App() {
   const { isLoading } = useAuthInit();
 

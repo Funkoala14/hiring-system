@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addHousing, deleteHousing, fetchHousingList, getReportList } from './housing.thunk';
+import { addHousing, deleteHousing, fetchHousingList, getReportList, postNewReport } from './housing.thunk';
 
 const setPending = (state) => {
     state.loading = true;
@@ -21,12 +21,20 @@ const housingSlice = createSlice({
     initialState: {
         list: [],
         reportsInfo: {
+            page: 1,
+            limit: 3,
+            totalPages: 0,
+            totalReports: 0,
             facilityReports: [],
         },
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        pageChange: (state, action) => {
+            state.reportsInfo.page = action.payload;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchHousingList.pending, setPending)
@@ -47,9 +55,16 @@ const housingSlice = createSlice({
             .addCase(getReportList.fulfilled, (state, action) => setFulfilled(state, action, 'reportsInfo'))
             .addCase(getReportList.rejected, (state, action) =>
                 setRejected(state, action, 'Failed to fetch report list')
+            )
+
+            .addCase(postNewReport.pending, setPending)
+            .addCase(postNewReport.fulfilled, (state, action) => setFulfilled(state, action, 'reportsInfo'))
+            .addCase(postNewReport.rejected, (state, action) =>
+                setRejected(state, action, 'Failed to create new report')
             );
     },
 });
 
+export const { pageChange } = housingSlice.actions;
 export const { selectHousingByTitle } = housingSlice.selectors;
 export default housingSlice.reducer;

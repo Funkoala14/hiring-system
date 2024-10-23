@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Typography, Button, TextField, Box, Paper, CircularProgress
+  Typography, Button, TextField, Box, Paper, CircularProgress,
+  Breadcrumbs,
+  Link
 } from '@mui/material';
 
 const ApplicationDetails = () => {
@@ -53,6 +55,10 @@ const ApplicationDetails = () => {
     }
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -63,6 +69,13 @@ const ApplicationDetails = () => {
 
   return (
     <Box p={3}>
+      <Breadcrumbs aria-label='breadcrumb' sx={{ margin: '16px 0' }}>
+          <Link underline='hover' color='inherit' onClick={handleGoBack} sx={{ cursor: 'pointer' }}>
+              Go Back
+          </Link>
+          <Typography sx={{ color: 'text.primary' }}>Application detail</Typography>
+      </Breadcrumbs>
+
       <Paper elevation={3} sx={{ p: 3 }}>
         <Typography variant="h4" gutterBottom>
           Application Details

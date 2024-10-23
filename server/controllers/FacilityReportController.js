@@ -4,7 +4,7 @@ import User from '../models/User.js';
 
 export const createNewReport = async (req, res) => {
     const { id } = req.user;
-    const { houseId, title, description } = req.body;
+    const { houseId, title, description, limit = 5 } = req.body;
     try {
         const house = await House.findById(houseId);
         const user = await User.findById(id);
@@ -24,12 +24,30 @@ export const createNewReport = async (req, res) => {
 
         const newHouse = await House.findById(houseId)
             .populate({ path: 'residents', select: '_id username firstName preferedName lastName phone email' })
+            .populate({
+                path: 'facilityReports',
+                populate: {
+                    path: 'createdBy',
+                    select: '_id username firstName preferedName lastName email',
+                },
+            })
+            .sort({ createdAt: -1 }) // Sort by creation date (newest first)
             .lean()
             .exec();
+        
+        await newHouse.facilityReports.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const paginatedReports = newHouse.facilityReports.slice(0, limit); // Paginate the reports
+        const totalReports = newHouse.facilityReports.length;
 
         res.status(201).json({
             message: 'Facility report added successfully',
-            data: newHouse,
+            data: {
+                facilityReports: paginatedReports,
+                page: 1,
+                limit,
+                totalPages: Math.ceil(totalReports / limit),
+                totalReports,
+            },
         });
     } catch (error) {
         console.log(error);
@@ -44,8 +62,8 @@ export const getReportListByHouse = async (req, res) => {
     if (!houseId) {
         return res.status(400).json({ message: 'Missing houseId', code: 400 });
     }
-	console.log(houseId);
-	
+    console.log(houseId);
+
     try {
         const house = await House.findById(houseId)
             .select('facilityReports')
@@ -63,9 +81,9 @@ export const getReportListByHouse = async (req, res) => {
         if (!house) {
             return res.status(404).json({ message: 'House not found', code: 404 });
         }
-        const paginatedReports = house.facilityReports
-            .slice((page - 1) * limit, page * limit) // Paginate the reports
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by date (newest first)
+
+        await house.facilityReports.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const paginatedReports = house.facilityReports.slice((page - 1) * limit, page * limit); // Paginate the reports
 
         const totalReports = house.facilityReports.length;
 

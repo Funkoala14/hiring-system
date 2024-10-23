@@ -47,3 +47,14 @@ export const getReportList = createAsyncThunk('housing/getReportList', async (co
         return rejectWithValue(error.response.data.message || 'Something went wrong');
     }
 });
+
+export const postNewReport = createAsyncThunk('housing/postNewReport', async (config, { rejectWithValue }) => {
+    try {
+        const response = await post("/housing/new-report", config);
+        const { data } = response;
+        console.log('postNewReport: ', data);
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response.data.message || 'Something went wrong');
+    }
+});

@@ -1,25 +1,24 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import MainLayout from "/layouts/MainLayout";
-import VisaStatus from "./pages/VisaStatus/VisaStatus";
 import { SendLink } from "./pages/Registration/SendRegistration";
-import Login from "./pages/Home/Login";
-import Dashboard from "./pages/Home/Dashboard";
-import NotFound from "./pages/Home/NotFound";
-import PrivateRoute from "./components/PrivateRoute";
-import OnboardingStatus from "./components/OnboardingStatus";
-import Forbidden from "./pages/Home/Forbidden";
-import OnBoarding from "./pages/OnBoarding";
-import Profile from "./pages/Profile/Profile";
-import EmployeeManagement from "./pages/EmployeeManagement/EmployeeManagement";
-import HousingManagement from "./pages/HousingManagement/HousingManagement";
-import HousingView from "./pages/HousingView/HousingView";
-import ApplicationTables from './pages/ViewOnboardingApplications';
-import ApplicationDetails from './pages/ApplicationDetails';
 
 const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
-
 const Home = lazy(() => import("/pages/Home/Home"));
+const Profile = lazy(() => import("/pages/Profile/Profile"));
+const Login = lazy(() => import("/pages/Home/Login"));
+const Dashboard = lazy(() => import("/pages/Home/Dashboard"));
+const NotFound = lazy(() => import("/pages/Home/NotFound"));
+const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
+const OnboardingStatus = lazy(() => import("./components/OnboardingStatus"));
+const Forbidden = lazy(() => import("./pages/Home/Forbidden"));
+const OnBoarding = lazy(() => import("./pages/OnBoarding"));
+const EmployeeManagement = lazy(() => import("./pages/EmployeeManagement/EmployeeManagement"));
+const HousingManagement = lazy(() => import("./pages/HousingManagement/HousingManagement"));
+const HousingView = lazy(() => import("./pages/HousingView/HousingView"));
+const ApplicationTables = lazy(() => import('./pages/ViewOnboardingApplications'));
+const ApplicationDetails = lazy(() => import('./pages/ApplicationDetails'));
+const VisaStatus = lazy(() => import("./pages/VisaStatus/VisaStatus"));
 
 function AppRouter() {
     return (
@@ -131,7 +130,7 @@ function AppRouter() {
                         }
                     />
                     <Route
-                        path='housing-mangement'
+                        path='housing-management'
                         element={
                             <MainLayout>
                                 <HousingManagement />
