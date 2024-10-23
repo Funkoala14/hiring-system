@@ -61,6 +61,24 @@ const EmployeeSchema = new Schema({
         model: { type: String, trim: true, default: ""},
         color: { type: String, trim: true, default: ""},
       },
+    onboardingStatus: { type: refType, ref: 'OnboardingStatus' },
+    driverLicense: {
+        number: { type: String, trim: true, default: ""  },
+        expirationDate: { type: Date, default: null  },
+        copy: { type: String, trim: true, default: "" }, // Driver license file URL
+    },
+    reference: {
+        firstName: { type: String, trim: true, default: ""},
+        lastName: { type: String, trim: true, default: "" },
+        phone: { type: String, trim: true, default: "" },
+        email: { type: String, trim: true, default: "" },
+        relationship: { type: String, trim: true, default: "" },
+    },
+    carInfo: {
+        make: { type: String, trim: true, default: ""},
+        model: { type: String, trim: true, default: ""},
+        color: { type: String, trim: true, default: ""},
+      },
 });
 
 // Pre-save hook for phone and email validation
