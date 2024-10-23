@@ -15,6 +15,7 @@ import {
     Typography,
 } from '@mui/material';
 import { getReportList } from '../../store/housingSlice/housing.thunk';
+import ChatBox from '../../components/ChatBox';
 
 const HousingView = ({ parent }) => {
     const navigate = useNavigate();
@@ -152,6 +153,8 @@ const HousingDetail = ({ housing }) => {
 const HousingFaicilityReport = ({ houseId }) => {
     const dispatch = useDispatch();
     const [currPage, setPage] = useState(1);
+    const [selectedReport, setSelectedReport] = useState(null); // store the selected report for comments
+    const [chatboxOpen, setChatboxOpen] = useState(false); 
     const { facilityReports, page, limit, totalPages, totalReports } = useSelector(
         (state) => state.housing.reportsInfo
     );
@@ -164,6 +167,62 @@ const HousingFaicilityReport = ({ houseId }) => {
     useEffect(() => {
         getHouseReport();
     }, [page]);
+
+    const handleCommentButtonClick = async (reportId) => {
+        try {
+            const response = await fetch(`http://localhost:5000/v1/api/housing/report/${reportId}`, {
+                headers: {
+                    'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
+                },
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const updatedReport = await response.json();
+                setSelectedReport(updatedReport);
+                setChatboxOpen(true);
+            } else {
+                console.error('Error fetching report:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching report:', error);
+        }
+    };
+    
+
+    const handleAddComment = async (newComment) => {
+        try {
+            const response = await fetch(`http://localhost:5000/v1/api/housing/report/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
+                },
+                body: JSON.stringify({
+                    reportId: selectedReport._id,
+                    description: newComment,
+                }),
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                const updatedReportResponse = await fetch(`http://localhost:5000/v1/api/housing/report/${selectedReport._id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
+                    },
+                    credentials: 'include'
+                });
+    
+                const updatedReport = await updatedReportResponse.json();
+                setSelectedReport(updatedReport);
+            } else {
+                console.error('Error saving comment:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error adding comment:', error);
+        }
+    };
+    
 
     return (
         <div className='facility-reports outlined-container'>
@@ -194,7 +253,7 @@ const HousingFaicilityReport = ({ houseId }) => {
                                         row.createdBy.lastName
                                     }`}</TableCell>
                                     <TableCell>
-                                        <Button variant='outlined'>Comment</Button>
+                                    <Button variant='outlined' onClick={() => handleCommentButtonClick(row._id)}>Comment</Button>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -211,6 +270,13 @@ const HousingFaicilityReport = ({ houseId }) => {
             <Button variant='outlined' sx={{ display: 'block' }}>
                 Request New Report
             </Button>
+            {/* Chatbox Drawer */}
+            <ChatBox
+                open={chatboxOpen}
+                onClose={() => setChatboxOpen(false)}
+                comments={selectedReport?.comments || []}
+                onAddComment={handleAddComment}
+            />
         </div>
     );
 };
