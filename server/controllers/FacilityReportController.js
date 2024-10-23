@@ -51,10 +51,16 @@ export const getReportListByHouse = async (req, res) => {
             .select('facilityReports')
             .populate({
                 path: 'facilityReports',
-                populate: {
-                    path: 'createdBy',
-                    select: '_id username firstName preferedName lastName email',
-                },
+                populate: [
+                    {
+                        path: 'createdBy',
+                        select: '_id username firstName preferedName lastName email',
+                    },
+                    {
+                        path: 'comments.createdBy', // populate user details for each comment
+                        select: '_id username',
+                    },
+                ],
             })
             .sort({ createdAt: -1 }) // Sort by creation date (newest first)
             .lean()
@@ -86,42 +92,63 @@ export const getReportListByHouse = async (req, res) => {
 };
 
 export const commentReport = async (req, res) => {
-    const { id } = req.user;
+    const { id } = req.user; 
     const { reportId, description } = req.body;
+
     try {
         const report = await FacilityReport.findById(reportId);
-        const user = await User.findById(id);
         if (!report) {
             return res.status(404).json({ message: 'Report not found', code: 404 });
         }
+
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: 'User not found', code: 404 });
         }
 
         const newComment = { description, createdBy: user._id };
 
-        // Add the facility report to the house's facilityReports array
+        // add the new comment to the array
         report.comments.push(newComment);
         await report.save();
 
-        const newReport = await FacilityReport.findById(reportId)
-            .populate({ path: 'createdBy', select: '_id username firstName preferedName lastName email' })
+        const updatedReport = await FacilityReport.findById(reportId)
+            .populate({ path: 'createdBy', select: '_id username' })
             .populate({
-                path: 'comments',
-                populate: {
-                    path: 'createdBy',
-                    select: '_id username firstName preferedName lastName email',
-                },
-            })
-            .lean()
-            .exec();
+                path: 'comments.createdBy',
+                select: '_id username',
+            });
 
         res.status(201).json({
-            message: 'Comment successfully',
-            data: newReport,
+            message: 'Comment added successfully',
+            data: updatedReport,
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
+        console.log('Error adding comment:', error);
+        res.status(500).json({ message: 'Server error', code: 500 });
+    }
+};
+
+
+
+export const getReportById = async (req, res) => {
+    const { reportId } = req.params;
+
+    try {
+        const report = await FacilityReport.findById(reportId)
+            .populate({ path: 'createdBy', select: '_id username' })
+            .populate({
+                path: 'comments.createdBy',
+                select: '_id username',
+            });
+
+        if (!report) {
+            return res.status(404).json({ message: 'Report not found', code: 404 });
+        }
+
+        res.status(200).json(report);
+    } catch (error) {
+        console.error('Error fetching report:', error);
+        res.status(500).json({ message: 'Server error', code: 500 });
     }
 };
