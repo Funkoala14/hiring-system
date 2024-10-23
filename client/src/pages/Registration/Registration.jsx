@@ -53,7 +53,7 @@ const RegistrationPage = () => {
       if (role === 'HR') {
         navigate('/hr/dashboard');  // HR redirect
       } else {
-        navigate(`/employee/details?username=${credentials.username}`);  // Employee redirect
+        navigate(`/employee/on-boarding`);  // Employee redirect
       }
       //
       setCredentials({ username: '', password: '' });
