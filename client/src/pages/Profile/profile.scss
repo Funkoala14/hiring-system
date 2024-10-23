@@ -18,12 +18,16 @@
     gap: 1rem;
 }
 
+.remove-btn {
+    width: 100%;
+}
+
 .view-container {
     display: flex;
     flex-flow: row wrap;
     gap: 2rem;
     width: 100%;
-    
+
     .view-item {
         display: flex;
         flex-flow: column nowrap;
@@ -52,5 +56,19 @@
         color: #69748a;
         justify-content: space-between;
         font-size: 0.875rem;
+    }
+}
+
+.multi-container {
+    .contact-form {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 2rem;
+    }
+
+    .contact-container {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 2rem;
     }
 }

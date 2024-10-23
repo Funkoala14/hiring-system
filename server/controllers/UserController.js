@@ -268,7 +268,6 @@ export const updateAvatar = async (req, res) => {
     }
 
     try {
-        console.log(file);
         const employee = await Employee.findOne({ username }).lean().exec();
         if (!employee) {
             return res.status(401).json({ message: 'Invalid userid', code: 401 });

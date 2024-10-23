@@ -1,53 +1,51 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { addHousing, deleteHousing, fetchHousingList } from "./housing.thunk";
+import { createSlice } from '@reduxjs/toolkit';
+import { addHousing, deleteHousing, fetchHousingList, getReportList } from './housing.thunk';
+
+const setPending = (state) => {
+    state.loading = true;
+    state.error = null;
+};
+
+const setFulfilled = (state, action, listType = 'list') => {
+    state.loading = false;
+    state[listType] = action.payload;
+};
+
+const setRejected = (state, action, defaultMessage) => {
+    state.loading = false;
+    state.error = action.payload || defaultMessage;
+};
 
 const housingSlice = createSlice({
-    name: "housing",
+    name: 'housing',
     initialState: {
         list: [],
+        reportsInfo: {},
         loading: false,
         error: null,
     },
     reducers: {},
-
     extraReducers: (builder) => {
         builder
-            .addCase(fetchHousingList.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchHousingList.fulfilled, (state, action) => {
-                state.loading = false;
-                state.list = action.payload;
-            })
-            .addCase(fetchHousingList.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "Failed to fetch housing list";
-            })
-            .addCase(deleteHousing.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(deleteHousing.fulfilled, (state, action) => {
-                state.loading = false;
-                state.list = action.payload;
-            })
-            .addCase(deleteHousing.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "Failed to delete housing";
-            })
-            .addCase(addHousing.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(addHousing.fulfilled, (state, action) => {
-                state.loading = false;
-                state.list = action.payload;
-            })
-            .addCase(addHousing.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "Failed to add housing";
-            });
+            .addCase(fetchHousingList.pending, setPending)
+            .addCase(fetchHousingList.fulfilled, setFulfilled)
+            .addCase(fetchHousingList.rejected, (state, action) =>
+                setRejected(state, action, 'Failed to fetch housing list')
+            )
+
+            .addCase(deleteHousing.pending, setPending)
+            .addCase(deleteHousing.fulfilled, setFulfilled)
+            .addCase(deleteHousing.rejected, (state, action) => setRejected(state, action, 'Failed to delete housing'))
+
+            .addCase(addHousing.pending, setPending)
+            .addCase(addHousing.fulfilled, setFulfilled)
+            .addCase(addHousing.rejected, (state, action) => setRejected(state, action, 'Failed to add housing'))
+
+            .addCase(getReportList.pending, setPending)
+            .addCase(getReportList.fulfilled, (state, action) => setFulfilled(state, action, 'reportsInfo'))
+            .addCase(getReportList.rejected, (state, action) =>
+                setRejected(state, action, 'Failed to fetch report list')
+            );
     },
 });
 

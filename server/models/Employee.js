@@ -20,14 +20,14 @@ const EmployeeSchema = new Schema({
     gender: { type: String, enum: ['male', 'female', 'other', ''], default: '' },
     phone: { type: String, trim: true, default: '' },
     workPhone: { type: String, trim: true, default: '' },
-    emergencyContact: {
+    emergencyContacts: [{
         firstName: { type: String, trim: true, default: '' },
         lastName: { type: String, trim: true, default: '' },
         middleName: { type: String, trim: true, default: '' },
         phone: { type: String, trim: true, default: '' },
         email: { type: String, trim: true, default: '' },
         relationship: { type: String, trim: true, default: '' },
-    },
+    }],
     address: {
         buildingOrAptNumber: { type: String, trim: true, default: '', maxlength: 10 },
         street: { type: String, trim: true, default: '' },

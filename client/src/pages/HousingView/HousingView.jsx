@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { selectHousingByTitle } from "../../store/housingSlice/housing.selectors";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { selectHousingByTitle } from '../../store/housingSlice/housing.selectors';
 import {
     Breadcrumbs,
+    Button,
     Paper,
     Table,
     TableBody,
@@ -12,7 +13,8 @@ import {
     TableHead,
     TableRow,
     Typography,
-} from "@mui/material";
+} from '@mui/material';
+import { getReportList } from '../../store/housingSlice/housing.thunk';
 
 const HousingView = ({ parent }) => {
     const navigate = useNavigate();
@@ -20,18 +22,17 @@ const HousingView = ({ parent }) => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
 
-    const title = queryParams.get("title");
+    const title = queryParams.get('title');
 
     const house = useSelector(selectHousingByTitle(title));
     const { housingAssignment } = useSelector((state) => state.profile.info);
+    const houseId = house?._id || housingAssignment?._id;
 
     useEffect(() => {
-        if (parent === "hr" && title) {
+        if (parent === 'hr' && title) {
             // Use the selector to find the housing item by title
             setHousing(house);
-        } else if (parent === "employee") {
-            console.log(housingAssignment.residents);
-
+        } else if (parent === 'employee') {
             setHousing(housingAssignment);
         }
     }, [parent]);
@@ -42,16 +43,16 @@ const HousingView = ({ parent }) => {
 
     return (
         <section>
-            <Breadcrumbs aria-label='breadcrumb' sx={{ margin: "16px 0" }}>
-                <Link underline='hover' color='inherit' onClick={handleGoBack} sx={{ cursor: "pointer" }}>
+            <Breadcrumbs aria-label='breadcrumb' sx={{ margin: '16px 0' }}>
+                <Link underline='hover' color='inherit' onClick={handleGoBack} sx={{ cursor: 'pointer' }}>
                     Go Back
                 </Link>
-                <Typography sx={{ color: "text.primary" }}>Housing Detail</Typography>
+                <Typography sx={{ color: 'text.primary' }}>Housing Detail</Typography>
             </Breadcrumbs>
             {housing ? (
                 <div className='flex-col g-1'>
                     <HousingDetail housing={housing} />
-                    <HousingFaicilityReport />
+                    <HousingFaicilityReport houseId={houseId} />
                 </div>
             ) : (
                 <div>Housing item not found.</div>
@@ -66,10 +67,10 @@ const HousingDetail = ({ housing }) => {
             <header>
                 <h1 className='title'>{housing.title}</h1>
             </header>
-            <Typography variant='h5' sx={{ m: "1rem 0", borderBottom: "1px solid #aaa" }}>
+            <Typography variant='h5' sx={{ m: '1rem 0', borderBottom: '1px solid #aaa' }}>
                 Address
             </Typography>
-            <div className='view-container' sx={{ p: "1rem" }}>
+            <div className='view-container' sx={{ p: '1rem' }}>
                 <label className='view-item'>
                     Building/Apartment #<span>{housing?.address?.building}</span>
                 </label>
@@ -87,7 +88,7 @@ const HousingDetail = ({ housing }) => {
                     Zipcode<span>{housing?.address?.zip}</span>
                 </label>
             </div>
-            <Typography variant='h5' sx={{ m: "1rem 0", borderBottom: "1px solid #aaa" }}>
+            <Typography variant='h5' sx={{ m: '1rem 0', borderBottom: '1px solid #aaa' }}>
                 Landlord
             </Typography>
             <div className='view-container'>
@@ -104,7 +105,7 @@ const HousingDetail = ({ housing }) => {
                     <span>{housing?.landlord?.email}</span>
                 </label>
             </div>
-            <Typography variant='h5' sx={{ m: "1rem 0", borderBottom: "1px solid #aaa" }}>
+            <Typography variant='h5' sx={{ m: '1rem 0', borderBottom: '1px solid #aaa' }}>
                 Residents
             </Typography>
 
@@ -120,9 +121,9 @@ const HousingDetail = ({ housing }) => {
                     <TableBody>
                         {housing.residents.length ? (
                             housing.residents.map((row) => (
-                                <TableRow key={row._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
-                                        {parent === "hr" ? (
+                                        {parent === 'hr' ? (
                                             <Link href={`/hr/employee-profile?username=${row.username}`}>
                                                 {row.preferedName || row.firstName} {row.lastName}
                                             </Link>
@@ -135,7 +136,7 @@ const HousingDetail = ({ housing }) => {
                                 </TableRow>
                             ))
                         ) : (
-                            <TableRow sx={{ textAlign: "center" }}>
+                            <TableRow sx={{ textAlign: 'center' }}>
                                 <TableCell colSpan={5} align='center'>
                                     No residents
                                 </TableCell>
@@ -148,12 +149,68 @@ const HousingDetail = ({ housing }) => {
     );
 };
 
-const HousingFaicilityReport = () => {
+const HousingFaicilityReport = ({ houseId }) => {
+    const dispatch = useDispatch();
+    const [currPage, setPage] = useState(1);
+    const { facilityReports, page, limit, totalPages, totalReports } = useSelector(
+        (state) => state.housing.reportsInfo
+    );
+
+    const getHouseReport = async () => {
+        const config = { page: currPage, limit: 3, houseId };
+        await dispatch(getReportList(config));
+    };
+
+    useEffect(() => {
+        getHouseReport();
+    }, [page]);
+
     return (
         <div className='facility-reports outlined-container'>
             <header>
                 <h1 className='title'>Facility Reports</h1>
             </header>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Title</TableCell>
+                            <TableCell>Description</TableCell>
+                            <TableCell>Create Time</TableCell>
+                            <TableCell>Reporter</TableCell>
+                            <TableCell>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {facilityReports.length ? (
+                            facilityReports.map((row) => (
+                                <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component='th' scope='row'>
+                                        {row.title}
+                                    </TableCell>
+                                    <TableCell>{row.description}</TableCell>
+                                    <TableCell>{row.createdAt}</TableCell>
+                                    <TableCell>{`${row.createdBy.preferedName || row.createdBy.firstName} ${
+                                        row.createdBy.lastName
+                                    }`}</TableCell>
+                                    <TableCell>
+                                        <Button variant='outlined'>Comment</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow sx={{ textAlign: 'center' }}>
+                                <TableCell colSpan={5} align='center'>
+                                    No data found
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Button variant='outlined' sx={{ display: 'block' }}>
+                Request New Report
+            </Button>
         </div>
     );
 };

@@ -62,6 +62,7 @@ const seedEmployees = async (houses) => {
             password: "Pw@123456", // Will be hashed before saving
             role: "Employee",
             housingAssignment: houses[0]._id, // Assign employee1 to the first house
+            emergencyContacts: []
         },
         {
             username: "emp2",
@@ -73,6 +74,7 @@ const seedEmployees = async (houses) => {
             password: "Pw@123456",
             role: "Employee",
             housingAssignment: houses[1]._id, // Assign employee2 to the second house
+            emergencyContacts: []
         },
         {
             username: "emp3",
@@ -84,6 +86,7 @@ const seedEmployees = async (houses) => {
             password: "Pw@123456",
             role: "Employee",
             housingAssignment: houses[0]._id, // Assign employee3 to the first house
+            emergencyContacts: []
         },
         {
             username: "emp4",
@@ -95,6 +98,7 @@ const seedEmployees = async (houses) => {
             password: "Pw@123456",
             role: "Employee",
             housingAssignment: houses[1]._id,
+            emergencyContacts: []
         },
         {
             username: "hr",
