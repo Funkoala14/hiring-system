@@ -13,8 +13,6 @@ export const NotificationSnackbar = () => {
 
     useEffect(() => {
         if (open) {
-            console.log(123);
-
             const timer = setTimeout(() => {
                 dispatch(clearNotification());
             }, 3000);
