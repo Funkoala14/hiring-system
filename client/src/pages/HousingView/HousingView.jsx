@@ -182,7 +182,7 @@ const HousingFaicilityReport = ({ houseId }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {facilityReports.length ? (
+                        {facilityReports?.length ? (
                             facilityReports.map((row) => (
                                 <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
