@@ -18,7 +18,7 @@ export const getHousesList = async (_req, res) => {
 
 export const postAddHouse = async (req, res) => {
     try {
-        const { address, landlord, title } = req.body;
+        const { address, landlord, title, facilityInfo} = req.body;
 
         const existingHouse = await House.findOne({ title }).exec();
         if (existingHouse) {
@@ -28,7 +28,7 @@ export const postAddHouse = async (req, res) => {
             });
         }
 
-        const newHouse = new House({ title, address, landlord });
+        const newHouse = new House({ title, address, landlord, facilityInfo });
         await newHouse.save();
 
         const houses = await House.find()

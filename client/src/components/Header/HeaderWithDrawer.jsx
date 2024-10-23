@@ -129,8 +129,6 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, employeePat
         },
     ];
 
-    console.log(auth);
-
 
     const hrLinks = [
         {

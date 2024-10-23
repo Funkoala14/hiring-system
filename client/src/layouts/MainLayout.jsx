@@ -26,7 +26,6 @@ export default function MainLayout({ children }) {
 
     const handleLogout = () => {
         dispatch(logoutThunk());
-        window.location.href = "/login"
     };
 
 

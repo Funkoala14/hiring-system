@@ -19,10 +19,10 @@ const houseSchema = new Schema({
     email: { type: String, required: true },
   },
   facilityInfo: {
-    numberOfBeds: { type: Number, default: 0 },
-    numberOfMattresses: { type: Number, default: 0 },
-    numberOfTables: { type: Number, default: 0 },
-    numberOfChairs: { type: Number, default: 0 },
+    beds: { type: Number, default: 0 },
+    mattresses: { type: Number, default: 0 },
+    tables: { type: Number, default: 0 },
+    chairs: { type: Number, default: 0 },
   },
   residents: [{ 
     type: Schema.Types.ObjectId, ref: 'Employee'

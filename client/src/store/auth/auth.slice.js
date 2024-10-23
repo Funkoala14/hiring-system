@@ -68,8 +68,6 @@ const authSlice = createSlice({
         state.id = payload?.id;
         state.role = payload?.role;
         state.token = payload?.token;  
-        
-        console.log('payload: ', payload);
       },
     );
     builder.addMatcher(
