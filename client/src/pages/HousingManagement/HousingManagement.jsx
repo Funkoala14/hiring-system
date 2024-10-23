@@ -277,6 +277,9 @@ const AddHousing = () => {
                         maxLength='6'
                     />
                 </label>
+                <Typography variant='subtitle1' sx={{  flexShrink:'1', width: "100%" }}>
+                    Landlord Information
+                </Typography>
                 <label className='input-item'>
                     Landlord Legal Full Name
                     <TextField
@@ -310,6 +313,54 @@ const AddHousing = () => {
                         type='email'
                     />
                 </label>
+                <Typography variant='subtitle1' sx={{  flexShrink:'1', width: "100%" }}>
+                    Facility Information
+                </Typography>
+                <label className='input-item'>
+                    Beds
+                    <TextField
+                        required
+                        id='standard-required'
+                        value={formData?.facilityInfo?.beds || ''}
+                        onChange={handleChange('facilityInfo.beds')}
+                        variant='standard'
+                        type='number'
+                    />
+                </label>
+                <label className='input-item'>
+                    Mattresses
+                    <TextField
+                        required
+                        id='standard-required'
+                        value={formData?.facilityInfo?.mattresses || ''}
+                        onChange={handleChange('facilityInfo.mattresses')}
+                        variant='standard'
+                        type='number'
+                    />
+                </label>
+                <label className='input-item'>
+                    Tables
+                    <TextField
+                        required
+                        id='standard-required'
+                        value={formData?.facilityInfo?.tables || ''}
+                        onChange={handleChange('facilityInfo.tables')}
+                        variant='standard'
+                        type='number'
+                    />
+                </label>
+                <label className='input-item'>
+                    Chairs
+                    <TextField
+                        required
+                        id='standard-required'
+                        value={formData?.facilityInfo?.chairs || ''}
+                        onChange={handleChange('facilityInfo.chairs')}
+                        variant='standard'
+                        type='number'
+                    />
+                </label>
+
                 <Button variant='outlined' type='submit'>
                     Add housing
                 </Button>

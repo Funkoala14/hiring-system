@@ -82,6 +82,24 @@ const HousingDetail = ({ housing }) => {
                 <h1 className='title'>{housing.title}</h1>
             </header>
             <Typography variant='h5' sx={{ m: '1rem 0', borderBottom: '1px solid #aaa' }}>
+                Facility Information
+            </Typography>
+            <Card className='view-container' sx={{ p: '1rem' }}>
+                <label className='view-item'>
+                    Beds<span>{housing?.facilityInfo?.beds}</span>
+                </label>
+                <label className='view-item'>
+                    Mattresses
+                    <span>{housing?.facilityInfo?.mattresses}</span>
+                </label>
+                <label className='view-item'>
+                    Tables<span>{housing?.facilityInfo?.tables}</span>
+                </label>
+                <label className='view-item'>
+                    Chairs<span>{housing?.facilityInfo?.chairs}</span>
+                </label>
+            </Card>
+            <Typography variant='h5' sx={{ m: '1rem 0', borderBottom: '1px solid #aaa' }}>
                 Address
             </Typography>
             <Card className='view-container' sx={{ p: '1rem' }}>
@@ -168,7 +186,7 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({ title: '', description: '' });
     const [selectedReport, setSelectedReport] = useState(null); // store the selected report for comments
-    const [chatboxOpen, setChatboxOpen] = useState(false); 
+    const [chatboxOpen, setChatboxOpen] = useState(false);
     const { facilityReports, page, limit, totalPages, totalReports } = useSelector(
         (state) => state.housing.reportsInfo
     );
@@ -186,11 +204,11 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
         try {
             const response = await fetch(`http://localhost:5000/v1/api/housing/report/${reportId}`, {
                 headers: {
-                    'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
+                    Authorization: `Bearer ${document.cookie.split('token=')[1]}`,
                 },
-                credentials: 'include'
+                credentials: 'include',
             });
-            
+
             if (response.ok) {
                 const updatedReport = await response.json();
                 setSelectedReport(updatedReport);
@@ -202,7 +220,6 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
             console.error('Error fetching report:', error);
         }
     };
-    
 
     const handleAddComment = async (newComment) => {
         try {
@@ -210,23 +227,26 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
+                    Authorization: `Bearer ${document.cookie.split('token=')[1]}`,
                 },
                 body: JSON.stringify({
                     reportId: selectedReport._id,
                     description: newComment,
                 }),
-                credentials: 'include'
+                credentials: 'include',
             });
-    
+
             if (response.ok) {
-                const updatedReportResponse = await fetch(`http://localhost:5000/v1/api/housing/report/${selectedReport._id}`, {
-                    headers: {
-                        'Authorization': `Bearer ${document.cookie.split('token=')[1]}`
-                    },
-                    credentials: 'include'
-                });
-    
+                const updatedReportResponse = await fetch(
+                    `http://localhost:5000/v1/api/housing/report/${selectedReport._id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${document.cookie.split('token=')[1]}`,
+                        },
+                        credentials: 'include',
+                    }
+                );
+
                 const updatedReport = await updatedReportResponse.json();
                 setSelectedReport(updatedReport);
             } else {
@@ -236,7 +256,6 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
             console.error('Error adding comment:', error);
         }
     };
-    
 
     const handleSubmit = async () => {
         const config = { limit, houseId, ...formData };
@@ -282,7 +301,9 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
                                         row?.createdBy?.lastName
                                     }`}</TableCell>
                                     <TableCell>
-                                    <Button variant='outlined' onClick={() => handleCommentButtonClick(row._id)}>View</Button>
+                                        <Button variant='outlined' onClick={() => handleCommentButtonClick(row._id)}>
+                                            Comment
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -314,12 +335,15 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
                 </>
             )}
             {/* Chatbox Drawer */}
-            <ChatBox
-                open={chatboxOpen}
-                onClose={() => setChatboxOpen(false)}
-                comments={selectedReport?.comments || []}
-                onAddComment={handleAddComment}
-            />
+            {selectedReport && (
+                <ChatBox
+                    report={selectedReport}
+                    open={chatboxOpen}
+                    onClose={() => setChatboxOpen(false)}
+                    comments={selectedReport?.comments || []}
+                    onAddComment={handleAddComment}
+                />
+            )}
         </div>
     );
 };

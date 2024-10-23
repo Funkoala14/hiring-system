@@ -46,7 +46,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                     variant="contained"
-                    onClick={() => navigate('/hr/housing-mangement')}
+                    onClick={() => navigate('/hr/housing-management')}
                 >
                     Housing
                 </Button>

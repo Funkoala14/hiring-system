@@ -27,7 +27,7 @@ const Login = () => {
                     navigate('/employee/my-profile');  // Employee redirect
                 }
             }
-        }, [isLoggedIn, role, navigate]); 
+        }, [isLoggedIn, role]); 
 
     
       if (isLoading) {
