@@ -23,6 +23,7 @@ import { selectIsLoggedIn } from '../../store/auth/auth.selector';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumbs, Chip, IconButton, Link, List, ListItem, ListItemText, styled, Typography } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { showNotification } from '../../store/notificationSlice/notification.slice';
 
 const Profile = ({ parent }) => {
     const navigate = useNavigate();
@@ -106,6 +107,16 @@ const AvatarSection = ({ info, username, showEdit }) => {
         console.log(event.target.files[0]);
 
         if (file) {
+            // Check file size (1MB = 1 * 1024 * 1024 bytes)
+            const maxSizeInBytes = 1 * 1024 * 1024; // 1MB
+            if (file.size > maxSizeInBytes) {
+                dispatch(showNotification({
+                    message: "File size exceeds 1MB. Please select a smaller file.",
+                    severity: 'error',
+                }))
+                return;
+            }
+
             try {
                 await uploadImageToServer(file);
             } catch (error) {
