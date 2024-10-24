@@ -48,6 +48,7 @@ const EmployeeSchema = new Schema({
         number: { type: String, trim: true, default: ""  },
         expirationDate: { type: Date, default: null  },
         copy: { type: String, trim: true, default: "" }, // Driver license file URL
+        copyName: { type: String, trim: true, default: "" }, // Driver license file URL
     },
     reference: {
         firstName: { type: String, trim: true, default: ""},

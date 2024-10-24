@@ -1,19 +1,42 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { get, post } from '../../services/api.js'
+import { get, post, upload } from '../../services/api.js'
 
 
 export const submitOnboarding = createAsyncThunk(
   'onboarding/submit',
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await post('/onboarding/submit', formData);
-      console.log("response", response);
+      const formDataObj = new FormData();
+
+      // Loop through the formData and append to FormData object
+      for (const [key, value] of Object.entries(formData)) {
+        if (key === 'documents' || key === 'driverLicense' || key === 'img') {
+          // Append files for documents, driverLicense, and profile image
+          if (Array.isArray(value)) {
+            value.forEach((file) => formDataObj.append(key, file));
+          } else {
+            formDataObj.append(key, value);
+          }
+        } else {
+          // Append other fields
+          formDataObj.append(key, value);
+        }
+      }
+
+      // Post formDataObj to the server
+      const response = await upload('/onboarding/submit', formData);
+      console.log('response.data', response.data);
+
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+      return rejectWithValue(error.response?.data || 'Something went wrong');
     }
   }
 );
+
+
+
+
 
 const onboardingSlice = createSlice({
   name: 'onboarding',
@@ -23,7 +46,11 @@ const onboardingSlice = createSlice({
       lastName: '',
       middleName: '',
       preferredName: '',
-      image: null,
+      image: {
+        src : "",
+        name: ""
+      },
+      img: null,
       address: {
         buildingOrAptNumber: '',
         street: '',
@@ -41,10 +68,11 @@ const onboardingSlice = createSlice({
       ssn: '',
       dob: '',
       gender: '',
-      driverLicense: {
+      driverLicenseDetails: {
         number: '',
         expirationDate: '',
-        copy: null,
+        driverLicense: null
+
       },
       reference: {
         firstName: '',
@@ -72,6 +100,23 @@ const onboardingSlice = createSlice({
   reducers: {
     updateFormField(state, action) {
       state.formData = { ...state.formData, ...action.payload };
+    },
+    updateEmergencyContact(state, action) {
+      const { index, key, value } = action.payload;
+      state.formData.emergencyContacts[index][key] = value;
+    },
+    addEmergencyContact(state) {
+      state.formData.emergencyContacts.push({
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        relationship: '',
+      });
+    },
+    removeEmergencyContact(state, action) {
+      const index = action.payload;
+      state.formData.emergencyContacts.splice(index, 1);
     },
   },
   extraReducers: (builder) => {
@@ -102,5 +147,5 @@ const onboardingSlice = createSlice({
   },
 });
 
-export const { updateFormField } = onboardingSlice.actions;
+export const { updateFormField, updateEmergencyContact, addEmergencyContact, removeEmergencyContact } = onboardingSlice.actions;
 export default onboardingSlice.reducer;
