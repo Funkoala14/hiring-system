@@ -304,8 +304,8 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, employeePat
                     <Link
                         underline="none"
                         href={auth.role === "Employee" ? employeePaths.home : hrPaths.home}
-                        sx={{ color: 'white' }}>
-                        HR Management System
+                        sx={{ color: 'white', display: 'flex', alignItems: 'center' }}>
+                        OnTrack HR
                     </Link>
                     <Box sx={{ flexGrow: 1 }} />
                     {auth.isLoggedIn ? renderUserActions : renderLoginOrSignup}

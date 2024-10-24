@@ -24,7 +24,16 @@ const profileSlice = createSlice({
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        resetProfileState: (state) => {
+            state.info = null;
+            state.loading = false;
+            state.error = null;
+        },
+        setInfo(state, action) {
+            state.info = action.payload; // Set the info state with the payload
+          },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchEmployeeInfo.pending, setPending)
@@ -51,5 +60,7 @@ const profileSlice = createSlice({
 
 // export const {} = profileSlice.actions;
 // export const {} = profileSlice.selectors;
+
+export const { resetProfileState } = profileSlice.actions;
 
 export default profileSlice.reducer;

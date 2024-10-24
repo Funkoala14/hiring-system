@@ -28,10 +28,9 @@ const RegistrationPage = () => {
     const verifyToken = async () => {
       try {
         const response = await post('/user/verify-token', { token });
-        const { email} = response
+        const { email } = response;
         setEmail(email);
         setIsTokenValid(true);
-        
       } catch (error) {
         console.error('Error validating token:', error);
       }
@@ -40,7 +39,7 @@ const RegistrationPage = () => {
     if (token) {
       verifyToken();
     }
-  }, []);
+  }, [location]);
 
   // Handle navigation after successful login
   useEffect(() => {
@@ -49,9 +48,8 @@ const RegistrationPage = () => {
       if (role === 'HR') {
         navigate('/hr/dashboard');  // HR redirect
       } else {
-        navigate(`/employee/details?username=${credentials.username}`);  // Employee redirect
+        navigate(`/employee/on-boarding`);  // Employee redirect
       }
-      //
       setCredentials({ username: '', password: '' });
     }
   }, [isLoggedIn, role, navigate, credentials.username]);
@@ -64,12 +62,20 @@ const RegistrationPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Check the username before dispatch
-    console.log('Submitting Username:', credentials.username);
-    dispatch(signupThunk({ ...credentials, email }));
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();  // Prevent default form submission
+    if (credentials.username && credentials.password) {
+      // Check the username before dispatch
+      console.log('Submitting Username:', credentials.username);
+      const registrationResponse = await dispatch(signupThunk({ ...credentials, email })); // Dispatch signup only on manual submit
+      if (registrationResponse && registrationResponse.type === 'auth/signup/fulfilled') {
+        // after successful registration, activate the email
+        await post('/user/activate-email', { email });
+      }
+    } else {
+      console.error('Username or password is missing'); // Handle missing fields
+    }
+    
   };
 
   if (isLoading) {

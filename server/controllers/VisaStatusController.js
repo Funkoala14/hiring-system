@@ -63,7 +63,6 @@ export const getVisaStatusNextStep = async (req, res) => {
 };
 
 export const getAllPendingStatuses = async (_req, res) => {
-  debugger;
   try {
     let allUsers = await User.find({ visaStatus: { $exists: true, $ne: null } })
       .populate({
