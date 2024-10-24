@@ -32,9 +32,9 @@ const NewUserList = () => {
   }
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        User Registration Status
+    <Container style={{marginTop: "2rem"}} >
+      <Typography variant="h5" gutterBottom>
+        New Employee Registration Status
       </Typography>
       <TableContainer component={Paper}>
         <Table>
@@ -42,14 +42,16 @@ const NewUserList = () => {
             <TableRow>
               <TableCell><strong>Name</strong></TableCell>
               <TableCell><strong>Email</strong></TableCell>
+              <TableCell><strong>Register Link</strong></TableCell>
               <TableCell><strong>Activated</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user) => (
+            {users.length > 0 && users.map((user) => (
               <TableRow key={user._id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
+                <TableCell>{user.registerLink}</TableCell>
                 <TableCell>{user.activated ? 'Yes' : 'No'}</TableCell>
               </TableRow>
             ))}
