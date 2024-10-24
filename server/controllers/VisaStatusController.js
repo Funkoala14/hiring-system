@@ -24,7 +24,7 @@ export const submitDocument = async (req, res) => {
     await newDoc.save();
 
     const employee = await User.findById(employeeId).lean().exec();
-
+    
     const updatedStatus = await VisaStatus.findByIdAndUpdate(
       employee.visaStatus,
       { $push: { documents: newDoc._id } },
@@ -64,7 +64,6 @@ export const getVisaStatusNextStep = async (req, res) => {
 };
 
 export const getAllPendingStatuses = async (_req, res) => {
-  debugger;
   try {
     let allUsers = await User.find({ visaStatus: { $exists: true, $ne: null } })
       .populate({
@@ -134,6 +133,7 @@ export const getAllApprovedStatuses = async (_req, res) => {
 const appendPreviewUrl = (document) => {
   return { ...document, previewUrl: generatePresignedUrl(document.src) };
 };
+
 export const getNextStep = (documents) => {
   try {
     const sequence = ["OPT Receipt", "OPT EAD", "I-983", "I-20"];
@@ -172,8 +172,8 @@ export const getNextStep = (documents) => {
       return sortedDocuments[sortedDocuments.length - 1];
     }
 
-    // Get the last submitted document in the sequence
-    const lastDocument = sortedDocuments[sortedDocuments.length - 1];
+  // Get the last submitted document in the sequence
+  const lastDocument = sortedDocuments[sortedDocuments.length - 1];
 
     // If the last submitted document is not approved, return it
     if (lastDocument && lastDocument.status !== "approved") {
