@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, CircularProgress } from '@mui/material';
 import { selectIsLoggedIn, selectIsLoading } from '../../store/auth/auth.selector';
 import { loginThunk } from '../../store/auth/auth.thunk';
+import Loading from '../../components/Loading';
 
 const Login = () => {
 
@@ -31,7 +32,7 @@ const Login = () => {
 
     
       if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loading />;
       }
     
       const handleChange = (e) => {

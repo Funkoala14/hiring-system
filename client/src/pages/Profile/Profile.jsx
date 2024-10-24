@@ -25,6 +25,7 @@ import { Breadcrumbs, Chip, IconButton, Link, List, ListItem, ListItemText, styl
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { showNotification } from '../../store/notificationSlice/notification.slice';
 import { formatDate, formatDateForInput } from '../../utils/publicUtils';
+import Loading from '../../components/Loading';
 
 const Profile = ({ parent }) => {
     const navigate = useNavigate();
@@ -50,7 +51,7 @@ const Profile = ({ parent }) => {
     }, [dispatch]);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <Loading />;
     }
 
     if (error) {

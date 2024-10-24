@@ -4,6 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
 import useAuthInit from "./hooks/useAuthInit";
 import { NotificationSnackbar } from "./components/NotificationSnackBar/NotificationSnackBar";
+import Loading from "./components/Loading";
 
 const theme = createTheme({
   palette: {
@@ -19,7 +20,7 @@ function App() {
   const { isLoading } = useAuthInit();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />
   }
   
   return (

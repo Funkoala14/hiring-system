@@ -1,22 +1,22 @@
 // pages/Dashboard.js
 
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Typography, Container, Button, Box } from '@mui/material';
 import { logoutThunk } from '../../store/auth/auth.thunk';
 import { useNavigate } from 'react-router-dom';
+import { selectIsLoggedIn } from '../../store/auth/auth.selector';
 
 const Dashboard = () => {
+    const { username } = useSelector(selectIsLoggedIn);
 
     const navigate = useNavigate();
     
     return (
         <Container>
-            <Typography variant="h3" align="center" gutterBottom>
-                HR Dashboard
-            </Typography>
+            <img src="https://susieshi.s3.us-east-2.amazonaws.com/logo.svg" alt="logo" style={{width: "20vw", height: "20vw", margin: "0 auto"}}/>
             <Typography variant="h5" align="center">
-                Welcome
+                Welcome, {username}
             </Typography>
 
             <Box mt={4} display="flex" justifyContent="space-around">
