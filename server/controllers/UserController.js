@@ -284,6 +284,7 @@ export const getEmployeeList = async (req, res) => {
     try {
         const employees = await Employee.find({ role: 'Employee' })
             .select('-__v -password -__t')
+            .populate("visaStatus")
             .sort({ lastName: 1 })
             .lean()
             .exec();
