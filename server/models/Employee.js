@@ -3,6 +3,8 @@ import validator from 'validator';
 import User from './User.js';
 import House from './House.js'
 import VisaStatus from './VisaStatus.js'; // Import to make sure VisaStatus has been initialized correctly
+import Application from './Application.js';
+import onboardingStatus from './OnboardingStatus.js'
 
 const refType = Schema.Types.ObjectId;
 
@@ -41,6 +43,7 @@ const EmployeeSchema = new Schema({
     },
     housingAssignment: { type: refType, ref: 'House' },
     visaStatus: { type: refType, ref: 'VisaStatus' },
+    onboardingApplication: { type: refType, ref: 'Application'},
     onboardingStatus: { type: refType, ref: 'OnboardingStatus' }, // Reference to OnboardingStatus
 });
 
@@ -57,12 +60,12 @@ EmployeeSchema.pre('save', function (next) {
         return next(new Error('Work phone number is invalid.'));
     }
 
-    if (employee.emergencyContact.phone && !validator.isMobilePhone(employee.emergencyContact.phone, 'en-US')) {
+    if (employee.emergencyContacts.phone && !validator.isMobilePhone(employee.emergencyContacts.phone, 'en-US')) {
         return next(new Error('Emergency contact phone number is invalid.'));
     }
 
     // Email
-    if (employee.emergencyContact.email && !validator.isEmail(employee.emergencyContact.email)) {
+    if (employee.emergencyContacts.email && !validator.isEmail(employee.emergencyContacts.email)) {
         return next(new Error('Emergency contact email is invalid.'));
     }
 
