@@ -57,13 +57,15 @@ EmployeeSchema.pre('save', function (next) {
         return next(new Error('Work phone number is invalid.'));
     }
 
-    if (employee.emergencyContact.phone && !validator.isMobilePhone(employee.emergencyContact.phone, 'en-US')) {
-        return next(new Error('Emergency contact phone number is invalid.'));
-    }
-
-    // Email
-    if (employee.emergencyContact.email && !validator.isEmail(employee.emergencyContact.email)) {
-        return next(new Error('Emergency contact email is invalid.'));
+    if (employee.emergencyContacts && employee.emergencyContacts.length > 0) {
+        for (const contact of employee.emergencyContacts) {
+            if (contact.phone && !validator.isMobilePhone(contact.phone, 'en-US')) {
+                return next(new Error(`Emergency contact phone number for ${contact.firstName} is invalid.`));
+            }
+            if (contact.email && !validator.isEmail(contact.email)) {
+                return next(new Error(`Emergency contact email for ${contact.firstName} is invalid.`));
+            }
+        }
     }
 
     // If everything is fine, proceed to save
