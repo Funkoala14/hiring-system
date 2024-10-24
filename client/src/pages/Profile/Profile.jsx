@@ -866,7 +866,7 @@ const EmergencySection = ({ info, username, showEdit }) => {
                         )}
                     </div>
                     <div className='contact-container'>
-                        {info?.emergencyContacts.length > 0 ? (
+                        {info?.emergencyContacts?.length > 0 ? (
                             info?.emergencyContacts?.map((contact, index) => (
                                 <div key={contact._id} className='contact-item'>
                                     <Chip

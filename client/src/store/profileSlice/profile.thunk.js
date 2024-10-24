@@ -6,7 +6,7 @@ export const fetchEmployeeInfo = createAsyncThunk(
     "profile/fetchEmployeeInfo",
     async (formData, { rejectWithValue, dispatch  }) => {
         try {
-            const response = await post("/user/info", formData);
+            const response = await post("/employee/info", formData);
             const { data, code, message } = response;
             return data;
         } catch (error) {
@@ -26,7 +26,7 @@ export const updateEmployeeInfo = createAsyncThunk(
     "profile/updateEmployeeInfo",
     async (formData, { rejectWithValue, dispatch  }) => {
         try {
-            const response = await post("/user/update-info", formData);
+            const response = await post("/employee/update-info", formData);
             const { data, code, message } = response;
             dispatch(
                 showNotification({
@@ -52,7 +52,7 @@ export const updateEmployeeAvatar = createAsyncThunk(
     "profile/updateAvatar",
     async (formData, { rejectWithValue, dispatch }) => {
         try {
-            const response = await upload("/user/update-avatar", formData);
+            const response = await upload("/employee/update-avatar", formData);
             const { data, code, message } = response;
             dispatch(
                 showNotification({
