@@ -17,7 +17,8 @@ const Confirmation = () => {
 
   // Documents (driver's license, work authorization, etc.)
   const documents = [
-    { name: "Driver’s License", url: formData.driverLicense.copy },
+    { name: "Profile Picture", url: formData.profilePicture},
+    { name: "Driver’s License", url: formData.driverLicense},
     { name: "Work Authorization", url: formData.documents[0] },
     // other documents
   ];
