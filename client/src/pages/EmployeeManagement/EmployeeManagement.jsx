@@ -66,12 +66,14 @@ const EmployeeManagement = () => {
         dispatch(clearSearch(list));
     };
 
-    const handleSearch = () => {
+    const handleSearch = (value) => {
+        console.log('handleSearch', query, value);
+
         const results = list.filter(
             (item) =>
-                item.firstName?.toLowerCase().includes(query.toLowerCase()) ||
-                item.lastName?.toLowerCase().includes(query.toLowerCase()) ||
-                item.preferredName?.toLowerCase().includes(query.toLowerCase())
+                item.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+                item.lastName?.toLowerCase().includes(value.toLowerCase()) ||
+                item.preferredName?.toLowerCase().includes(value.toLowerCase())
         );
         console.log(results);
 
@@ -107,7 +109,7 @@ const EmployeeManagement = () => {
                                         </Link>
                                     </TableCell>
                                     <TableCell>{row.ssn}</TableCell>
-                                    <TableCell>{row.workauth}</TableCell>
+                                    <TableCell>{row.visaStatus?.visaTitle}</TableCell>
                                     <TableCell>{row.cellPhone}</TableCell>
                                     <TableCell>{row.email}</TableCell>
                                 </TableRow>

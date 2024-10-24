@@ -89,10 +89,10 @@ const HRVisaStatus = () => {
 
   const handleReset = () => dispatch(clearSearch(allStatuses));
 
-  const handleSearch = () => {
+  const handleSearch = (value) => {
     const results = allStatuses.filter((item) =>
       [item.firstName, item.lastName, item.preferredName].some((name) =>
-        name?.toLowerCase().includes(query.toLowerCase())
+        name?.toLowerCase().includes(value.toLowerCase())
       )
     );
     dispatch(setFilteredList(results));
