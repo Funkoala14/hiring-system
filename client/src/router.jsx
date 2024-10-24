@@ -5,6 +5,7 @@ import HRVisaStatus from "./pages/HRVisaStatus/HRVisaStatus";
 import Review from "./pages/OnBoarding/Review";
 import Confirmation from "./pages/OnBoarding/Confirmation";
 import Loading from "./components/Loading";
+import SendLink from "./pages/HiringManagement/SendRegistration";
 
 const RegistrationPage = lazy(() => import("@pages/Registration/Registration"));
 const Home = lazy(() => import("@pages/Home/Home"));
@@ -45,11 +46,7 @@ function AppRouter() {
 
         {/* RegistrationPage Route */}
         <Route path="/register" element={<RegistrationPage />} />
-        {/* RegistrationPage Route */}
-        <Route path="/register" element={<RegistrationPage />} />
 
-        {/* Login Route */}
-        <Route path="/login" element={<Login />} />
         {/* Login Route */}
         <Route path="/login" element={<Login />} />
 
@@ -71,7 +68,7 @@ function AppRouter() {
             path="on-boarding/confirmation"
             element={<Confirmation parent={"on-boarding"} />}
           />
-          {/* Confirmation Route */}
+          {/* pending Route for review */}
           <Route
             path="on-boarding/pending"
             element={<Review parent={"on-boarding"} />}
@@ -93,24 +90,13 @@ function AppRouter() {
               </MainLayout>
             }
           />
-
-          {/* On-Boarding Route (without Header and Navbar) */}
-
-          <Route path="on-boarding" element={<OnBoarding/>} /> 
-
-          {/* Confirmation Route */}
-          <Route
-            path="on-boarding/confirmation"
-            element={<Confirmation parent={"on-boarding"} />}
-          />
  
-
           {/* Visa-Status Route */}
           <Route
             path="visa-status"
             element={
               <MainLayout>
-                <VisaStatus />
+                <SendLink />
               </MainLayout>
             }
           />
@@ -189,6 +175,15 @@ function AppRouter() {
             element={
               <MainLayout>
                 <ApplicationDetails />
+              </MainLayout>
+            }
+          />
+
+          <Route
+            path="contact"
+            element={
+              <MainLayout>
+                <SendLink />
               </MainLayout>
             }
           />
