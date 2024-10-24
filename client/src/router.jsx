@@ -9,6 +9,7 @@ import NotFound from "./pages/Home/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import Forbidden from "./pages/Home/Forbidden";
 import OnBoarding from "./pages/OnBoarding/OnBoarding";
+import Review from "./pages/OnBoarding/Review";
 import Confirmation from "./pages/OnBoarding/Confirmation";
 import Profile from "./pages/Profile/Profile";
 import EmployeeManagement from "./pages/EmployeeManagement/EmployeeManagement";
@@ -68,6 +69,11 @@ function AppRouter() {
           <Route
             path="on-boarding/confirmation"
             element={<Confirmation parent={"on-boarding"} />}
+          />
+          {/* Confirmation Route */}
+          <Route
+            path="on-boarding/pending"
+            element={<Review parent={"on-boarding"} />}
           />
           {/* Employee Personal Info Route (with MainLayout) */}
           <Route

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -10,6 +10,8 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  resetFeedback,
+  setInitialFormData,
   submitOnboarding,
   updateFormField,
 } from "../../store/onboardingSlice/onboarding.slice";
@@ -25,11 +27,48 @@ const OnboardingForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { formData, status, error } = useSelector((state) => state.onboarding);
+  const { formData, status, error, feedback } = useSelector(
+    (state) => state.onboarding
+  );
+  const { info } = useSelector((state) => state.profile);
+  let userStatus = info?.onboardingStatus
+    ? info?.onboardingStatus.status
+    : "Unknown";
+  console.log("userStatus", userStatus);
+
+  // Effect to set initial form data if the application was rejected
+
+  useEffect(() => {
+    if (userStatus === "Rejected" && info) {
+      console.log("Setting form data for rejected status", info);
+      dispatch(setInitialFormData(info)); // Assuming info contains the necessary fields
+    }
+  }, [userStatus, info, dispatch]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
+    // Handle clearing the driver license details if 'hasLicense' is set to 'no'
+    if (name === "driverLicense.hasLicense" && value === "no") {
+      dispatch(
+        updateFormField({
+          driverLicense: {
+            hasLicense: "no", // Set hasLicense to "no"
+            number: "", // Clear number
+            expirationDate: "", // Clear expiration date
+            driverLicenseFile: null, // Clear file input
+          },
+        })
+      );
+    } else if (name === "driverLicense.hasLicense" && value === "yes") {
+      dispatch(
+        updateFormField({
+          driverLicense: {
+            ...formData.driverLicense,
+            hasLicense: "yes",
+          },
+        })
+      );
+    } else if (files) {
       // Handle file inputs
       dispatch(updateFormField({ [name]: files[0] }));
     } else if (name.includes(".")) {
@@ -37,14 +76,6 @@ const OnboardingForm = () => {
       const [key, subkey] = name.split(".");
       dispatch(
         updateFormField({ [key]: { ...formData[key], [subkey]: value } })
-      );
-    } else if (name === "citizenship") {
-      // Handle citizenship changes and automatically adjust citizenshipType
-      dispatch(
-        updateFormField({
-          citizenship: value,
-          citizenshipType: value === "no" ? "non-resident" : "",
-        })
       );
     } else {
       // Handle normal text inputs
@@ -63,34 +94,49 @@ const OnboardingForm = () => {
       finalFormData.visaTitle = formData.specificVisaTitle;
     }
 
-      // Ensure that formData.documents is an array before adding optReceipt
-    finalFormData.documents = Array.isArray(formData.documents) ? [...formData.documents] : [];
-    finalFormData.emergencyContacts = Array.isArray(formData.emergencyContacts) ? [...formData.emergencyContacts] : [];
+    // Ensure that formData.documents is an array before adding optReceipt
+    finalFormData.documents = Array.isArray(formData.documents)
+      ? [...formData.documents]
+      : [];
+    finalFormData.emergencyContacts = Array.isArray(formData.emergencyContacts)
+      ? [...formData.emergencyContacts]
+      : [];
 
     // Add optReceipt to documents if it exists
     if (formData.optReceipt) {
       finalFormData.documents.push(formData.optReceipt);
     }
-    finalFormData = new finalFormData()
+    if (feedback) {
+      // This could be where you handle additional logic before resubmission
+      userStatus = "Pending"; // Reset status to Pending before submission
+    }
+
     // Dispatch finalFormData to the backend
     dispatch(submitOnboarding(finalFormData)).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
+        dispatch(resetFeedback());
         // Redirect to confirmation page after successful submission
         navigate("confirmation");
       }
     });
   };
 
+  const handleResubmit = () => {
+    dispatch(resetFeedback()); // Reset feedback before resubmitting
+  };
+
   return (
     <Container maxWidth="md">
       <Box mt={5}>
-        <Typography variant="h4" gutterBottom sx={{ marginBottom: '1rem' }}>
+        <Typography variant="h4" gutterBottom sx={{ marginBottom: "1rem" }}>
           Onboarding Application
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
+            {/* Display feedback if application is rejected */}
+
             <PersonalInfo formData={formData} handleChange={handleChange} />
-          
+
             <ContactInfo formData={formData} handleChange={handleChange} />
 
             <WorkAuthorization
@@ -126,7 +172,9 @@ const OnboardingForm = () => {
             {/* Display error if form submission fails */}
             {status === "failed" && error && (
               <Grid item xs={12}>
-                <Alert severity="error">{error.message || "failed"}</Alert>
+                <Alert severity="error">
+                  {error.message || "Submission failed"}
+                </Alert>
               </Grid>
             )}
           </Grid>
