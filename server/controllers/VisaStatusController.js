@@ -1,10 +1,7 @@
 import Document from "../models/Document.js";
 import Employee from "../models/Employee.js";
-import Document from "../models/Document.js";
-import Employee from "../models/Employee.js";
 import User from "../models/User.js";
 import VisaStatus from "../models/VisaStatus.js";
-import emailjs from "@emailjs/browser";
 import emailjs from "@emailjs/browser";
 
 export const submitDocument = async (req, res) => {
@@ -27,7 +24,7 @@ export const submitDocument = async (req, res) => {
     await newDoc.save();
 
     const employee = await User.findById(employeeId).lean().exec();
-
+    
     const updatedStatus = await VisaStatus.findByIdAndUpdate(
       employee.visaStatus,
       { $push: { documents: newDoc._id } },
@@ -116,14 +113,7 @@ export const getAllApprovedStatuses = async (_req, res) => {
 
     const approvedStatuses = allUsers.reduce((acc, employee) => {
       const nextStep = getNextStep(employee.visaStatus.documents);
-    const approvedStatuses = allUsers.reduce((acc, employee) => {
-      const nextStep = getNextStep(employee.visaStatus.documents);
 
-      if (nextStep.type === "I-20" && nextStep.status === "approved") {
-        acc.push(employee);
-        return acc;
-      }
-    }, []);
       if (nextStep.type === "I-20" && nextStep.status === "approved") {
         acc.push(employee);
         return acc;
