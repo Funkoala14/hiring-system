@@ -2,6 +2,11 @@ import House from '../models/House.js'; // Import the House model
 import mongoose from './connection.js'; // Import the DB connection
 import Employee from '../models/Employee.js';
 import User from '../models/User.js';
+import FacilityReport from '../models/FacilityReport.js';
+import Document from '../models/Document.js';
+import OnboardingStatus from '../models/OnboardingStatus.js';
+import VisaStatus from '../models/VisaStatus.js';
+import NewUser from '../models/NewUser.js';
 
 // Seed Houses
 const seedHouses = async () => {
@@ -56,6 +61,7 @@ const seedHouses = async () => {
 
     // Clear existing houses and insert new ones
     await House.deleteMany(); // Clear any existing data
+    await FacilityReport.deleteMany();
     const savedHouses = await House.insertMany(houses); // Save the new houses to DB
 
     return savedHouses;
@@ -122,7 +128,11 @@ const seedEmployees = async (houses) => {
 
     // Clear existing users in the database
     await Employee.deleteMany();
-
+    await Document.deleteMany();
+    await OnboardingStatus.deleteMany();
+    await VisaStatus.deleteMany();
+    await NewUser.deleteMany();
+    
     // Loop over each user and save it using Employee.save()
     for (let userData of users) {
         const user = new Employee(userData); // Create a new User instance
