@@ -54,7 +54,6 @@ export const updateEmployeeAvatar = createAsyncThunk(
         try {
             const response = await upload("/user/update-avatar", formData);
             const { data, code, message } = response;
-            console.log(data, message);
             dispatch(
                 showNotification({
                     message: message,
@@ -74,3 +73,23 @@ export const updateEmployeeAvatar = createAsyncThunk(
         }
     }
 );
+
+export const getEmployeeDocs = createAsyncThunk(
+    "profile/getEmployeeDocs",
+    async (formData, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await post("/employee/docs", formData);
+            const { data, code, message } = response;
+            return data;
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Something went wrong';
+            dispatch(
+                showNotification({
+                    message: errorMessage,
+                    severity: 'error',
+                })
+            );
+            return rejectWithValue(errorMessage);
+        }
+    }
+)

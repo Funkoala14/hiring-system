@@ -3,6 +3,8 @@ import validator from 'validator';
 import User from './User.js';
 import House from './House.js'
 import VisaStatus from './VisaStatus.js'; // Import to make sure VisaStatus has been initialized correctly
+import Application from './Application.js';
+import onboardingStatus from './OnboardingStatus.js'
 
 const refType = Schema.Types.ObjectId;
 
@@ -41,6 +43,7 @@ const EmployeeSchema = new Schema({
     },
     housingAssignment: { type: refType, ref: 'House' },
     visaStatus: { type: refType, ref: 'VisaStatus' },
+    onboardingApplication: { type: refType, ref: 'Application'},
     onboardingStatus: { type: refType, ref: 'OnboardingStatus' }, // Reference to OnboardingStatus
 });
 

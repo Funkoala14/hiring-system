@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchEmployeeInfo, updateEmployeeAvatar, updateEmployeeInfo } from './profile.thunk';
+import { fetchEmployeeInfo, getEmployeeDocs, updateEmployeeAvatar, updateEmployeeInfo } from './profile.thunk';
 
 const setPending = (state) => {
     state.loading = true;
@@ -20,6 +20,7 @@ const profileSlice = createSlice({
     name: 'profile',
     initialState: {
         info: {},
+        docs: [],
         loading: false,
         error: null,
     },
@@ -33,10 +34,17 @@ const profileSlice = createSlice({
             .addCase(updateEmployeeInfo.pending, setPending)
             .addCase(updateEmployeeInfo.fulfilled, setFulfilled)
             .addCase(updateEmployeeInfo.rejected, setRejected)
-            
+
             .addCase(updateEmployeeAvatar.pending, setPending)
             .addCase(updateEmployeeAvatar.fulfilled, setFulfilled)
-            .addCase(updateEmployeeAvatar.rejected, setRejected);
+            .addCase(updateEmployeeAvatar.rejected, setRejected)
+
+            .addCase(getEmployeeDocs.pending, setPending)
+            .addCase(getEmployeeDocs.fulfilled, (state, action) => {
+                state.loading = false;
+                state.docs = action.payload.documents;
+            })
+            .addCase(getEmployeeDocs.rejected, setRejected);
     },
     selectors: {},
 });

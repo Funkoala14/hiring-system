@@ -213,6 +213,7 @@ export const getEmployeeDocs = async (req, res) => {
                 path: 'visaStatus',
                 populate: {
                     path: 'documents',
+                    match: { _id: { $exists: true } },
                 },
             })
             .lean()
@@ -224,10 +225,11 @@ export const getEmployeeDocs = async (req, res) => {
 
         return res.status(200).json({
             message: 'success',
-            data: { documents: employee.visaStatus.documents },
+            data: { documents: employee.visaStatus?.documents || [] },
             code: 200,
         });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Internal server error', code: 500 });
     }
 };
@@ -293,7 +295,8 @@ export const getEmployeeList = async (req, res) => {
 export const updateAvatar = async (req, res) => {
     const { id, username } = req.user;
     const file = req.file;
-
+    console.log(file);
+    
     if (!file) {
         return res.status(400).send({
             message: 'No file uploaded',
