@@ -157,10 +157,10 @@ const HousingDetail = ({ housing }) => {
                                     <TableCell component='th' scope='row'>
                                         {parent === 'hr' ? (
                                             <Link href={`/hr/employee-profile?username=${row.username}`}>
-                                                {row.preferedName || row.firstName} {row.lastName}
+                                                {row.preferredName || row.firstName} {row.lastName}
                                             </Link>
                                         ) : (
-                                            `${row.preferedName || row.firstName} ${row.lastName}`
+                                            `${row.preferredName || row.firstName} ${row.lastName}`
                                         )}
                                     </TableCell>
                                     <TableCell>{row.phone}</TableCell>
@@ -297,7 +297,7 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
                                     </TableCell>
                                     <TableCell>{row.description}</TableCell>
                                     <TableCell>{row.createdAt}</TableCell>
-                                    <TableCell>{`${row?.createdBy?.preferedName || row?.createdBy?.firstName} ${
+                                    <TableCell>{`${row?.createdBy?.preferredName || row?.createdBy?.firstName} ${
                                         row?.createdBy?.lastName
                                     }`}</TableCell>
                                     <TableCell>

@@ -104,7 +104,7 @@ const EmployeeManagement = () => {
                                     </TableCell>
                                     <TableCell>{row.ssn}</TableCell>
                                     <TableCell>{row.workauth}</TableCell>
-                                    <TableCell>{row.phone}</TableCell>
+                                    <TableCell>{row.cellPhone}</TableCell>
                                     <TableCell>{row.email}</TableCell>
                                 </TableRow>
                             ))
