@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { login, logout, register, checkToken, getEmployeeInfo, updateEmployeeInfo, updateAvatar} from '../controllers/UserController.js';
+import { login, logout, register, checkToken, getEmployeeInfo, 
+    updateEmployeeInfo, updateAvatar, updateEmployeeDocuments } from '../controllers/UserController.js';
 import validationMiddleware from '../middlewares/validationMiddleware.js';
 import { checkPermission, jwtValidation } from "../middlewares/authMiddleware.js";
-import { uploadFileMiddleware } from '../middlewares/fileMiddleware.js';
+import { uploadFileMiddleware, uploadMultipleFilesMiddleware } from '../middlewares/fileMiddleware.js';
 const { loginUserValidation, createUserValidation } = validationMiddleware;
 
 const userRouter = Router();
@@ -13,7 +14,8 @@ userRouter
     .post("/login", loginUserValidation, login)
     .post("/info", jwtValidation, getEmployeeInfo)
     .post("/update-info", jwtValidation, updateEmployeeInfo)
-    .post("/update-avatar",jwtValidation, uploadFileMiddleware, updateAvatar);
+    .post("/update-avatar",jwtValidation, uploadFileMiddleware, updateAvatar)
+    .post("/update-documents", jwtValidation, uploadMultipleFilesMiddleware, updateEmployeeDocuments);
 
 // User GET routes
 userRouter.get('/logout', logout);
