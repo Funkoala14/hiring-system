@@ -8,7 +8,7 @@ export const getUser = async () => {
 
 export const getEmployeeInfoByUserId = async (config) => {
     try {
-        const response = await post("/user/info", config);
+        const response = await post("/employee/info", config);
         const { data, code, message } = response;
         return data;
     } catch (error) {
