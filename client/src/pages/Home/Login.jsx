@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, CircularProgress } from '@mui/material';
 import { selectIsLoggedIn, selectIsLoading } from '../../store/auth/auth.selector';
 import { loginThunk } from '../../store/auth/auth.thunk';
+import Loading from '../../components/Loading';
 
 const Login = () => {
 
@@ -24,14 +25,14 @@ const Login = () => {
                 if (role === 'HR') {
                     navigate('/hr/dashboard');  // HR redirect
                 } else {
-                    navigate('/employee/my-profile');  // Employee redirect
+                    navigate('/employee/on-boarding');  // Employee redirect
                 }
             }
         }, [isLoggedIn, role]); 
 
     
       if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loading />;
       }
     
       const handleChange = (e) => {

@@ -23,6 +23,9 @@ import { selectIsLoggedIn } from '../../store/auth/auth.selector';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumbs, Chip, IconButton, Link, List, ListItem, ListItemText, styled, Typography } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { showNotification } from '../../store/notificationSlice/notification.slice';
+import { formatDate, formatDateForInput } from '../../utils/publicUtils';
+import Loading from '../../components/Loading';
 
 const Profile = ({ parent }) => {
     const navigate = useNavigate();
@@ -48,7 +51,7 @@ const Profile = ({ parent }) => {
     }, [dispatch]);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <Loading />;
     }
 
     if (error) {
@@ -106,6 +109,18 @@ const AvatarSection = ({ info, username, showEdit }) => {
         console.log(event.target.files[0]);
 
         if (file) {
+            // Check file size (1MB = 1 * 1024 * 1024 bytes)
+            const maxSizeInBytes = 1 * 1024 * 1024; // 1MB
+            if (file.size > maxSizeInBytes) {
+                dispatch(
+                    showNotification({
+                        message: 'File size exceeds 1MB. Please select a smaller file.',
+                        severity: 'error',
+                    })
+                );
+                return;
+            }
+
             try {
                 await uploadImageToServer(file);
             } catch (error) {
@@ -140,11 +155,11 @@ const AvatarSection = ({ info, username, showEdit }) => {
             </Badge>
             <div className='infos flex-col justify-between'>
                 <div className='name'>
-                    {info.preferedName || info.firstName} {info.lastName}
+                    {info.preferredName || info.firstName} {info.lastName}
                 </div>
                 <div>Role: {info.role}</div>
                 <div>Email: {info.email}</div>
-                <div>Birth: {info.birth}</div>
+                <div>Birth: {formatDate(info.dob)}</div>
             </div>
         </div>
     );
@@ -169,30 +184,8 @@ const PersonalSection = ({ info, username, showEdit }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const errors = validateForm();
-        if (Object.keys(errors).length > 0) {
-            setErrors(errors);
-            return;
-        }
-
         dispatch(updateEmployeeInfo({ username, updateData: formData }));
         setEdit(false);
-    };
-
-    const validateForm = () => {
-        const { phone } = formData;
-        const errors = {};
-        const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
-
-        if (!phone) {
-            errors.phone = 'Phone number is required';
-            errors.phone = 'Phone number is required';
-        } else if (!phoneRegex.test(phone)) {
-            errors.phone = 'Invalid phone number format';
-            errors.phone = 'Invalid phone number format';
-        }
-
-        return errors;
     };
 
     return (
@@ -253,8 +246,8 @@ const PersonalSection = ({ info, username, showEdit }) => {
                             Prefered Name
                             <TextField
                                 id='standard-required'
-                                value={formData?.preferedName || ''}
-                                onChange={handleChange('preferedName')}
+                                value={formData?.preferredName || ''}
+                                onChange={handleChange('preferredName')}
                                 variant='standard'
                                 maxLength='20'
                             />
@@ -286,8 +279,8 @@ const PersonalSection = ({ info, username, showEdit }) => {
                             <TextField
                                 required
                                 id='standard-required'
-                                value={formData?.birth || ''}
-                                onChange={handleChange('birth')}
+                                value={formData?.dob ? formatDateForInput(formData.dob) : ''}
+                                onChange={handleChange('dob')}
                                 variant='standard'
                                 type='date'
                             />
@@ -332,7 +325,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                         </label>
                         <label className='view-item'>
                             Prefered Name
-                            <span>{info?.preferedName}</span>
+                            <span>{info?.preferredName}</span>
                         </label>
                         <label className='view-item'>
                             Email Address
@@ -344,7 +337,7 @@ const PersonalSection = ({ info, username, showEdit }) => {
                         </label>
                         <label className='view-item'>
                             Date of Birth
-                            <span>{info?.birth}</span>
+                            <span>{formatDate(info?.dob)}</span>
                         </label>
                         <label className='view-item'>
                             Gender
@@ -393,14 +386,14 @@ const AddressSection = ({ info, username, showEdit }) => {
     };
 
     const validateForm = () => {
-        const { zipcode } = formData.address;
+        const { zipCode } = formData.address;
         const errors = {};
         const zipCodePattern = /^\d{5}(-\d{4})?$/;
 
-        if (!zipcode) {
-            errors.zipcode = 'Zipcode is required';
-        } else if (!zipCodePattern.test(zipcode)) {
-            errors.zipcode = 'Invalid zipcode format';
+        if (!zipCode) {
+            errors.zipCode = 'Zipcode is required';
+        } else if (!zipCodePattern.test(zipCode)) {
+            errors.zipCode = 'Invalid zipCode format';
         }
 
         return errors;
@@ -481,12 +474,12 @@ const AddressSection = ({ info, username, showEdit }) => {
                             <TextField
                                 required
                                 id='standard-required'
-                                value={formData?.address?.zipcode || ''}
-                                onChange={handleChange('address.zipcode')}
+                                value={formData?.address?.zipCode || ''}
+                                onChange={handleChange('address.zipCode')}
                                 variant='standard'
                                 maxLength='5'
-                                error={!!errors.zipcode}
-                                helperText={errors.zipcode}
+                                error={!!errors.zipCode}
+                                helperText={errors.zipCode}
                             />
                         </label>
                     </form>
@@ -518,7 +511,7 @@ const AddressSection = ({ info, username, showEdit }) => {
                             State<span>{info?.address?.state}</span>
                         </label>
                         <label className='view-item'>
-                            Zipcode<span>{info?.address?.zipcode}</span>
+                            Zipcode<span>{info?.address?.zipCode}</span>
                         </label>
                     </div>
                 </>
@@ -552,14 +545,14 @@ const ContactSection = ({ info, username, showEdit }) => {
     };
 
     const validateForm = () => {
-        const { phone } = formData;
+        const { cellPhone } = formData;
         const errors = {};
         const phoneRegex = /^(?:\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
 
-        if (!phone) {
-            errors.phone = 'Phone number is required';
-        } else if (!phoneRegex.test(phone)) {
-            errors.phone = 'Invalid phone number format';
+        if (!cellPhone) {
+            errors.cellPhone = 'Phone number is required';
+        } else if (!phoneRegex.test(cellPhone)) {
+            errors.cellPhone = 'Invalid phone number format';
         }
 
         return errors;
@@ -592,12 +585,12 @@ const ContactSection = ({ info, username, showEdit }) => {
                             <TextField
                                 required
                                 id='standard-required'
-                                value={formData?.phone || ''}
-                                onChange={handleChange('phone')}
+                                value={formData?.cellPhone || ''}
+                                onChange={handleChange('cellPhone')}
                                 variant='standard'
                                 maxLength='10'
-                                error={!!errors.phone}
-                                helperText={errors.phone}
+                                error={!!errors.cellPhone}
+                                helperText={errors.cellPhone}
                             />
                         </label>
                         <label className='input-item'>
@@ -628,7 +621,7 @@ const ContactSection = ({ info, username, showEdit }) => {
                     <div className='view-container'>
                         <label className='view-item'>
                             Cell Phone Number
-                            <span>{info?.phone}</span>
+                            <span>{info?.cellPhone}</span>
                         </label>
                         <label className='view-item'>
                             Work Phone Number
@@ -665,11 +658,11 @@ const EmploymentSetcion = ({ info, username, showEdit }) => {
                 </label>
                 <label className='view-item'>
                     Start Date
-                    <span>{info?.visaStatus?.startDate}</span>
+                    <span>{formatDate(info?.visaStatus?.startDate)}</span>
                 </label>
                 <label className='view-item'>
                     End Date
-                    <span>{info?.visaStatus?.endDate}</span>
+                    <span>{formatDate(info?.visaStatus?.endDate)}</span>
                 </label>
             </div>
         </div>
@@ -928,7 +921,7 @@ const DocumentSection = ({ docs, username }) => {
     return (
         <div className='outlined-container'>
             <div className='title'>Documents</div>
-            <List>
+            <List sx={{ display: 'flex', gap: '1rem' }}>
                 {docs?.length > 0 ? (
                     docs.map((doc) => (
                         // <a

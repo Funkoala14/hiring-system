@@ -1,16 +1,17 @@
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
-import SearchBar from "../../components/SearchBar/SearchBar";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchEmployeeList } from "../../store/employeeSlice/employee.thunk";
-import { clearSearch, setBaseQuery, setFilteredList } from "../../store/searchSlice/search.slice";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Link from '@mui/material/Link';
+import SearchBar from '../../components/SearchBar/SearchBar';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchEmployeeList } from '../../store/employeeSlice/employee.thunk';
+import { clearSearch, setBaseQuery, setFilteredList } from '../../store/searchSlice/search.slice';
+import Loading from '../../components/Loading';
 
 const EmployeeManagement = () => {
     const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const EmployeeManagement = () => {
     }, [list]);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <Loading />;
     }
 
     if (error) {
@@ -94,24 +95,26 @@ const EmployeeManagement = () => {
                     <TableBody>
                         {filteredList.length ? (
                             filteredList.map((row) => (
-                                <TableRow key={row._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
                                         <Link href={`/hr/employee-profile?username=${row.username}`}>
                                             {row.firstName}
-                                            {row.middleName ? ` ${row.middleName} ` : " "}
+                                            {row.middleName ? ` ${row.middleName} ` : ' '}
                                             {row.lastName}
                                         </Link>
                                     </TableCell>
                                     <TableCell>{row.ssn}</TableCell>
                                     <TableCell>{row.workauth}</TableCell>
-                                    <TableCell>{row.phone}</TableCell>
+                                    <TableCell>{row.cellPhone}</TableCell>
                                     <TableCell>{row.email}</TableCell>
                                 </TableRow>
                             ))
                         ) : (
-                            <TableRow sx={{textAlign: 'center'}}>
-                              
-                              <TableCell colSpan={5} align="center">No data found</TableCell></TableRow>
+                            <TableRow sx={{ textAlign: 'center' }}>
+                                <TableCell colSpan={5} align='center'>
+                                    No data found
+                                </TableCell>
+                            </TableRow>
                         )}
                     </TableBody>
                 </Table>

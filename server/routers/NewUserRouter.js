@@ -3,10 +3,8 @@ import generateRegistrationToken from '../utils/generateRegistrationToken.js';
 import jwt from 'jsonwebtoken';
 import NewUser from '../models/NewUser.js';
 
-
 const router = express.Router();
 const { JWT_SECRET } = process.env;
-
 
 router.post('/generate-token', async (req, res) => {
   const { name, email } = req.body;
@@ -19,19 +17,20 @@ router.post('/generate-token', async (req, res) => {
     let user = await NewUser.findOne({ email });
     
     if (!user) {
-      user = new NewUser({ name, email });
+      const token = generateRegistrationToken(email);
+
+      const registrationLink = `http://localhost:3000/register?token=${token}`;
+
+      user = new NewUser({ name, email, registrationLink });
       await user.save();
     }
 
-    const token = generateRegistrationToken(email);
-    
-    res.status(201).json({ data: {token} , message: 'Email is required', code: 201});
+    res.status(201).json({ data: { registrationLink: user.registrationLink }, message: 'Registration link generated', code: 201 });
   } catch (error) {
     console.error('Error creating new user:', error);
-    res.status(500).json({ message: 'Server error', code:500 });
+    res.status(500).json({ message: 'Server error', code: 500 });
   }
 });
-
 
 router.post('/verify-token', (req, res) => {
   const { token } = req.body;
@@ -42,6 +41,27 @@ router.post('/verify-token', (req, res) => {
     res.json({ email: decoded.email });
   } catch (error) {
     res.status(400).json({ message: 'Invalid or expired token' });
+  }
+});
+
+router.post('/activate-email', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
+  try {
+    const user = await NewUser.findOneAndUpdate({ email }, { activated: true }, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'Email activated successfully', data: user });
+  } catch (error) {
+    console.error('Error activating email:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

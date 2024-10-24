@@ -9,6 +9,7 @@ import searchSlice from "./searchSlice/search.slice.js";
 import housingSlice from "./housingSlice/housing.slice.js";
 import notificationReducer from "./notificationSlice/notification.slice.js";
 import hrVisaSlice from "./hrVisaStatus/hrVisaStatus.slice";
+import onboardingSlice from './onboardingSlice/onboarding.slice.js';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -19,7 +20,9 @@ const rootReducer = combineReducers({
   housing: housingSlice,
   notification: notificationReducer,
   hrVisa: hrVisaSlice,
+  onboarding: onboardingSlice,
 });
+
 
 // Persist configuration
 const persistConfig = {

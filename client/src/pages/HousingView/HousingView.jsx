@@ -157,10 +157,10 @@ const HousingDetail = ({ housing }) => {
                                     <TableCell component='th' scope='row'>
                                         {parent === 'hr' ? (
                                             <Link href={`/hr/employee-profile?username=${row.username}`}>
-                                                {row.preferedName || row.firstName} {row.lastName}
+                                                {row.preferredName || row.firstName} {row.lastName}
                                             </Link>
                                         ) : (
-                                            `${row.preferedName || row.firstName} ${row.lastName}`
+                                            `${row.preferredName || row.firstName} ${row.lastName}`
                                         )}
                                     </TableCell>
                                     <TableCell>{row.phone}</TableCell>
@@ -297,7 +297,7 @@ const HousingFaicilityReport = ({ houseId, parent }) => {
                                     </TableCell>
                                     <TableCell>{row.description}</TableCell>
                                     <TableCell>{row.createdAt}</TableCell>
-                                    <TableCell>{`${row?.createdBy?.preferedName || row?.createdBy?.firstName} ${
+                                    <TableCell>{`${row?.createdBy?.preferredName || row?.createdBy?.firstName} ${
                                         row?.createdBy?.lastName
                                     }`}</TableCell>
                                     <TableCell>
@@ -367,6 +367,7 @@ const NewReportForm = ({ handleClose, open, handleSubmit, formData, setFormData 
             <DialogContent dividers sx={{ width: '30vw' }}>
                 <form className='input-container flex-col g-1'>
                     <TextField
+                        sx={{ width: '100%' }}
                         required
                         label='Title'
                         value={formData.title}
@@ -375,6 +376,7 @@ const NewReportForm = ({ handleClose, open, handleSubmit, formData, setFormData 
                     <TextField
                         required
                         label='Description'
+                        sx={{ width: '100%' }}
                         multiline
                         rows={4}
                         value={formData.description}
@@ -383,7 +385,7 @@ const NewReportForm = ({ handleClose, open, handleSubmit, formData, setFormData 
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button color='error'>Cancel</Button>
+                <Button color='error' onClick={handleClose}>Cancel</Button>
                 <Button type='submit' autoFocus onClick={handleSubmit}>
                     Submit
                 </Button>

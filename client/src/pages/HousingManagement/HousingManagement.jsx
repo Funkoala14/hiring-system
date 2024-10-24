@@ -26,6 +26,7 @@ import { addHousing, deleteHousing, fetchHousingList } from '../../store/housing
 import { STATES } from '../../store/constant';
 import { NotificationSnackbar } from '../../components/NotificationSnackBar/NotificationSnackBar';
 import { showNotification } from '../../store/notificationSlice/notification.slice';
+import Loading from '../../components/Loading';
 
 const HousingManagement = () => {
     const dispatch = useDispatch();
@@ -57,7 +58,7 @@ const HousingManagement = () => {
     };
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <Loading />;
     }
 
     if (error) {
@@ -98,7 +99,7 @@ const HousingManagement = () => {
                                     <TableCell>{row.landlord.email}</TableCell>
                                     <TableCell align='center'>{row.residents.length || 0}</TableCell>
                                     <TableCell>
-                                        <Button onClick={() => handleClickOpen(row._id)}>Delete</Button>
+                                        <Button color='error' onClick={() => handleClickOpen(row._id)}>Delete</Button>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -324,8 +325,9 @@ const AddHousing = () => {
                         onChange={handleChange('facilityInfo.beds')}
                         variant='standard'
                         type='number'
-                        step='1'
-                        min='0'
+                        InputProps={{
+                            inputProps: { step: 1, min: 0 }
+                        }}
                     />
                 </label>
                 <label className='input-item'>
@@ -336,8 +338,9 @@ const AddHousing = () => {
                         onChange={handleChange('facilityInfo.mattresses')}
                         variant='standard'
                         type='number'
-                        step='1'
-                        min='0'
+                        InputProps={{
+                            inputProps: { step: 1, min: 0 }
+                        }}
                     />
                 </label>
                 <label className='input-item'>
@@ -348,8 +351,9 @@ const AddHousing = () => {
                         onChange={handleChange('facilityInfo.tables')}
                         variant='standard'
                         type='number'
-                        step='1'
-                        min='0'
+                        InputProps={{
+                            inputProps: { step: 1, min: 0 }
+                        }}
                     />
                 </label>
                 <label className='input-item'>
@@ -360,8 +364,9 @@ const AddHousing = () => {
                         onChange={handleChange('facilityInfo.chairs')}
                         variant='standard'
                         type='number'
-                        step='1'
-                        min='0'
+                        InputProps={{
+                            inputProps: { step: 1, min: 0 }
+                        }}
                     />
                 </label>
 

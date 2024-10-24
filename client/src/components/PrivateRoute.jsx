@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { verifyThunk } from '../store/auth/auth.thunk';
 import { selectIsLoggedIn, selectIsLoading } from '../store/auth/auth.selector';
 import { Navigate } from 'react-router-dom';
+import Loading from './Loading';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
     const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
     }
     
     if (isLoading) {
-      return <div>Loading...</div>;
+      return <Loading />;
     }
 
     // If logged in, but role is not allowed, redirect to a 403 or home page
