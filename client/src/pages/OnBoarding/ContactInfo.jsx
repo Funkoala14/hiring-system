@@ -55,9 +55,9 @@ const ContactInfo = ({ formData, handleChange }) => {
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
-          label="Zipcode"
-          name="address.zipcode"
-          value={formData.address.zipcode}
+          label="Zip Code"
+          name="address.zipCode"
+          value={formData.address.zipCode}
           onChange={handleChange}
           fullWidth
         />
