@@ -1,3 +1,5 @@
+// Imports
+import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -6,102 +8,348 @@ import {
   TableCell,
   TableBody,
   Paper,
-  Modal,
-  Box,
+  IconButton,
+  Tooltip,
   Typography,
-  Button,
+  Box,
+  Chip,
 } from "@mui/material";
-import { selectPendingStatuses } from "../../store/hrVisaStatus/hrVisaStatus.selectors";
+import PreviewModal from "../../components/PreviewModal";
+import AlertDialog from "../../components/AlertDialog";
+import SearchBar from "../../components/SearchBar/SearchBar";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { fetchAllPendingStatuses } from "../../store/hrVisaStatus/hrVisaStatus.thunk";
+import {
+  selectPendingStatuses,
+  selectAllStatuses,
+  selectMessage,
+} from "../../store/hrVisaStatus/hrVisaStatus.selectors";
+import {
+  approveDocument,
+  fetchAllPendingStatuses,
+  fetchAllStatuses,
+  postFeedback,
+  rejectDocument,
+} from "../../store/hrVisaStatus/hrVisaStatus.thunk";
+import {
+  clearSearch,
+  setBaseQuery,
+  setFilteredList,
+} from "../../store/searchSlice/search.slice";
+import { showNotification } from "../../store/notificationSlice/notification.slice";
+import emailjs from "@emailjs/browser";
+import PreviewIcon from "@mui/icons-material/Preview";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import CommentIcon from "@mui/icons-material/Comment";
+import EmailIcon from "@mui/icons-material/Email";
 
+// Constants
 const headers = [
-  "Name",
+  "First Name",
+  "Last Name",
+  "Preferred Name",
   "VISA Title",
   "Start Date",
   "End Date",
   "Days Remaining",
   "Next Step",
-  "Action",
 ];
 
-function calculateRemainingDays(startDate, endDate) {
+// Utility Functions
+const calculateRemainingDays = (startDate, endDate) => {
   const start = new Date(startDate);
   const end = new Date(endDate);
-
-  const diffInMilliseconds = end - start;
-
-  const remainingDays = Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
-
-  return remainingDays;
-}
+  return Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+};
 
 const HRVisaStatus = () => {
-  const allPending = useSelector(selectPendingStatuses);
+  // State and Redux Setup
   const dispatch = useDispatch();
+  const allPending = useSelector(selectPendingStatuses);
+  const allStatuses = useSelector(selectAllStatuses);
+  const message = useSelector(selectMessage);
+  const { query, filteredList } = useSelector((state) => state.search);
+
+  const [selectedFile, setSelectedFile] = useState();
+  const [openModal, setOpenModal] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [feedback, setFeedback] = useState("");
+
+  // Handlers and Actions
+  const setNameSet = async () => {
+    const nameSet = new Set();
+    allStatuses.forEach((employee) => {
+      if (employee.preferredName) nameSet.add(employee.preferredName);
+      if (employee.firstName) nameSet.add(employee.firstName);
+      if (employee.lastName) nameSet.add(employee.lastName);
+    });
+    dispatch(setBaseQuery(Array.from(nameSet)));
+  };
+
+  const handleReset = () => dispatch(clearSearch(allStatuses));
+
+  const handleSearch = () => {
+    const results = allStatuses.filter((item) =>
+      [item.firstName, item.lastName, item.preferredName].some((name) =>
+        name?.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    dispatch(setFilteredList(results));
+  };
+
+  const sendNotification = async (email, name, documentType) => {
+    try {
+      if (!email || !name) {
+        dispatch(
+          showNotification({
+            message: "Missing required fields",
+            severity: "error",
+          })
+        );
+        return;
+      }
+      const response = await emailjs.send(
+        "service_gzafy3n",
+        "template_iq64bnf",
+        { name, email, document_type: documentType },
+        "3X0ppd2T-UG_dgkkz"
+      );
+      const message =
+        response.status === 200
+          ? "Email sent successfully"
+          : "Error with emailjs";
+      dispatch(showNotification({ message }));
+    } catch (error) {
+      dispatch(showNotification({ message: error.message, severity: "error" }));
+    }
+  };
+
+  const handlePreview = (file) => {
+    setOpenModal(true);
+    setSelectedFile(file);
+  };
+
+  const handleApprove = (file) =>
+    dispatch(approveDocument({ documentId: file._id, status: "approved" }));
+
+  const handleReject = (file) => {
+    dispatch(rejectDocument({ documentId: file._id, status: "rejected" }));
+    setOpenDialog(true);
+  };
+
+  const handleComment = () => {
+    dispatch(postFeedback({ documentId: selectedFile._id, feedback }));
+    setOpenDialog(false);
+  };
+
+  const handleNotify = (email, name, documentType) =>
+    sendNotification(email, name, documentType);
+
+  const renderAction = (row) => {
+    const { status, type } = row.nextStep;
+    if (status === "pending") {
+      return (
+        <>
+          <Tooltip title="Preview Document">
+            <IconButton onClick={() => handlePreview(row.nextStep)}>
+              <PreviewIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Approve Document">
+            <IconButton onClick={() => handleApprove(row.nextStep)}>
+              <CheckIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Reject Document">
+            <IconButton onClick={() => handleReject(row.nextStep)}>
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      );
+    } else if (status === "rejected") {
+      return (
+        <>
+          <Tooltip title="Preview Document">
+            <IconButton onClick={() => handlePreview(row.nextStep)}>
+              <PreviewIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Send Comment">
+            <IconButton
+              onClick={() => {
+                setOpenDialog(true);
+                setSelectedFile(row.nextStep);
+              }}
+            >
+              <CommentIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      );
+    }
+    return (
+      <Tooltip title="Send Notification">
+        <IconButton
+          onClick={() => handleNotify("lqz061@gmail.com", row.username, type)}
+        >
+          <EmailIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  };
+
+  // Effects
+  useEffect(() => {
+    if (allStatuses) {
+      dispatch(setFilteredList(allStatuses));
+      setNameSet();
+    }
+  }, [allStatuses]);
 
   useEffect(() => {
     dispatch(fetchAllPendingStatuses());
+    dispatch(fetchAllStatuses());
   }, [dispatch]);
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    if (message) dispatch(showNotification({ message }));
+  }, [message]);
+
+  // Render
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              {headers.map((value) => (
-                <TableCell key={value}>{value}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {allPending.map((row) => (
-              <TableRow
-                key={row.username}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.username}
-                </TableCell>
-                <TableCell>{row.visaStatus.visaTitle}</TableCell>
-                <TableCell>{row.visaStatus.startDate}</TableCell>
-                <TableCell>{row.visaStatus.endDate}</TableCell>
-                <TableCell>
-                  {calculateRemainingDays(
-                    row.visaStatus.startDate,
-                    row.visaStatus.endDate
-                  )}
-                </TableCell>
-                <TableCell>
-                  {`${row.nextStep.type}, ${row.nextStep.status}`}
-                </TableCell>
-                <TableCell>
-                  <Button onClick={handleOpen}>Open modal</Button>
-                </TableCell>
+      <Box>
+        <Typography component="h2" sx={{ mb: 2, fontWeight: "bold" }}>
+          In Progress
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                {headers.map((value) => (
+                  <TableCell key={value} align="center">
+                    {value}
+                  </TableCell>
+                ))}
+                <TableCell align="center">Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
+            </TableHead>
+            <TableBody>
+              {allPending.map((row) => (
+                <TableRow key={row.username}>
+                  <TableCell align="center">{row.firstName ?? ""}</TableCell>
+                  <TableCell align="center">{row.lastName ?? ""}</TableCell>
+                  <TableCell align="center">
+                    {row.preferredName ?? ""}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.visaStatus.visaTitle}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.visaStatus.startDate?.slice(0, 10)}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.visaStatus.endDate?.slice(0, 10)}
+                  </TableCell>
+                  <TableCell align="center">
+                    {calculateRemainingDays(
+                      row.visaStatus.startDate,
+                      row.visaStatus.endDate
+                    )}
+                  </TableCell>
+                  <TableCell align="center">
+                    {`${row.nextStep.type}, ${row.nextStep.status}`}
+                  </TableCell>
+                  <TableCell align="center">{renderAction(row)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+      <Box sx={{ mt: 5 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography component="h2" sx={{ my: 2, fontWeight: "bold" }}>
+            All
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+          <SearchBar
+            list={allStatuses}
+            handleReset={handleReset}
+            handleSearch={handleSearch}
+          />
         </Box>
-      </Modal>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {headers.map((value) => (
+                  <TableCell key={value} align="center">
+                    {value}
+                  </TableCell>
+                ))}
+                <TableCell align="center">Documents</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredList.map((row) => (
+                <TableRow key={row.username}>
+                  <TableCell align="center">{row.firstName ?? ""}</TableCell>
+                  <TableCell align="center">{row.lastName ?? ""}</TableCell>
+                  <TableCell align="center">
+                    {row.preferredName ?? ""}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.visaStatus.visaTitle}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.visaStatus.startDate?.slice(0, 10)}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.visaStatus.endDate?.slice(0, 10)}
+                  </TableCell>
+                  <TableCell align="center">
+                    {calculateRemainingDays(
+                      row.visaStatus.startDate,
+                      row.visaStatus.endDate
+                    )}
+                  </TableCell>
+                  <TableCell align="center">
+                    {`${row.nextStep.type}, ${row.nextStep.status}`}
+                  </TableCell>
+                  <TableCell align="center">
+                    <Box
+                      sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                    >
+                      {row.visaStatus.documents.map((doc) => (
+                        <Chip
+                          key={doc.filename}
+                          label={doc.filename}
+                          onClick={() => handlePreview(doc)}
+                        />
+                      ))}
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+      {selectedFile && (
+        <PreviewModal
+          open={openModal}
+          setOpen={setOpenModal}
+          file={selectedFile}
+        />
+      )}
+      <AlertDialog
+        open={openDialog}
+        setOpen={setOpenDialog}
+        text={feedback}
+        setText={setFeedback}
+        handleComment={handleComment}
+      />
     </>
   );
 };

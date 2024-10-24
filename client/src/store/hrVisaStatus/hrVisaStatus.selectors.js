@@ -6,3 +6,13 @@ export const selectPendingStatuses = createSelector(
   selectHrVisaState,
   ({ pending }) => pending
 );
+
+export const selectAllStatuses = createSelector(
+  selectHrVisaState,
+  ({ all }) => all
+);
+
+export const selectMessage = createSelector(
+  selectHrVisaState,
+  ({ message }) => message
+);
