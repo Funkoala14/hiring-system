@@ -52,10 +52,19 @@ function AppRouter() {
           path="employee"
           element={
             <PrivateRoute allowedRoles={["Employee"]}>
-              <Outlet /> {/* Nested employee routes will be rendered here */}
+              <Outlet /> {/* Outlet to render nested routes */}
             </PrivateRoute>
           }
         >
+          {/* On-Boarding Route (without Header and Navbar) */}
+
+          <Route path="on-boarding" element={<OnBoarding />} />
+
+          {/* Confirmation Route */}
+          <Route
+            path="on-boarding/confirmation"
+            element={<Confirmation parent={"on-boarding"} />}
+          />
           {/* Employee Personal Info Route (with MainLayout) */}
           <Route
             path="my-profile"
