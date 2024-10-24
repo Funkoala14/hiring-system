@@ -33,6 +33,7 @@ const documentSchema = new Schema({
   },
 });
 
+
 const Document = model("Document", documentSchema);
 
 export default Document;
