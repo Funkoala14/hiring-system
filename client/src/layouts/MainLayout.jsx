@@ -20,7 +20,7 @@ export default function MainLayout({ children }) {
         'home': '/hr/dashboard',
         'visaStatus': '/hr/visa-status',
         'housing': '/hr/housing-management',
-        'hiring': '/hr/onboarding-review',
+        'hiring': '/hr/hiring-management',
         'profile': '/hr/employee-management'
     }
 

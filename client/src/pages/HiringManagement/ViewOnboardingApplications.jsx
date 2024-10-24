@@ -5,7 +5,7 @@ import {
   CircularProgress, Button, Typography, Box
 } from '@mui/material';
 
-const ApplicationTables = () => {
+const ApplicationTables = ({ children, value, index, ...other }) => {
   const [applications, setApplications] = useState([]);
   const [activeTab, setActiveTab] = useState('pending');
   const [loading, setLoading] = useState(false);
@@ -59,7 +59,14 @@ const ApplicationTables = () => {
   };
 
   return (
-    <Box p={3}>
+    <Box 
+      p={3} 
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
       <Typography variant="h4" gutterBottom>
         Onboarding Application Review
       </Typography>
