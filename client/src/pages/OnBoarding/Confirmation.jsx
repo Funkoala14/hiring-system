@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -10,13 +10,32 @@ import {
   Box,
 } from "@mui/material";
 import { logoutThunk } from "../../store/auth/auth.thunk";
+import { useNavigate } from "react-router-dom";
+import { fetchEmployeeInfo } from "../../store/profileSlice/profile.thunk";
 
 const Confirmation = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Destructure formData from the onboarding slice and info from the profile slice
   const { formData } = useSelector((state) => state.onboarding);
   const { info } = useSelector((state) => state.profile);
+
+  // Fetch employee information on page load
+  useEffect(() => {
+    dispatch(fetchEmployeeInfo(info));
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Redirect based on onboarding status once data is available
+    if (info && info.onboardingStatus) {
+      const { status } = info.onboardingStatus;
+
+      if (status !== "Pending") {
+        navigate("/employee/on-boarding");
+      }
+    }
+  }, [info, navigate]);
 
   console.log("Confirmation info", info);
   console.log("Confirmation info firstName", info.firstName);
