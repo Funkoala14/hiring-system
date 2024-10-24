@@ -37,10 +37,16 @@ router.post('/verify-token', (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    
     res.json({ email: decoded.email });
   } catch (error) {
-    res.status(400).json({ message: 'Invalid or expired token' });
+    console.error('Token verification error:', error.message);
+    if (error.name === 'TokenExpiredError') {
+      res.status(400).json({ message: 'Token has expired' });
+    } else if (error.name === 'JsonWebTokenError') {
+      res.status(400).json({ message: 'Invalid token' });
+    } else {
+      res.status(400).json({ message: 'Token verification failed' });
+    }
   }
 });
 

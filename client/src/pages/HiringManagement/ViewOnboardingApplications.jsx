@@ -34,7 +34,7 @@ const ApplicationTables = ({ children, value, index, ...other }) => {
   const renderTableRows = () => {
     return applications.map((app) => (
       <TableRow key={app._id}>
-        <TableCell sx={{ width: '30%' }}>{app.name}</TableCell>
+        <TableCell sx={{ width: '30%' }}>{`${app.firstName} ${app.lastName}`}</TableCell>
         <TableCell sx={{ width: '50%' }}>{app.email}</TableCell>
         <TableCell sx={{ width: '20%', textAlign: 'center' }}>
           <Button variant="contained" color="primary" onClick={() => navigate(`/hr/application/${app._id}`)}>
