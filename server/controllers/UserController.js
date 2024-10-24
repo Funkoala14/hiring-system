@@ -182,7 +182,7 @@ export const getEmployeeInfo = async (req, res) => {
                 path: 'housingAssignment',
                 populate: {
                     path: 'residents',
-                    select: '_id username firstName preferedName lastName phone email',
+                    select: '_id username firstName preferredName lastName phone email',
                 },
             })
             .populate('visaStatus onboardingStatus')
@@ -259,7 +259,7 @@ export const updateEmployeeInfo = async (req, res) => {
                 path: 'housingAssignment',
                 populate: {
                     path: 'residents',
-                    select: '_id username firstName preferedName lastName phone email',
+                    select: '_id username firstName preferredName lastName phone email',
                 },
             })
             .lean()
@@ -298,7 +298,7 @@ export const updateAvatar = async (req, res) => {
     const { id, username } = req.user;
     const file = req.file;
     console.log(file);
-    
+
     if (!file) {
         return res.status(400).send({
             message: 'No file uploaded',
@@ -324,7 +324,7 @@ export const updateAvatar = async (req, res) => {
                 path: 'housingAssignment',
                 populate: {
                     path: 'residents',
-                    select: '_id username firstName preferedName lastName phone email',
+                    select: '_id username firstName preferredName lastName phone email',
                 },
             })
             .lean()

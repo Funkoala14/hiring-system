@@ -23,18 +23,18 @@ export const createNewReport = async (req, res) => {
         await house.save();
 
         const newHouse = await House.findById(houseId)
-            .populate({ path: 'residents', select: '_id username firstName preferedName lastName phone email' })
+            .populate({ path: 'residents', select: '_id username firstName preferredName lastName phone email' })
             .populate({
                 path: 'facilityReports',
                 populate: {
                     path: 'createdBy',
-                    select: '_id username firstName preferedName lastName email',
+                    select: '_id username firstName preferredName lastName email',
                 },
             })
             .sort({ createdAt: -1 }) // Sort by creation date (newest first)
             .lean()
             .exec();
-        
+
         await newHouse.facilityReports.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         const paginatedReports = newHouse.facilityReports.slice(0, limit); // Paginate the reports
         const totalReports = newHouse.facilityReports.length;
@@ -72,7 +72,7 @@ export const getReportListByHouse = async (req, res) => {
                 populate: [
                     {
                         path: 'createdBy',
-                        select: '_id username firstName preferedName lastName email',
+                        select: '_id username firstName preferredName lastName email',
                     },
                     {
                         path: 'comments.createdBy', // populate user details for each comment

@@ -5,7 +5,7 @@ export const getHousesList = async (_req, res) => {
     try {
         const houses = await House.find()
             .select('-__v')
-            .populate({ path: 'residents', select: '_id username firstName preferedName lastName phone email' })
+            .populate({ path: 'residents', select: '_id username firstName preferredName lastName phone email' })
             .populate({ path: 'facilityReports' })
             .lean()
             .exec();
@@ -18,7 +18,7 @@ export const getHousesList = async (_req, res) => {
 
 export const postAddHouse = async (req, res) => {
     try {
-        const { address, landlord, title, facilityInfo} = req.body;
+        const { address, landlord, title, facilityInfo } = req.body;
 
         const existingHouse = await House.findOne({ title }).exec();
         if (existingHouse) {
@@ -33,7 +33,7 @@ export const postAddHouse = async (req, res) => {
 
         const houses = await House.find()
             .select('-__v')
-            .populate({ path: 'residents', select: '_id username firstName preferedName lastName phone email' })
+            .populate({ path: 'residents', select: '_id username firstName preferredName lastName phone email' })
             .populate({ path: 'facilityReports', select: '-__v' })
             .lean()
             .exec();
@@ -64,7 +64,7 @@ export const deleteHouse = async (req, res) => {
 
         const houses = await House.find()
             .select('-__v')
-            .populate({ path: 'residents', select: '_id username firstName preferedName lastName phone email' })
+            .populate({ path: 'residents', select: '_id username firstName preferredName lastName phone email' })
             .populate({ path: 'facilityReports', select: '-__v' })
             .lean()
             .exec();
