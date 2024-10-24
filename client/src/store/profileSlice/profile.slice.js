@@ -33,6 +33,9 @@ const profileSlice = createSlice({
         setInfo(state, action) {
             state.info = action.payload; // Set the info state with the payload
           },
+        clearError: (state) => {
+            state.error = null;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -61,6 +64,6 @@ const profileSlice = createSlice({
 // export const {} = profileSlice.actions;
 // export const {} = profileSlice.selectors;
 
-export const { resetProfileState } = profileSlice.actions;
+export const { resetProfileState, setInfo, clearError } = profileSlice.actions;
 
 export default profileSlice.reducer;

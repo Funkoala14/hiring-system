@@ -34,6 +34,9 @@ const housingSlice = createSlice({
         pageChange: (state, action) => {
             state.reportsInfo.page = action.payload;
         },
+        clearError: (state) => {
+            state.error = null;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -65,6 +68,6 @@ const housingSlice = createSlice({
     },
 });
 
-export const { pageChange } = housingSlice.actions;
+export const { pageChange, clearError } = housingSlice.actions;
 export const { selectHousingByTitle } = housingSlice.selectors;
 export default housingSlice.reducer;

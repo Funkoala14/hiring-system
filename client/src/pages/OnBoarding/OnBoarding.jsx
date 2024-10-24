@@ -6,6 +6,7 @@ import useUsername from '../../hooks/useUsername';
 import { logoutThunk } from '../../store/auth/auth.thunk';
 import { useNavigate } from 'react-router-dom';
 import OnboardingForm from './OnboardingForm';
+import { setInfo } from '../../store/profileSlice/profile.slice';
 
 const OnBoarding = () => {
   const dispatch = useDispatch();
