@@ -16,7 +16,7 @@ import { fetchEmployeeInfo } from "../../store/profileSlice/profile.thunk";
 const Confirmation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, info, error } = useSelector((state) => state.profile);
+  const { info } = useSelector((state) => state.profile);
   
   // Fetch employee information on page load
   useEffect(() => {
@@ -29,7 +29,6 @@ const Confirmation = () => {
       const { status } = info.onboardingStatus;
 
       if (status !== "Pending") {
-        setIsRedirecting(true);
         navigate("/employee/on-boarding");
       }
     }

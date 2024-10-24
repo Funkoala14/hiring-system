@@ -41,8 +41,6 @@ const OnBoarding = () => {
     // Redirect based on onboarding status once data is available
     if (info && info.onboardingStatus) {
         const { status } = info.onboardingStatus;
-        console.log('info', info);
-        console.log('status', status);
 
         // Check onboarding status and navigate accordingly
         if (status === 'Approved') {
