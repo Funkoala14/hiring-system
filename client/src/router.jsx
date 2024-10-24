@@ -32,6 +32,7 @@ const ApplicationTables = lazy(() =>
 );
 const ApplicationDetails = lazy(() => import("./pages/ApplicationDetails"));
 const VisaStatus = lazy(() => import("./pages/VisaStatus/VisaStatus"));
+const NewUserList = lazy(() => import('./pages/Registration/NewUserList'));
 
 function AppRouter() {
   return (
@@ -204,6 +205,15 @@ function AppRouter() {
               </MainLayout>
             }
           />
+
+            <Route
+                path="user-registration-status"
+                element={
+                    <MainLayout>
+                        <NewUserList />
+                    </MainLayout>
+                }
+            />
         </Route>
 
         {/* Forbidden Route */}

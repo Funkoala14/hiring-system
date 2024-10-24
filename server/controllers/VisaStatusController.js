@@ -12,18 +12,19 @@ export const submitDocument = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "File not uploaded" });
     }
-    const { originalname, buffer } = req.file;
+    const { originalname, location, key } = req.file;
 
     const newDoc = new Document({
       type,
-      file: buffer,
+      src: location,
       filename: originalname,
+      awsKey: key,
     });
 
     await newDoc.save();
 
     const employee = await User.findById(employeeId).lean().exec();
-    
+
     const updatedStatus = await VisaStatus.findByIdAndUpdate(
       employee.visaStatus,
       { $push: { documents: newDoc._id } },
@@ -63,6 +64,7 @@ export const getVisaStatusNextStep = async (req, res) => {
 };
 
 export const getAllPendingStatuses = async (_req, res) => {
+  debugger;
   try {
     let allUsers = await User.find({ visaStatus: { $exists: true, $ne: null } })
       .populate({
@@ -73,14 +75,20 @@ export const getAllPendingStatuses = async (_req, res) => {
       .exec();
 
     const pendingStatuses = allUsers.reduce((acc, employee) => {
-      const nextStep = getNextStep(employee.visaStatus.documents);
+      if (employee.visaStatus.documents.length > 0) {
+        const nextStep = getNextStep(employee.visaStatus.documents);
 
-      if (nextStep.type === "I-20" && nextStep.status === "approved") {
+        if (
+          !nextStep ||
+          (nextStep.type === "I-20" && nextStep.status === "approved")
+        ) {
+          return acc;
+        }
+
+        employee.nextStep = nextStep;
+        acc.push(employee);
         return acc;
       }
-
-      employee.nextStep = nextStep;
-      acc.push(employee);
       return acc;
     }, []);
 
@@ -123,51 +131,78 @@ export const getAllApprovedStatuses = async (_req, res) => {
   }
 };
 
+const appendPreviewUrl = (document) => {
+  return { ...document, previewUrl: generatePresignedUrl(document.src) };
+};
 export const getNextStep = (documents) => {
-  const sequence = ["OPT Receipt", "OPT EAD", "I-983", "I-20"];
+  try {
+    const sequence = ["OPT Receipt", "OPT EAD", "I-983", "I-20"];
 
-  // Filter and sort documents based on their order in the sequence
-  const sortedDocuments = documents
-    .filter((doc) => sequence.includes(doc.type))
-    .sort((a, b) => sequence.indexOf(a.type) - sequence.indexOf(b.type));
+    // Handle case when documents array is empty
+    if (!documents || documents.length === 0) {
+      return {
+        type: sequence[0], // First step in the sequence
+        status: "not-submitted",
+        src: null,
+        feedback: "",
+      };
+    }
 
-  // Check if all documents are approved
-  const allApproved =
-    sortedDocuments.length === sequence.length &&
-    sortedDocuments.every((doc) => doc.status === "approved");
+    // Filter and sort documents based on their order in the sequence
+    const sortedDocuments = documents
+      .filter((doc) => sequence.includes(doc.type))
+      .sort((a, b) => sequence.indexOf(a.type) - sequence.indexOf(b.type));
 
-  if (allApproved) {
-    // If all steps are approved, return the last step (I-20)
-    return sortedDocuments[sortedDocuments.length - 1];
-  }
+    if (sortedDocuments.length === 0) {
+      return {
+        type: sequence[0], // No relevant documents found, return the first step
+        status: "not-submitted",
+        src: null,
+        feedback: "",
+      };
+    }
 
-  // Get the last submitted document in the sequence
-  const lastDocument = sortedDocuments[sortedDocuments.length - 1];
+    // Check if all documents are approved
+    const allApproved =
+      sortedDocuments.length === sequence.length &&
+      sortedDocuments.every((doc) => doc.status === "approved");
 
-  // If the last submitted document is not approved, return it
-  if (lastDocument && lastDocument.status !== "approved") {
-    return lastDocument;
-  }
+    if (allApproved) {
+      // If all steps are approved, return the last step (I-20)
+      return sortedDocuments[sortedDocuments.length - 1];
+    }
 
-  // If the last document is approved, find the next step in the sequence
-  const nextIndex = sequence.indexOf(lastDocument.type) + 1;
-  if (nextIndex < sequence.length) {
-    // Return a placeholder for the next step
+    // Get the last submitted document in the sequence
+    const lastDocument = sortedDocuments[sortedDocuments.length - 1];
+
+    // If the last submitted document is not approved, return it
+    if (lastDocument && lastDocument.status !== "approved") {
+      return lastDocument;
+    }
+
+    // If the last document is approved, find the next step in the sequence
+    const nextIndex = sequence.indexOf(lastDocument.type) + 1;
+    if (nextIndex < sequence.length) {
+      // Return a placeholder for the next step
+      return {
+        type: sequence[nextIndex],
+        status: "not-submitted",
+        src: null,
+        feedback: "",
+      };
+    }
+
+    // Default case: Return the first step if no relevant documents are submitted yet
     return {
-      type: sequence[nextIndex],
+      type: sequence[0],
       status: "not-submitted",
-      file: null,
+      src: null,
       feedback: "",
     };
+  } catch (error) {
+    console.error("Error in getNextStep:", error);
+    return null; // Return null or an appropriate fallback if there's an error
   }
-
-  // Default case: Return the first step if no documents are submitted yet
-  return {
-    type: "OPT Receipt",
-    status: "not-submitted",
-    file: null,
-    feedback: "",
-  };
 };
 
 export const postDocumentFeedback = async (req, res) => {
