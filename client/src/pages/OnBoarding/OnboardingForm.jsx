@@ -121,10 +121,6 @@ const OnboardingForm = () => {
     });
   };
 
-  const handleResubmit = () => {
-    dispatch(resetFeedback()); // Reset feedback before resubmitting
-  };
-
   return (
     <Container maxWidth="md">
       <Box mt={5}>
