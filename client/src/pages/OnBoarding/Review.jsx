@@ -22,15 +22,15 @@ const Confirmation = () => {
   useEffect(() => {
     // Redirect based on onboarding status once data is available
     if (info && info.onboardingStatus) {
-        const { status } = info.onboardingStatus;
-        console.log('info', info);
-        console.log('status', status);
+      const { status } = info.onboardingStatus;
+      console.log("info", info);
+      console.log("status", status);
 
-        if (status !== 'Pending') {
-          setIsRedirecting(true);
-          navigate('/employee/on-boarding');  
-        }
+      if (status !== "Pending") {
+        setIsRedirecting(true);
+        navigate("/employee/on-boarding");
       }
+    }
   }, [info, navigate]);
 
   // Destructure formData from the onboarding slice and info from the profile slice
@@ -170,26 +170,40 @@ const Confirmation = () => {
           <Card>
             <CardContent>
               <Typography variant="h6">Work Authorization</Typography>
-              {dataToDisplay?.visaStatus?.citizenshipType === "non-resident" && (
+              {dataToDisplay.visaStatus.citizenshipType === "non-resident" && (
                 <>
                   <Typography>
-                    <strong>Citizenship Type:</strong> {dataToDisplay.visaStatus.citizenshipType}
+                    <strong>Citizenship Type:</strong>{" "}
+                    {dataToDisplay.visaStatus.citizenshipType}
                   </Typography>
                   <Typography>
-                    <strong>Visa Title:</strong> {dataToDisplay.visaStatus.visaTitle}
+                    <strong>Visa Title:</strong>{" "}
+                    {dataToDisplay.visaStatus.visaTitle}
+                  </Typography>
+
+                  {/* Only show specificVisaTitle if visaTitle is "Other" */}
+                  {dataToDisplay.visaStatus.visaTitle === "Other" && (
+                    <Typography>
+                      <strong>Specific Visa Title:</strong>{" "}
+                      {dataToDisplay.visaStatus.specificVisaTitle}
+                    </Typography>
+                  )}
+
+                  <Typography>
+                    <strong>Start Date:</strong>{" "}
+                    {dataToDisplay.visaStatus.startDate}
                   </Typography>
                   <Typography>
-                    <strong>Start Date:</strong> {new Date(dataToDisplay.visaStatus.startDate).toLocaleDateString()}
-                  </Typography>
-                  <Typography>
-                    <strong>End Date:</strong> {new Date(dataToDisplay.visaStatus.endDate).toLocaleDateString()}
+                    <strong>End Date:</strong>{" "}
+                    {dataToDisplay.visaStatus.endDate}
                   </Typography>
                 </>
               )}
-              {(dataToDisplay?.visaStatus?.citizenshipType === "citizen" ||
-                dataToDisplay?.visaStatus?.citizenshipType === "green card") && (
+              {(dataToDisplay.visaStatus.citizenshipType === "citizen" ||
+                dataToDisplay.visaStatus.citizenshipType === "green card") && (
                 <Typography>
-                  <strong>Citizenship Type:</strong> {dataToDisplay.visaStatus.citizenshipType}
+                  <strong>Citizenship Type:</strong>{" "}
+                  {dataToDisplay.visaStatus.citizenshipType}
                 </Typography>
               )}
             </CardContent>

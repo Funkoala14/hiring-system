@@ -68,16 +68,6 @@ const OnboardingForm = () => {
           },
         })
       );
-    } else if (name === "optReceipt") {
-      // If optReceipt is selected, append it to visaDocuments array
-      dispatch(
-        updateFormField({
-          visaStatus: {
-            ...formData.visaStatus,
-            visaDocuments: [...(formData.visaStatus.documents || []), files[0]], // Append optReceipt to visaDocuments
-          },
-        })
-      );
     } else if (files) {
       // Handle file inputs
       dispatch(updateFormField({ [name]: files[0] }));

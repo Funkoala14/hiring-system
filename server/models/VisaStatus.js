@@ -10,6 +10,7 @@ const visaStatusSchema = new mongoose.Schema({
     endDate: { type: Date },
     documents: [{ type: refType, ref: "Document" }],
     citizenship: { type: String },
+    specificVisaTitle: { type: String },
 });
 
 const VisaStatus = mongoose.model('VisaStatus', visaStatusSchema);
