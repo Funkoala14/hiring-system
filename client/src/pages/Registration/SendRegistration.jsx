@@ -12,10 +12,10 @@ const SendLink = () => {
       try {
           const response = await post('/user/generate-token', { name, email });
           const { data, message } = response;
-          const { registrationLink } = data;  // Extract registrationLink from the response
+          const { registrationLink } = data;
           
           setTokenLink(registrationLink);
-          return registrationLink;  // Return the registration link directly
+          return registrationLink;
       } catch (error) {
           console.error('Error generating token:', error);
       }
