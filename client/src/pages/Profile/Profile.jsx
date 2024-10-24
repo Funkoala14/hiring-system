@@ -10,19 +10,25 @@ import SaveAsOutlinedIcon from '@mui/icons-material/SaveAsOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchEmployeeInfo, updateEmployeeAvatar, updateEmployeeInfo } from '../../store/profileSlice/profile.thunk';
+import {
+    fetchEmployeeInfo,
+    getEmployeeDocs,
+    updateEmployeeAvatar,
+    updateEmployeeInfo,
+} from '../../store/profileSlice/profile.thunk';
 import './profile.scss';
 import { STATES } from '../../store/constant';
 import FormControl from '@mui/material/FormControl';
 import { selectIsLoggedIn } from '../../store/auth/auth.selector';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Breadcrumbs, Chip, IconButton, Link, styled, Typography } from '@mui/material';
+import { Breadcrumbs, Chip, IconButton, Link, List, ListItem, ListItemText, styled, Typography } from '@mui/material';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 const Profile = ({ parent }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
-    const { info, loading, error } = useSelector((state) => state.profile);
+    const { info, loading, error, docs } = useSelector((state) => state.profile);
     const { username } = useSelector(selectIsLoggedIn);
     const queryParams = new URLSearchParams(location.search);
 
@@ -31,10 +37,12 @@ const Profile = ({ parent }) => {
             case 'hr':
                 const userName = queryParams.get('username');
                 dispatch(fetchEmployeeInfo({ username: userName }));
+                dispatch(getEmployeeDocs({ username: userName }));
                 break;
             case 'employee':
                 const formData = { username };
                 dispatch(fetchEmployeeInfo(formData));
+                dispatch(getEmployeeDocs(formData));
                 break;
         }
     }, [dispatch]);
@@ -71,7 +79,7 @@ const Profile = ({ parent }) => {
                 <ContactSection info={info} username={username} showEdit={parent === 'employee'} />
                 <EmploymentSetcion info={info} username={username} showEdit={parent === 'employee'} />
                 <EmergencySection info={info} username={username} showEdit={parent === 'employee'} />
-                <DocumentSection info={info} username={username} showEdit={parent === 'employee'} />
+                <DocumentSection docs={docs} showEdit={parent === 'employee'} />
             </Stack>
             <div className='profile-container'></div>
         </section>
@@ -553,7 +561,6 @@ const ContactSection = ({ info, username, showEdit }) => {
         } else if (!phoneRegex.test(phone)) {
             errors.phone = 'Invalid phone number format';
         }
-       
 
         return errors;
     };
@@ -866,7 +873,7 @@ const EmergencySection = ({ info, username, showEdit }) => {
                         )}
                     </div>
                     <div className='contact-container'>
-                        {info?.emergencyContacts &&
+                        {info?.emergencyContacts.length > 0 ? (
                             info?.emergencyContacts?.map((contact, index) => (
                                 <div key={contact._id} className='contact-item'>
                                     <Chip
@@ -902,7 +909,10 @@ const EmergencySection = ({ info, username, showEdit }) => {
                                         <hr />
                                     </div>
                                 </div>
-                            ))}
+                            ))
+                        ) : (
+                            <Typography>No emergency contact</Typography>
+                        )}
                     </div>
                 </>
             )}
@@ -910,77 +920,44 @@ const EmergencySection = ({ info, username, showEdit }) => {
     );
 };
 
-const DocumentSection = ({ info, username, showEdit }) => {
-    const dispatch = useDispatch();
-    const [formData, setFormData] = useState(info);
-    const [edit, setEdit] = useState(false);
-    const handleChange = (key) => {
-        return (event) => {
-            const value = event.target.value;
-            setFormData((prev) => ({ ...prev, [key]: value }));
-        };
-    };
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        dispatch(updateEmployeeInfo({ username, updateData: formData }));
-        setEdit(false);
+const DocumentSection = ({ docs, username }) => {
+    const handleClick = (url) => {
+        window.open(url, '_blank');
     };
 
     return (
         <div className='outlined-container'>
             <div className='title'>Documents</div>
-            {edit ? (
-                <>
-                    <div className='buttons'>
-                        <Button
-                            variant='outlined'
-                            color='error'
-                            endIcon={<CancelOutlinedIcon />}
-                            onClick={() => {
-                                setEdit(false);
-                                setFormData(info);
+            <List>
+                {docs?.length > 0 ? (
+                    docs.map((doc) => (
+                        // <a
+                        //     key={doc._id}
+                        //     href={doc.src}
+                        //     target='_blank'
+                        //     style={{ textDecoration: 'none', color: 'inherit' }}
+                        // >
+                        //     <AttachFileIcon />
+                        //     {doc.filename}
+
+                        // </a>
+                        <ListItem
+                            sx={{
+                                width: 'fit-content',
+                                bgcolor: '#f2f2f3',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
                             }}
+                            onClick={() => handleClick(doc.src)}
                         >
-                            Cancel
-                        </Button>
-                        <Button variant='outlined' type='submit' endIcon={<SaveAsOutlinedIcon />}>
-                            Save
-                        </Button>
-                    </div>
-                    <form className='input-container' onSubmit={handleSubmit}>
-                        <label className='input-item'>
-                            First Name
-                            <TextField
-                                required
-                                id='standard-required'
-                                value={formData?.firstName || ''}
-                                onChange={handleChange('firstName')}
-                                variant='standard'
-                            />
-                        </label>
-                    </form>
-                </>
-            ) : (
-                <>
-                    <div className='buttons'>
-                        {showEdit && (
-                            <Button
-                                variant='outlined'
-                                endIcon={<DriveFileRenameOutlineOutlinedIcon />}
-                                onClick={() => setEdit(true)}
-                            >
-                                Edit
-                            </Button>
-                        )}
-                    </div>
-                    <div className='view-container'>
-                        <label className='view-item'>
-                            First Name
-                            <span>{info?.firstName}</span>
-                        </label>
-                    </div>
-                </>
-            )}
+                            <AttachFileIcon />
+                            {doc.filename}
+                        </ListItem>
+                    ))
+                ) : (
+                    <Typography>No files</Typography>
+                )}
+            </List>
         </div>
     );
 };

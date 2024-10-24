@@ -25,7 +25,7 @@ export const submitDocument = async (req, res) => {
     await newDoc.save();
 
     const employee = await User.findById(employeeId).lean().exec();
-
+    
     const updatedStatus = await VisaStatus.findByIdAndUpdate(
       employee.visaStatus,
       { $push: { documents: newDoc._id } },
