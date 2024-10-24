@@ -29,7 +29,10 @@ const profileSlice = createSlice({
             state.info = null;
             state.loading = false;
             state.error = null;
-        }
+        },
+        setInfo(state, action) {
+            state.info = action.payload; // Set the info state with the payload
+          },
     },
     extraReducers: (builder) => {
         builder

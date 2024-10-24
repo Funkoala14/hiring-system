@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   TextField,
   Grid,
@@ -11,12 +11,15 @@ import {
 } from "@mui/material";
 
 const DriverLicense = ({ formData, handleChange }) => {
-  const [hasLicense, setHasLicense] = useState(false); // State to track if the user has a driver's license
+  // Ensure driverLicenseDetails is always an object to avoid undefined errors
+  const driverLicense = formData?.driverLicense || {};
 
-  const handleLicenseChange = (event) => {
-    const value = event.target.value === "yes";
-    setHasLicense(value);
-  };
+  // Sync `hasLicense` with driverLicenseDetails.hasLicense, fallback to 'no' if undefined
+  const hasLicense = driverLicense.hasLicense === "yes";
+  console.log('driverLicenseDetails.hasLicense', driverLicense.hasLicense);
+  console.log('driverLicenseDetails', driverLicense);
+  console.log('formData', formData);
+  
 
   return (
     <>
@@ -26,14 +29,12 @@ const DriverLicense = ({ formData, handleChange }) => {
 
       <Grid item xs={12}>
         <FormControl component="fieldset">
-          <FormLabel component="legend">
-            Do you have a driver's license?
-          </FormLabel>
+          <FormLabel component="legend">Do you have a driver's license?</FormLabel>
           <RadioGroup
             row
-            name="hasLicense"
-            value={hasLicense ? "yes" : "no"}
-            onChange={handleLicenseChange}
+            name="driverLicense.hasLicense"
+            value={driverLicense.hasLicense || "yes"} // Default to "no" if undefined
+            onChange={handleChange}
           >
             <FormControlLabel value="yes" control={<Radio />} label="Yes" />
             <FormControlLabel value="no" control={<Radio />} label="No" />
@@ -47,8 +48,8 @@ const DriverLicense = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Driver License Number"
-              name="driverLicenseDetails.number"
-              value={formData.driverLicenseDetails.number}
+              name="driverLicense.number"
+              value={driverLicense.number || ""} // Fallback to empty string if undefined
               onChange={handleChange}
               fullWidth
             />
@@ -57,9 +58,9 @@ const DriverLicense = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Expiration Date"
-              name="driverLicenseDetails.expirationDate"
+              name="driverLicense.expirationDate"
               type="date"
-              value={formData.driverLicenseDetails.expirationDate}
+              value={driverLicense.expirationDate || ""} // Fallback to empty string if undefined
               onChange={handleChange}
               fullWidth
               InputLabelProps={{
@@ -71,7 +72,7 @@ const DriverLicense = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Upload License Copy"
-              name="driverLicense"
+              name="driverLicenseFile"
               type="file"
               onChange={handleChange}
               fullWidth

@@ -2,9 +2,9 @@ import React from "react";
 import { TextField, MenuItem, Grid, Typography } from "@mui/material";
 
 const WorkAuthorization = ({ formData, handleChange }) => {
-  const isNonResident = formData.citizenship === "no";
-  const isF1Visa = formData.visaTitle === "F1 (CPT/OPT)";
-  const isOtherVisa = formData.visaTitle === "Other";
+  const isNonResident = formData.visaStatus.citizenship === "no";
+  const isF1Visa = formData.visaStatus.visaTitle === "F1 (CPT/OPT)";
+  const isOtherVisa = formData.visaStatus.visaTitle === "Other";
 
   return (
     <>
@@ -19,8 +19,8 @@ const WorkAuthorization = ({ formData, handleChange }) => {
         <TextField
           label="Are you a U.S citizen or permanent resident?"
           select
-          name="citizenship"
-          value={formData.citizenship}
+          name="visaStatus.citizenship"
+          value={formData.visaStatus.citizenship || ''}
           onChange={handleChange}
           fullWidth
         >
@@ -30,13 +30,13 @@ const WorkAuthorization = ({ formData, handleChange }) => {
       </Grid>
 
       {/* If "Yes" is selected */}
-      {formData.citizenship === "yes" && (
+      {formData.visaStatus.citizenship === "yes" && (
         <Grid item xs={12} sm={6}>
           <TextField
             label="Select your status"
             select
-            name="citizenshipType"
-            value={formData.citizenshipType}
+            name="visaStatus.citizenshipType"
+            value={formData.visaStatus.citizenshipType}
             onChange={handleChange}
             fullWidth
           >
@@ -53,8 +53,8 @@ const WorkAuthorization = ({ formData, handleChange }) => {
             <TextField
               label="What is your work authorization?"
               select
-              name="visaTitle"
-              value={formData.visaTitle}
+              name="visaStatus.visaTitle"
+              value={formData.visaStatus.visaTitle}
               onChange={handleChange}
               fullWidth
             >
@@ -88,8 +88,8 @@ const WorkAuthorization = ({ formData, handleChange }) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Specify Visa Title"
-                name="specificVisaTitle"
-                value={formData.specificVisaTitle || ""}
+                name="visaStatus.specificVisaTitle"
+                value={formData.visaStatus.specificVisaTitle || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
@@ -101,9 +101,9 @@ const WorkAuthorization = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Visa Start Date"
-              name="visaStartDate"
+              name="visaStatus.startDate"
               type="date"
-              value={formData.visaStartDate}
+              value={formData.visaStatus.startDate}
               onChange={handleChange}
               fullWidth
               InputLabelProps={{
@@ -115,9 +115,9 @@ const WorkAuthorization = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Visa End Date"
-              name="visaEndDate"
+              name="visaStatus.endDate"
               type="date"
-              value={formData.visaEndDate}
+              value={formData.visaStatus.endDate}
               onChange={handleChange}
               fullWidth
               InputLabelProps={{

@@ -6,11 +6,12 @@ export const submitOnboarding = createAsyncThunk(
   'onboarding/submit',
   async (formData, { rejectWithValue }) => {
     try {
+      console.log("Submitting form data:", formData);
       const formDataObj = new FormData();
 
       // Loop through the formData and append to FormData object
       for (const [key, value] of Object.entries(formData)) {
-        if (key === 'documents' || key === 'driverLicense' || key === 'img') {
+        if (key === 'documents' || key === 'driverLicenseFile' || key === 'profilePicture') {
           // Append files for documents, driverLicense, and profile image
           if (Array.isArray(value)) {
             value.forEach((file) => formDataObj.append(key, file));
@@ -30,6 +31,9 @@ export const submitOnboarding = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');
+      // return rejectWithValue({
+      //   feedback: "Your application was rejected due to missing documents.",
+      // });
     }
   }
 );
@@ -68,10 +72,11 @@ const onboardingSlice = createSlice({
       ssn: '',
       dob: '',
       gender: '',
-      driverLicenseDetails: {
+      driverLicense: {
+        hasLicense: 'no',
         number: '',
         expirationDate: '',
-        driverLicense: null
+        driverLicenseFile: null
 
       },
       reference: {
@@ -84,11 +89,15 @@ const onboardingSlice = createSlice({
       emergencyContacts: [
         { firstName: '', lastName: '', phone: '', email: '', relationship: '' },
       ],
-      citizenshipType: '',
-      visaTitle: '',
-      visaStartDate: '',
-      visaEndDate: '',
-      documents: [],
+      
+      visaStatus:{
+        citizenship: '',
+        citizenshipType: '',
+        visaTitle: '',
+        startDate: '',
+        endDate: '',
+        documents: [],
+      }
 
     },
     status: null,
@@ -96,6 +105,7 @@ const onboardingSlice = createSlice({
     onboardingStatus: null,
     housingAssignment: null,
     visaStatus: null,
+    feedback: "Rejected", // Store feedback from rejected applications
   },
   reducers: {
     updateFormField(state, action) {
@@ -118,6 +128,12 @@ const onboardingSlice = createSlice({
       const index = action.payload;
       state.formData.emergencyContacts.splice(index, 1);
     },
+    resetFeedback: (state) => {
+      state.feedback = null; // Reset feedback when resubmitting
+    },
+    setInitialFormData: (state, action) => {
+      state.formData = action.payload; // Set form data to user info when rejected
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -137,15 +153,23 @@ const onboardingSlice = createSlice({
           state.onboardingStatus = data.onboardingStatus;
           state.housingAssignment = data.housingAssignment;
           state.visaStatus = data.visaStatus;
+          state.feedback = null;
         }
       })
       .addCase(submitOnboarding.rejected, (state, action) => {
         
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload.message;
+        state.feedback = action.payload?.feedback || "Your application was rejected for unspecified reasons."; // Handle feedback from API
       });
   },
 });
 
-export const { updateFormField, updateEmergencyContact, addEmergencyContact, removeEmergencyContact } = onboardingSlice.actions;
+export const { updateFormField, 
+  updateEmergencyContact, 
+  addEmergencyContact, 
+  removeEmergencyContact,
+  resetFeedback, 
+  setInitialFormData,
+ } = onboardingSlice.actions;
 export default onboardingSlice.reducer;

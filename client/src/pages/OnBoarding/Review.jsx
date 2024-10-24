@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -10,20 +10,38 @@ import {
   Box,
 } from "@mui/material";
 import { logoutThunk } from "../../store/auth/auth.thunk";
+import { useNavigate } from "react-router-dom";
 
 const Confirmation = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const { loading, info, error } = useSelector((state) => state.profile);
+
+  useEffect(() => {
+    // Redirect based on onboarding status once data is available
+    if (info && info.onboardingStatus) {
+        const { status } = info.onboardingStatus;
+        console.log('info', info);
+        console.log('status', status);
+
+        if (status !== 'Pending') {
+          setIsRedirecting(true);
+          navigate('/employee/on-boarding');  
+        }
+      }
+  }, [info, navigate]);
 
   // Destructure formData from the onboarding slice and info from the profile slice
   const { formData } = useSelector((state) => state.onboarding);
-  const { info } = useSelector((state) => state.profile);
 
   console.log("Confirmation info", info);
   console.log("Confirmation info firstName", info.firstName);
   console.log("Confirmation formData", formData);
 
   // Use formData if available, otherwise fall back to info
-  let dataToDisplay = formData;
+  let dataToDisplay = info;
 
   console.log("dataToDisplay", dataToDisplay);
 
@@ -147,30 +165,29 @@ const Confirmation = () => {
           </Card>
         </Grid>
 
-             {/* Work Authorization */}
-             <Grid item xs={12} md={6}>
+        {/* Work Authorization */}
+        <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
               <Typography variant="h6">Work Authorization</Typography>
-              {dataToDisplay.visaStatus.citizenshipType === "non-resident" && (
+              {dataToDisplay?.visaStatus?.citizenshipType === "non-resident" && (
                 <>
                   <Typography>
-                    <strong>Citizenship Type:</strong>{" "}
-                    {dataToDisplay.visaStatus.citizenshipType}
+                    <strong>Citizenship Type:</strong> {dataToDisplay.visaStatus.citizenshipType}
                   </Typography>
                   <Typography>
                     <strong>Visa Title:</strong> {dataToDisplay.visaStatus.visaTitle}
                   </Typography>
                   <Typography>
-                    <strong>Start Date:</strong> {dataToDisplay.visaStatus.startDate}
+                    <strong>Start Date:</strong> {new Date(dataToDisplay.visaStatus.startDate).toLocaleDateString()}
                   </Typography>
                   <Typography>
-                    <strong>End Date:</strong> {dataToDisplay.visaStatus.endDate}
+                    <strong>End Date:</strong> {new Date(dataToDisplay.visaStatus.endDate).toLocaleDateString()}
                   </Typography>
                 </>
               )}
-              {(dataToDisplay.visaStatus.citizenshipType === "citizen" ||
-                dataToDisplay.visaStatus.citizenshipType === "green card") && (
+              {(dataToDisplay?.visaStatus?.citizenshipType === "citizen" ||
+                dataToDisplay?.visaStatus?.citizenshipType === "green card") && (
                 <Typography>
                   <strong>Citizenship Type:</strong> {dataToDisplay.visaStatus.citizenshipType}
                 </Typography>

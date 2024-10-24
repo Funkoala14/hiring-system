@@ -65,6 +65,11 @@ function AppRouter() {
             path="on-boarding/confirmation"
             element={<Confirmation parent={"on-boarding"} />}
           />
+          {/* Confirmation Route */}
+          <Route
+            path="on-boarding/pending"
+            element={<Review parent={"on-boarding"} />}
+          />
           {/* Employee Personal Info Route (with MainLayout) */}
           <Route
             path="my-profile"
