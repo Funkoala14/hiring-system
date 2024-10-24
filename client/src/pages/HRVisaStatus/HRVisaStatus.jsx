@@ -42,6 +42,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import CommentIcon from "@mui/icons-material/Comment";
 import EmailIcon from "@mui/icons-material/Email";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { getDocumentMessage } from "../../utils/publicUtils";
 
 // Constants
@@ -150,7 +151,7 @@ const HRVisaStatus = () => {
     const { status, type } = row.nextStep;
     if (status === "pending") {
       return (
-        <>
+        <Box sx={{ display: "flex" }}>
           <Tooltip title="Preview Document">
             <IconButton onClick={() => handlePreview(row.nextStep)}>
               <PreviewIcon />
@@ -166,11 +167,11 @@ const HRVisaStatus = () => {
               <CloseIcon />
             </IconButton>
           </Tooltip>
-        </>
+        </Box>
       );
     } else if (status === "rejected") {
       return (
-        <>
+        <Box sx={{ display: "flex" }}>
           <Tooltip title="Preview Document">
             <IconButton onClick={() => handlePreview(row.nextStep)}>
               <PreviewIcon />
@@ -186,14 +187,12 @@ const HRVisaStatus = () => {
               <CommentIcon />
             </IconButton>
           </Tooltip>
-        </>
+        </Box>
       );
     }
     return (
       <Tooltip title="Send Notification">
-        <IconButton
-          onClick={() => handleNotify("lqz061@gmail.com", row.username, type)}
-        >
+        <IconButton onClick={() => handleNotify(row.email, row.username, type)}>
           <EmailIcon />
         </IconButton>
       </Tooltip>
@@ -247,10 +246,10 @@ const HRVisaStatus = () => {
                   <TableCell align="center">
                     {row.visaStatus.visaTitle}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
                     {row.visaStatus.startDate?.slice(0, 10)}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
                     {row.visaStatus.endDate?.slice(0, 10)}
                   </TableCell>
                   <TableCell align="center">
@@ -303,10 +302,10 @@ const HRVisaStatus = () => {
                   <TableCell align="center">
                     {row.visaStatus.visaTitle}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
                     {row.visaStatus.startDate?.slice(0, 10)}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
                     {row.visaStatus.endDate?.slice(0, 10)}
                   </TableCell>
                   <TableCell align="center">
@@ -320,11 +319,19 @@ const HRVisaStatus = () => {
                   </TableCell>
                   <TableCell align="center">
                     <Box
-                      sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        maxHeight: "10vh",
+                        overflow: "auto",
+                      }}
                     >
                       {row.visaStatus.documents.map((doc) => (
                         <Chip
-                          key={doc.filename}
+                          icon={<AttachFileIcon />}
+                          key={doc.type}
+                          sx={{ flexShrink: 0, px: 2, width: 260 }}
                           label={doc.filename}
                           onClick={() => handlePreview(doc)}
                         />

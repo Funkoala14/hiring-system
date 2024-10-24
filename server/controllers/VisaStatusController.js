@@ -2,11 +2,19 @@ import Document from "../models/Document.js";
 import Employee from "../models/Employee.js";
 import User from "../models/User.js";
 import VisaStatus from "../models/VisaStatus.js";
+import { deleteFileFn } from "./S3BucketController.js";
 
 export const submitDocument = async (req, res) => {
   try {
     const employeeId = req.user.id;
     const type = req.body.type;
+
+    const oldDoc = await Document.findOne({ type }).exec();
+
+    if (oldDoc) {
+      await deleteFileFn(oldDoc.awsKey);
+      await Document.deleteOne({ _id: oldDoc._id });
+    }
 
     if (!req.file) {
       return res.status(400).json({ message: "File not uploaded" });

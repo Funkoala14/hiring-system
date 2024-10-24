@@ -36,26 +36,26 @@ export const formatDateForInput = (dateString) => {
 export function getDocumentMessage(documentType, status) {
   const messages = {
     "OPT Receipt": {
-      "not-submited": "Please upload your OPT Receipt for review",
+      "not-submitted": "Please upload your OPT Receipt for review",
       pending: "Waiting for HR to approve your OPT Receipt",
       approved: "Please upload a copy of your OPT EAD",
       rejected: "Please check HR's feedback and re-upload your OPT Receipt",
     },
     "OPT EAD": {
-      "not-submited": "Please upload your OPT EAD for review",
+      "not-submitted": "Please upload your OPT EAD for review",
       pending: "Waiting for HR to approve your OPT EAD",
       approved: "Please download and fill out the I-983 form",
       rejected: "Please check HR's feedback and re-upload your OPT EAD",
     },
     "I-983": {
-      "not-submited": "Please upload your I-983 for review",
+      "not-submitted": "Please upload your I-983 for review",
       pending: "Waiting for HR to approve and sign your I-983",
       approved:
         "Please send the I-983 along with all necessary documents to your school and upload the new I-20",
       rejected: "Please check HR's feedback and re-upload your I-983",
     },
     "I-20": {
-      "not-submited": "Please upload your I-20 for review",
+      "not-submitted": "Please upload your I-20 for review",
       pending: "Waiting for HR to approve your I-20",
       approved: "All documents have been approved",
       rejected: "Please check HR's feedback and re-upload your I-20",

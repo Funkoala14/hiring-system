@@ -22,8 +22,7 @@ const hrVisaSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(rejectDocument.fulfilled, (state, action) => {
-        state.pending = action.payload.data;
-        state.message = action.payload.message;
+        state.pending = action.payload;
       })
       .addCase(postFeedback.fulfilled, (state, action) => {
         state.pending = action.payload.data;
