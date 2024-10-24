@@ -68,6 +68,16 @@ const OnboardingForm = () => {
           },
         })
       );
+    } else if (name === "optReceipt") {
+      // If optReceipt is selected, append it to visaDocuments array
+      dispatch(
+        updateFormField({
+          visaStatus: {
+            ...formData.visaStatus,
+            visaDocuments: [...(formData.visaStatus.documents || []), files[0]], // Append optReceipt to visaDocuments
+          },
+        })
+      );
     } else if (files) {
       // Handle file inputs
       dispatch(updateFormField({ [name]: files[0] }));
@@ -94,17 +104,21 @@ const OnboardingForm = () => {
       finalFormData.visaTitle = formData.specificVisaTitle;
     }
 
-    // Ensure that formData.documents is an array before adding optReceipt
-    finalFormData.documents = Array.isArray(formData.documents)
-      ? [...formData.documents]
-      : [];
+    // Ensure that formData.visaStatus.visaDocuments is an array
+    finalFormData.visaStatus = {
+      ...finalFormData.visaStatus, // Spread the existing visaStatus object
+      visaDocuments: Array.isArray(formData.visaStatus.visaDocuments)
+        ? [...formData.visaStatus.visaDocuments] // Create a new array with the existing documents
+        : [], // If not an array, default to an empty array
+    };
+
     finalFormData.emergencyContacts = Array.isArray(formData.emergencyContacts)
       ? [...formData.emergencyContacts]
       : [];
 
-    // Add optReceipt to documents if it exists
+    // Add optReceipt to visaDocuments if it exists
     if (formData.optReceipt) {
-      finalFormData.documents.push(formData.optReceipt);
+      finalFormData.visaStatus.visaDocuments.push(formData.optReceipt);
     }
     if (feedback) {
       // This could be where you handle additional logic before resubmission
