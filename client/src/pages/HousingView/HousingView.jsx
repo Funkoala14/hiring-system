@@ -385,7 +385,7 @@ const NewReportForm = ({ handleClose, open, handleSubmit, formData, setFormData 
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button color='error'>Cancel</Button>
+                <Button color='error' onClick={handleClose}>Cancel</Button>
                 <Button type='submit' autoFocus onClick={handleSubmit}>
                     Submit
                 </Button>
