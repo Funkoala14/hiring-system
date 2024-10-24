@@ -3,23 +3,22 @@ import emailjs from '@emailjs/browser';
 import { TextField, Button, Container, Typography, Box, CircularProgress } from '@mui/material';
 import { post } from '../../services/api';
 
-const SendLink = () => {
+const SendLink = ({ setUsers, fetchUsers }) => {
     const form = useRef();
     const [tokenLink, setTokenLink] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const generateTokenLink = async (name, email) => {
-      try {
-          const response = await post('/user/generate-token', { name, email });
-          const { data, message } = response;
-          const { registrationLink } = data;
-          
-          setTokenLink(registrationLink);
-          return registrationLink;
-      } catch (error) {
-          console.error('Error generating token:', error);
-      }
-  };
+        try {
+            const response = await post('/user/generate-token', { name, email });
+            const { data } = response;
+            const { registrationLink } = data;
+            setTokenLink(registrationLink);
+            return registrationLink;
+        } catch (error) {
+            console.error('Error generating token:', error);
+        }
+    };
 
     const sendEmail = async (e) => {
         e.preventDefault();
@@ -32,26 +31,28 @@ const SendLink = () => {
 
         if (link) {
             emailjs
-              .send(
-                'service_iqdpwpd',
-                'template_d0bz8dv',
-                {
-                  name: name,
-                  email: email,
-                  token_link: link,
-                },
-                'PvjUfrObRxDIj_W7e'
-              )
-              .then(
-                () => {
-                  alert('Email sent successfully!');
-                  setIsLoading(false);
-                },
-                (error) => {
-                  alert(`Failed to send email: ${error.text}`);
-                  setIsLoading(false);
-                }
-              );
+                .send(
+                    'service_iqdpwpd',
+                    'template_d0bz8dv',
+                    {
+                        name: name,
+                        email: email,
+                        token_link: link,
+                    },
+                    'PvjUfrObRxDIj_W7e'
+                )
+                .then(
+                    async () => {
+                        alert('Email sent successfully!');
+                        setIsLoading(false);
+
+                        await fetchUsers();
+                    },
+                    (error) => {
+                        alert(`Failed to send email: ${error.text}`);
+                        setIsLoading(false);
+                    }
+                );
         } else {
             console.error('Token link was not generated. Email not sent.');
             setIsLoading(false);

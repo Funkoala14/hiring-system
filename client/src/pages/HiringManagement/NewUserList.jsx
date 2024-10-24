@@ -1,38 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, CircularProgress } from '@mui/material';
-import { get } from '../../services/api';
+import React from 'react';
+import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 
-const NewUserList = () => {
-  const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await get('/user/all-users');
-        setUsers(data);
-      } catch (err) {
-        setError('Error fetching users.');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  if (isLoading) {
-    return <CircularProgress />;
-  }
-
-  if (error) {
-    return <Typography color="error">{error}</Typography>;
+const NewUserList = ({ users }) => {
+  if (users.length === 0) {
+    return <Typography variant="h6">No users found.</Typography>;
   }
 
   return (
-    <Container style={{marginTop: "2rem"}} >
+    <Container style={{ marginTop: '2rem' }}>
       <Typography variant="h5" gutterBottom>
         New Employee Registration Status
       </Typography>
@@ -47,11 +22,11 @@ const NewUserList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.length > 0 && users.map((user) => (
+            {users.map((user) => (
               <TableRow key={user._id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.registerLink}</TableCell>
+                <TableCell>{user.registrationLink}</TableCell>
                 <TableCell>{user.activated ? 'Yes' : 'No'}</TableCell>
               </TableRow>
             ))}
