@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { submitOnboarding } from '../controllers/OnboardController.js';
+import { submitOnboarding, uploadProfilePic } from '../controllers/OnboardController.js';
 import { jwtValidation } from "../middlewares/authMiddleware.js";
+import { uploadMultipleFilesMiddleware, uploadFileMiddleware } from '../middlewares/fileMiddleware.js';
 
 
 
@@ -15,6 +16,7 @@ const onboardingRouter = Router();
 //   { name: 'driverLicenseCopy' }
 // ]), submitOnboarding);
 
-onboardingRouter.post('/submit', jwtValidation, submitOnboarding);
+onboardingRouter.post('/submit', jwtValidation, uploadMultipleFilesMiddleware, submitOnboarding);
+onboardingRouter.post('/submit-pic', jwtValidation, uploadFileMiddleware, uploadProfilePic);
 
 export default onboardingRouter;
