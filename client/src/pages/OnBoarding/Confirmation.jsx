@@ -85,6 +85,9 @@ const Confirmation = () => {
             <CardContent>
               <Typography variant="h6">Personal Information</Typography>
               <Typography>
+                <strong>Email:</strong> {dataToDisplay.email}
+              </Typography>
+              <Typography>
                 <strong>First Name:</strong> {dataToDisplay.firstName}
               </Typography>
               <Typography>

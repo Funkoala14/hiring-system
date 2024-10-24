@@ -12,6 +12,7 @@ import {
 import { logoutThunk } from "../../store/auth/auth.thunk";
 import { useNavigate } from "react-router-dom";
 import { fetchEmployeeInfo } from "../../store/profileSlice/profile.thunk";
+import { formatDate } from "../../utils/publicUtils";
 
 const Confirmation = () => {
   const dispatch = useDispatch();
@@ -48,8 +49,8 @@ const Confirmation = () => {
 
   // Documents (driver's license, work authorization, etc.)
   const documents = [
-    { name: "Profile Picture", url: dataToDisplay?.profilePicture },
-    { name: "Driver’s License", url: dataToDisplay?.driverLicense },
+    { name: "Profile Picture", url: dataToDisplay?.image?.src },
+    { name: "Driver’s License", url: dataToDisplay?.driverLicense?.copy },
     {
       name: "Work Authorization",
       url:
@@ -85,6 +86,9 @@ const Confirmation = () => {
             <CardContent>
               <Typography variant="h6">Personal Information</Typography>
               <Typography>
+                <strong>Email:</strong> {dataToDisplay.email}
+              </Typography>
+              <Typography>
                 <strong>First Name:</strong> {dataToDisplay.firstName}
               </Typography>
               <Typography>
@@ -94,7 +98,7 @@ const Confirmation = () => {
                 <strong>Preferred Name:</strong> {dataToDisplay.preferredName}
               </Typography>
               <Typography>
-                <strong>Date of Birth:</strong> {dataToDisplay.dob}
+                <strong>Date of Birth:</strong> {formatDate(dataToDisplay.dob)}
               </Typography>
               <Typography>
                 <strong>Gender:</strong> {dataToDisplay.gender}
@@ -192,11 +196,11 @@ const Confirmation = () => {
 
                   <Typography>
                     <strong>Start Date:</strong>{" "}
-                    {dataToDisplay.visaStatus.startDate}
+                    {formatDate(dataToDisplay.visaStatus.startDate)}
                   </Typography>
                   <Typography>
                     <strong>End Date:</strong>{" "}
-                    {dataToDisplay.visaStatus.endDate}
+                    {formatDate(dataToDisplay.visaStatus.endDate)}
                   </Typography>
                 </>
               )}
@@ -227,7 +231,7 @@ const Confirmation = () => {
                   </Typography>
                   <Typography>
                     <strong>Expiration Date:</strong>{" "}
-                    {dataToDisplay.driverLicense.expirationDate}
+                    {formatDate(dataToDisplay.driverLicense.expirationDate)}
                   </Typography>
                 </>
               ) : (

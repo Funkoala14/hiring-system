@@ -24,6 +24,7 @@ const ContactInfo = ({ formData, handleChange }) => {
           value={formData.address.buildingOrAptNumber}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -33,6 +34,7 @@ const ContactInfo = ({ formData, handleChange }) => {
           value={formData.address.street}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -42,6 +44,7 @@ const ContactInfo = ({ formData, handleChange }) => {
           value={formData.address.city}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -51,6 +54,7 @@ const ContactInfo = ({ formData, handleChange }) => {
           value={formData.address.state}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -60,6 +64,7 @@ const ContactInfo = ({ formData, handleChange }) => {
           value={formData.address.zipCode}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -69,6 +74,7 @@ const ContactInfo = ({ formData, handleChange }) => {
           value={formData.cellPhone}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -95,6 +101,7 @@ const ContactInfo = ({ formData, handleChange }) => {
                 handleEmergencyContactChange(index, "firstName", e.target.value)
               }
               fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -105,6 +112,7 @@ const ContactInfo = ({ formData, handleChange }) => {
                 handleEmergencyContactChange(index, "lastName", e.target.value)
               }
               fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -115,6 +123,7 @@ const ContactInfo = ({ formData, handleChange }) => {
                 handleEmergencyContactChange(index, "phone", e.target.value)
               }
               fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -126,6 +135,7 @@ const ContactInfo = ({ formData, handleChange }) => {
                 handleEmergencyContactChange(index, "email", e.target.value)
               }
               fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -140,6 +150,7 @@ const ContactInfo = ({ formData, handleChange }) => {
                 )
               }
               fullWidth
+              required
             />
           </Grid>
         </Grid>

@@ -72,7 +72,7 @@ const onboardingSlice = createSlice({
       dob: '',
       gender: '',
       driverLicense: {
-        hasLicense: 'no',
+        hasLicense: 'yes',
         number: '',
         expirationDate: '',
         driverLicenseFile: null

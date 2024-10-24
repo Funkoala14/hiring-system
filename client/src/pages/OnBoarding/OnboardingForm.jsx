@@ -37,7 +37,6 @@ const OnboardingForm = () => {
   console.log("userStatus", userStatus);
 
   // Effect to set initial form data if the application was rejected
-
   useEffect(() => {
     if (userStatus === "Rejected" && info) {
       console.log("Setting form data for rejected status", info);
@@ -135,7 +134,7 @@ const OnboardingForm = () => {
           <Grid container spacing={3}>
             {/* Display feedback if application is rejected */}
 
-            <PersonalInfo formData={formData} handleChange={handleChange} />
+            <PersonalInfo formData={formData} handleChange={handleChange} info={info}/>
 
             <ContactInfo formData={formData} handleChange={handleChange} />
 
