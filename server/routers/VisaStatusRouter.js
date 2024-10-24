@@ -3,10 +3,9 @@ import {
   submitDocument,
   getVisaStatusNextStep,
   getAllPendingStatuses,
-  getAllApprovedStatuses,
+  getAllStatuses,
   changeDocumentStatus,
   postDocumentFeedback,
-  downloadFile,
 } from "../controllers/VisaStatusController.js";
 import {
   jwtValidation,
@@ -33,12 +32,11 @@ visaStatusRouter.get(
   getAllPendingStatuses
 );
 visaStatusRouter.get(
-  "/all-approved",
+  "/all",
   //   jwtValidation,
   //   checkPermission('hr'), // Add this after testing
-  getAllApprovedStatuses
+  getAllStatuses
 );
-visaStatusRouter.get("/download/:filename", downloadFile);
 
 visaStatusRouter.post(
   "/status",
@@ -48,12 +46,6 @@ visaStatusRouter.post(
 );
 visaStatusRouter.post(
   "/feedback",
-  jwtValidation,
-  //   checkPermission("hr"),
-  postDocumentFeedback
-);
-visaStatusRouter.post(
-  "/notify",
   jwtValidation,
   //   checkPermission("hr"),
   postDocumentFeedback

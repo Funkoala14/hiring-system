@@ -27,6 +27,7 @@ import { STATES } from '../../store/constant';
 import { NotificationSnackbar } from '../../components/NotificationSnackBar/NotificationSnackBar';
 import { showNotification } from '../../store/notificationSlice/notification.slice';
 import Loading from '../../components/Loading';
+import { clearError } from '../../store/housingSlice/housing.slice';
 
 const HousingManagement = () => {
     const dispatch = useDispatch();
@@ -63,6 +64,7 @@ const HousingManagement = () => {
 
     if (error) {
         dispatch(showNotification({ message: error, severity: 'error' }));
+        dispatch(clearError);
     }
 
     return (

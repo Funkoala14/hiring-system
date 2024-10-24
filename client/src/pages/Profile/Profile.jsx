@@ -26,6 +26,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { showNotification } from '../../store/notificationSlice/notification.slice';
 import { formatDate, formatDateForInput } from '../../utils/publicUtils';
 import Loading from '../../components/Loading';
+import { clearError } from '../../store/profileSlice/profile.slice';
 
 const Profile = ({ parent }) => {
     const navigate = useNavigate();
@@ -55,7 +56,8 @@ const Profile = ({ parent }) => {
     }
 
     if (error) {
-        return <p>Error: {error}</p>;
+        dispatch(showNotification({ message: error, severity: 'error' }));
+        dispatch(clearError);
     }
 
     const handleGoBack = () => {
@@ -866,7 +868,7 @@ const EmergencySection = ({ info, username, showEdit }) => {
                         )}
                     </div>
                     <div className='contact-container'>
-                        {info?.emergencyContacts.length > 0 ? (
+                        {info?.emergencyContacts?.length > 0 ? (
                             info?.emergencyContacts?.map((contact, index) => (
                                 <div key={contact._id} className='contact-item'>
                                     <Chip

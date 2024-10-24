@@ -312,7 +312,7 @@ export const updateAvatar = async (req, res) => {
             return res.status(401).json({ message: 'Invalid userid', code: 401 });
         }
 
-        const { name } = employee.image;
+        const name = employee?.image?.name || "";
 
         const updatedEmployee = await Employee.findOneAndUpdate(
             { username },
