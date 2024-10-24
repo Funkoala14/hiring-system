@@ -1,7 +1,13 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
+import { SendLink } from "./pages/Registration/SendRegistration";
 import MainLayout from "/layouts/MainLayout";
 import HRVisaStatus from "./pages/HRVisaStatus/HRVisaStatus";
+import OnBoarding from "./pages/OnBoarding/OnBoarding";
+import Review from "./pages/OnBoarding/Review";
+import Confirmation from "./pages/OnBoarding/Confirmation";
+import ApplicationTables from "./pages/ViewOnboardingApplications";
+import ApplicationDetails from "./pages/ApplicationDetails";
 
 const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
 const Home = lazy(() => import("/pages/Home/Home"));
@@ -43,7 +49,11 @@ function AppRouter() {
 
         {/* RegistrationPage Route */}
         <Route path="/register" element={<RegistrationPage />} />
+        {/* RegistrationPage Route */}
+        <Route path="/register" element={<RegistrationPage />} />
 
+        {/* Login Route */}
+        <Route path="/login" element={<Login />} />
         {/* Login Route */}
         <Route path="/login" element={<Login />} />
 
