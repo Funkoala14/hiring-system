@@ -147,8 +147,8 @@ const Confirmation = () => {
           </Card>
         </Grid>
 
-             {/* Work Authorization */}
-             <Grid item xs={12} md={6}>
+        {/* Work Authorization */}
+        <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
               <Typography variant="h6">Work Authorization</Typography>
@@ -159,20 +159,33 @@ const Confirmation = () => {
                     {dataToDisplay.visaStatus.citizenshipType}
                   </Typography>
                   <Typography>
-                    <strong>Visa Title:</strong> {dataToDisplay.visaStatus.visaTitle}
+                    <strong>Visa Title:</strong>{" "}
+                    {dataToDisplay.visaStatus.visaTitle}
+                  </Typography>
+
+                  {/* Only show specificVisaTitle if visaTitle is "Other" */}
+                  {dataToDisplay.visaStatus.visaTitle === "Other" && (
+                    <Typography>
+                      <strong>Specific Visa Title:</strong>{" "}
+                      {dataToDisplay.visaStatus.specificVisaTitle}
+                    </Typography>
+                  )}
+
+                  <Typography>
+                    <strong>Start Date:</strong>{" "}
+                    {dataToDisplay.visaStatus.startDate}
                   </Typography>
                   <Typography>
-                    <strong>Start Date:</strong> {dataToDisplay.visaStatus.startDate}
-                  </Typography>
-                  <Typography>
-                    <strong>End Date:</strong> {dataToDisplay.visaStatus.endDate}
+                    <strong>End Date:</strong>{" "}
+                    {dataToDisplay.visaStatus.endDate}
                   </Typography>
                 </>
               )}
               {(dataToDisplay.visaStatus.citizenshipType === "citizen" ||
                 dataToDisplay.visaStatus.citizenshipType === "green card") && (
                 <Typography>
-                  <strong>Citizenship Type:</strong> {dataToDisplay.visaStatus.citizenshipType}
+                  <strong>Citizenship Type:</strong>{" "}
+                  {dataToDisplay.visaStatus.citizenshipType}
                 </Typography>
               )}
             </CardContent>

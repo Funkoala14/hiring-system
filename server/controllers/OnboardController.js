@@ -53,22 +53,38 @@ export const submitOnboarding = async (req, res) => {
         }
       : null;
 
-    // Handle visa documents upload
     const visaDocuments = files.visaDocuments
       ? await Promise.all(
           files.visaDocuments.map(async (file) => {
             const newDocument = new Document({
-              type: "visa", // Custom type, e.g., visa
-              filename: file.key, // S3 file key
-              src: file.location, // S3 URL
+              type: "visa",
+              filename: file.key,
+              src: file.location,
             });
-
-            // Save the document to the DB
             await newDocument.save();
-            return newDocument._id; // Return the ObjectId for VisaStatus
+            return newDocument._id;
           })
         )
       : [];
+
+    // Handle optReceipt as an object with { src, name }
+    const optReceipt = files.optReceipt
+      ? {
+          src: files.optReceipt[0].location,
+          name: files.optReceipt[0].key,
+        }
+      : null;
+
+      // Find or create VisaStatus for the user
+    //let visaStatus = await VisaStatus.findOne({ employee: userId });
+            // Fallback default values for visaStatus fields
+    const visaStatusData = req.body.visaStatus || {};
+    const citizenship = visaStatusData.citizenship || "no";
+    const citizenshipType = visaStatusData.citizenshipType || "non-resident";
+    const visaTitle = visaStatusData.visaTitle || "";
+    const specificVisaTitle = visaStatusData.specificVisaTitle || "";
+    const startDate = visaStatusData.startDate || null;
+    const endDate = visaStatusData.endDate || null;
 
     let onboardingStatus = await OnboardingStatus.findOne({ employee: userId });
 
@@ -88,31 +104,35 @@ export const submitOnboarding = async (req, res) => {
 
     // Find or create VisaStatus for the user
     let visaStatus = await VisaStatus.findOne({ employee: userId });
+
     if (!visaStatus) {
       // Create new visa status if it doesn't exist
       visaStatus = new VisaStatus({
-        citizenship: req.body.visaStatus.citizenship,
-        citizenshipType: req.body.visaStatus.citizenshipType || "non-resident",
-        visaTitle: req.body.visaStatus.visaTitle,
-        startDate: req.body.visaStatus.startDate,
-        endDate: req.body.visaStatus.endDate,
-        documents: visaDocuments,
+        citizenship,
+        citizenshipType,
+        visaTitle,
+        specificVisaTitle,
+        startDate,
+        endDate,
+        documents: visaDocuments,  // Save the visaDocuments
+        optReceipt: optReceipt,  // Save optReceipt if available
       });
 
       await visaStatus.save();
     } else {
       // Update existing visa status
-      visaStatus.citizenship = req.body.visaStatus.citizenship;
-      visaStatus.citizenshipType =
-        req.body.visaStatus.citizenshipType || "non-resident";
-      visaStatus.visaTitle = req.body.visaStatus.visaTitle;
-      visaStatus.startDate = req.body.visaStatus.startDate;
-      visaStatus.endDate = req.body.visaStatus.endDate;
-      visaStatus.documents = visaDocuments.length
-        ? visaDocuments
-        : visaStatus.documents;
+      visaStatus.citizenship = citizenship;
+      visaStatus.citizenshipType = citizenshipType;
+      visaStatus.visaTitle = visaTitle;
+      visaStatus.specificVisaTitle = specificVisaTitle;
+      visaStatus.startDate = startDate;
+      visaStatus.endDate = endDate;
+      visaStatus.documents = visaDocuments.length ? visaDocuments : visaStatus.documents;
+      visaStatus.optReceipt = optReceipt ? optReceipt : visaStatus.optReceipt;
+
       await visaStatus.save();
     }
+
 
     // Find the user and update their onboarding information
     const updatedUser = await Employee.findByIdAndUpdate(
@@ -133,7 +153,7 @@ export const submitOnboarding = async (req, res) => {
           reference,
           emergencyContacts,
           image: profilePicture,
-          driverLicense: {...driverLicense,...driverLicenseFile},
+          driverLicense: { ...driverLicense, ...driverLicenseFile },
           onboardingStatus: onboardingStatus._id,
           carInfo,
         },

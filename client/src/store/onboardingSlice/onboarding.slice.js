@@ -11,7 +11,7 @@ export const submitOnboarding = createAsyncThunk(
 
       // Loop through the formData and append to FormData object
       for (const [key, value] of Object.entries(formData)) {
-        if (key === 'documents' || key === 'driverLicenseFile' || key === 'profilePicture') {
+        if (key === 'visaDocuments' || key === 'driverLicenseFile' || key === 'profilePicture') {
           // Append files for documents, driverLicense, and profile image
           if (Array.isArray(value)) {
             value.forEach((file) => formDataObj.append(key, file));
@@ -96,7 +96,9 @@ const onboardingSlice = createSlice({
         startDate: '',
         endDate: '',
         visaDocuments: [],
-      }
+        optReceipt: null,
+        specificVisaTitle: '',
+      },
 
     },
     status: null,
