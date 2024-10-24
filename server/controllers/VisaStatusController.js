@@ -2,7 +2,6 @@ import Document from "../models/Document.js";
 import Employee from "../models/Employee.js";
 import User from "../models/User.js";
 import VisaStatus from "../models/VisaStatus.js";
-import emailjs from "@emailjs/browser";
 
 export const submitDocument = async (req, res) => {
   try {
@@ -102,7 +101,7 @@ export const getAllPendingStatuses = async (_req, res) => {
   }
 };
 
-export const getAllApprovedStatuses = async (_req, res) => {
+export const getAllStatuses = async (_req, res) => {
   try {
     let allUsers = await User.find({ visaStatus: { $exists: true, $ne: null } })
       .populate({
@@ -111,19 +110,20 @@ export const getAllApprovedStatuses = async (_req, res) => {
       })
       .lean()
       .exec();
+    const allStatuses = allUsers.reduce((acc, employee) => {
+      if (employee.visaStatus.documents.length > 0) {
+        const nextStep = getNextStep(employee.visaStatus.documents);
 
-    const approvedStatuses = allUsers.reduce((acc, employee) => {
-      const nextStep = getNextStep(employee.visaStatus.documents);
-
-      if (nextStep.type === "I-20" && nextStep.status === "approved") {
+        employee.nextStep = nextStep;
         acc.push(employee);
         return acc;
       }
+      return acc;
     }, []);
 
     res.status(200).json({
-      data: approvedStatuses,
-      message: "Fetch all approved visa statuses successfully.",
+      data: allStatuses,
+      message: "Fetch all visa statuses successfully.",
     });
   } catch (error) {
     console.error(error);
@@ -131,9 +131,6 @@ export const getAllApprovedStatuses = async (_req, res) => {
   }
 };
 
-const appendPreviewUrl = (document) => {
-  return { ...document, previewUrl: generatePresignedUrl(document.src) };
-};
 export const getNextStep = (documents) => {
   try {
     const sequence = ["OPT Receipt", "OPT EAD", "I-983", "I-20"];
@@ -207,13 +204,20 @@ export const getNextStep = (documents) => {
 
 export const postDocumentFeedback = async (req, res) => {
   try {
-    const { documentId, feedback } = req.body.id;
-    const document = await Document.findById(documentId).exec();
-    if (!document) {
-      throw new Error("Document not found");
+    const { documentId, feedback } = req.body;
+
+    const updatedDocument = await Document.findByIdAndUpdate(
+      documentId,
+      { hrFeedback: feedback },
+      { new: true }
+    );
+
+    console.log("updatedDocument", updatedDocument);
+
+    if (!updatedDocument) {
+      return res.status(404).send({ error: "Document not found." });
     }
-    document.feedback = feedback;
-    const updatedDocument = await document.save();
+
     res
       .status(200)
       .json({ data: updatedDocument, message: "Post feedback successfully" });
@@ -225,57 +229,21 @@ export const postDocumentFeedback = async (req, res) => {
 
 export const changeDocumentStatus = async (req, res) => {
   try {
-    const { documentId, status } = req.body.id;
-    const document = await Document.findById(documentId).exec();
-    if (!document) {
-      throw new Error("Document not found");
+    const { documentId, status } = req.body;
+    const updatedDocument = await Document.findByIdAndUpdate(
+      documentId,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedDocument) {
+      return res.status(404).send({ error: "Document not found." });
     }
-    document.status = status;
-    const updatedDocument = await document.save();
     res
       .status(200)
       .json({ data: updatedDocument, message: "Change status successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
-  }
-};
-
-export const downloadFile = async (req, res) => {
-  try {
-    const { filename } = req.params;
-    console.log(filename);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const sendNotification = async (req, res) => {
-  try {
-    const { email, name, documentType } = req.body;
-    if (!email || !name) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    // Send the email
-    const res = await emailjs.send(
-      "service_gzafy3n",
-      "template_iq64bnf",
-      {
-        name,
-        email,
-        document_type: documentType,
-      },
-      "3X0ppd2T-UG_dgkkz"
-    );
-    if (res.ok) {
-      res.status(200).json({ message: "Email sent successfully" });
-    } else {
-      throw new Error("Error with emailjs");
-    }
-  } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).json({ message: "Failed to send email" });
   }
 };
