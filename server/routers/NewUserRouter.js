@@ -6,7 +6,6 @@ import NewUser from '../models/NewUser.js';
 const router = express.Router();
 const { JWT_SECRET } = process.env;
 
-// Check if the email is already in use and activated
 router.get('/check-email', async (req, res) => {
   const { email } = req.query;
 
@@ -36,27 +35,24 @@ router.post('/generate-token', async (req, res) => {
   }
 
   try {
-    // Find the user by email
     let user = await NewUser.findOne({ email });
 
-    // If the user exists and is activated, return an error
+    // if user exists and is activated
     if (user && user.activated) {
       return res.status(400).json({ message: 'This email is already in use and activated.', code: 400 });
     }
 
-    // If the user exists but is not activated, regenerate the token and update the registration link
+    // if user exists but is not activated
     if (user && !user.activated) {
       const token = generateRegistrationToken(email);
       const registrationLink = `http://localhost:3000/register?token=${token}`;
       
-      // Update the existing user's registration link
       user.registrationLink = registrationLink;
       await user.save();
       
       return res.status(200).json({ data: { registrationLink: user.registrationLink }, message: 'Registration link regenerated for existing user', code: 200 });
     }
 
-    // If the user does not exist, create a new user and generate the registration link
     if (!user) {
       const token = generateRegistrationToken(email);
       const registrationLink = `http://localhost:3000/register?token=${token}`;

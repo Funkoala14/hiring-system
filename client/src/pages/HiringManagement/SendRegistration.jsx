@@ -38,7 +38,6 @@ const SendLink = ({ setUsers, fetchUsers }) => {
         const email = form.current.email.value;
         const name = form.current.name.value;
 
-        // Generate the token and handle email sending
         const link = await generateTokenLink(name, email);
 
         if (link) {
@@ -57,7 +56,7 @@ const SendLink = ({ setUsers, fetchUsers }) => {
                     async () => {
                         alert('Email sent successfully!');
                         setIsLoading(false);
-                        await fetchUsers(); // Update the user list
+                        await fetchUsers(); // update the user list
                     },
                     (error) => {
                         alert(`Failed to send email: ${error.text}`);

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ApplicationTables from './ViewOnboardingApplications';
 import SendLink from './SendRegistration';
 import NewUserList from './NewUserList';
-import { get } from '../../services/api';  // Import your API utility
+import { get } from '../../services/api';
 
 function a11yProps(index) {
     return {
@@ -22,7 +22,6 @@ const HiringManagement = () => {
         setValue(newValue);
     };
 
-    // Function to fetch users
     const fetchUsers = async () => {
         setIsLoading(true);
         try {
@@ -36,7 +35,6 @@ const HiringManagement = () => {
         }
     };
 
-    // Fetch users when the component mounts
     useEffect(() => {
         fetchUsers();
     }, []);
