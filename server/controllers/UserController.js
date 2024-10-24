@@ -11,6 +11,7 @@ import mongoose from 'mongoose';
 import House from '../models/House.js';
 import OnboardingStatus from '../models/OnboardingStatus.js';
 import { deleteFileFn } from './S3BucketController.js';
+import NewUser from '../models/NewUser.js';
 
 // Register new user
 export const register = async (req, res) => {
@@ -21,9 +22,7 @@ export const register = async (req, res) => {
     try {
         const existingUser = await Employee.findOne({
             $or: [{ username: sanitizedUsername }, { email: sanitizedEmail }],
-        })
-            .lean()
-            .exec();
+        }).lean().exec();
 
         if (existingUser) {
             return res.status(409).json({ message: 'Username or email already exists' });
@@ -71,6 +70,12 @@ export const register = async (req, res) => {
             { expiresIn: '1d' }
         );
 
+        await NewUser.findOneAndUpdate(
+            { email: sanitizedEmail },
+            { activated: true },
+            { new: true }
+        );
+
         res.cookie('token', token, {
             httpOnly: true,
             sameSite: 'Strict',
@@ -86,7 +91,6 @@ export const register = async (req, res) => {
                 role: employee.role,
                 housingAssignment: employee.housingAssignment,
                 onboardingStatus: employee.onboardingStatus,
-
                 token: token,
             },
         });

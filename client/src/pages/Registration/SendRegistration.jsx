@@ -9,17 +9,17 @@ const SendLink = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const generateTokenLink = async (name, email) => {
-        try {
-            const response = await post('/user/generate-token', { name, email });
-            const { data, message } = response;
-            const { token } = data;
-            const link = `http://localhost:3000/register?token=${token}`;
-            setTokenLink(link);
-            return link;
-        } catch (error) {
-            console.error('Error generating token:', error);
-        }
-    };
+      try {
+          const response = await post('/user/generate-token', { name, email });
+          const { data, message } = response;
+          const { registrationLink } = data;
+          
+          setTokenLink(registrationLink);
+          return registrationLink;
+      } catch (error) {
+          console.error('Error generating token:', error);
+      }
+  };
 
     const sendEmail = async (e) => {
         e.preventDefault();
