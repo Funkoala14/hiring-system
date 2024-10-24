@@ -65,12 +65,13 @@ const OnboardingForm = () => {
 
       // Ensure that formData.documents is an array before adding optReceipt
     finalFormData.documents = Array.isArray(formData.documents) ? [...formData.documents] : [];
+    finalFormData.emergencyContacts = Array.isArray(formData.emergencyContacts) ? [...formData.emergencyContacts] : [];
 
     // Add optReceipt to documents if it exists
     if (formData.optReceipt) {
       finalFormData.documents.push(formData.optReceipt);
     }
-
+    finalFormData = new finalFormData()
     // Dispatch finalFormData to the backend
     dispatch(submitOnboarding(finalFormData)).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
