@@ -80,7 +80,7 @@ const EmployeeManagement = () => {
             <header>
                 <h1 className='title'>Employee Management</h1>
             </header>
-            <SearchBar list={list} handleReset={handleReset} handleSearch={handleSearch} />
+            <SearchBar handleReset={handleReset} handleSearch={handleSearch} />
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label='simple table'>
                     <TableHead>

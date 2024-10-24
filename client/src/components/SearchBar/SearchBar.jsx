@@ -32,7 +32,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
 }));
 
-const SearchBar = ({ list, handleReset, handleSearch }) => {
+const SearchBar = ({ handleReset, handleSearch }) => {
     const dispatch = useDispatch();
     const { query, queryList, baseQueryList, searched } = useSelector((state) => state.search);
 

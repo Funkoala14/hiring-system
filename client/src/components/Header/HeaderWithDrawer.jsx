@@ -132,7 +132,7 @@ export default function HeaderWithDrawer({ children, auth, badgeNum, employeePat
 
     const hrLinks = [
         {
-            text: "Employee Profiles",
+            text: "Employees Management",
             icon: <Groups3Icon />,
             path: hrPaths.profile,
         },
