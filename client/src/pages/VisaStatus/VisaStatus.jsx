@@ -9,11 +9,11 @@ import {
   updateVisaStatus,
 } from "../../store/visaSlice/visa.thunk";
 import CustomizedStepper from "../../components/CustomizedStepper";
+import { getDocumentMessage } from "../../utils/publicUtils";
 
 const VisaStatus = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const file = useSelector(selectVisaState);
-  console.log(file);
 
   const { status, feedback, type, src } = file;
 
@@ -31,34 +31,35 @@ const VisaStatus = () => {
   return (
     <>
       <Typography variant="h5" sx={{ pb: 2 }}>
-        Visa Status
+        <strong>Next Step:</strong> {getDocumentMessage(type, status)}
       </Typography>
 
       <CustomizedStepper nextStep={{ status, type }} />
 
       <Box sx={{ my: 2 }}>
-        <Typography sx={{ textTransform: "capitalize", lineHeight: 2 }}>
-          <strong>Approval Status:</strong> {status}
-        </Typography>
-        <Typography sx={{ textTransform: "capitalize", lineHeight: 2 }}>
-          <strong> HR Feedback:</strong> {feedback}
-        </Typography>
+        <Typography sx={{ lineHeight: 2 }}></Typography>
+        {feedback && (
+          <Typography sx={{ lineHeight: 2 }}>
+            <strong> HR Feedback:</strong> {feedback}
+          </Typography>
+        )}
       </Box>
-
-      {status === "not-submitted" && (
+      {src && <FileList files={[file]}></FileList>}
+      {(status === "not-submitted" || status === "rejected") && (
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <DropZone onUpload={setUploadedFile} />
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            size="large"
-            sx={{ margin: "auto", mt: 2 }}
-          >
-            Submit
-          </Button>
+          {uploadedFile && (
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              size="large"
+              sx={{ margin: "auto", mt: 2 }}
+            >
+              Submit
+            </Button>
+          )}
         </Box>
       )}
-      {src && <FileList files={[file]}></FileList>}
     </>
   );
 };

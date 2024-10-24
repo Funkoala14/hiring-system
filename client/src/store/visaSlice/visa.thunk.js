@@ -6,8 +6,6 @@ export const visaStatusInit = createAsyncThunk(
   async () => {
     const { data } = await get("/visa/info");
 
-    console.log("data", data);
-
     return data;
   }
 );

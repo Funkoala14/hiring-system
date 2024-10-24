@@ -42,6 +42,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import CommentIcon from "@mui/icons-material/Comment";
 import EmailIcon from "@mui/icons-material/Email";
+import { getDocumentMessage } from "../../utils/publicUtils";
 
 // Constants
 const headers = [
@@ -259,7 +260,7 @@ const HRVisaStatus = () => {
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    {`${row.nextStep.type}, ${row.nextStep.status}`}
+                    {getDocumentMessage(row.nextStep.type, row.nextStep.status)}
                   </TableCell>
                   <TableCell align="center">{renderAction(row)}</TableCell>
                 </TableRow>
@@ -315,7 +316,7 @@ const HRVisaStatus = () => {
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    {`${row.nextStep.type}, ${row.nextStep.status}`}
+                    {getDocumentMessage(row.nextStep.type, row.nextStep.status)}
                   </TableCell>
                   <TableCell align="center">
                     <Box
