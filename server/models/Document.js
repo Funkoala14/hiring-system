@@ -4,14 +4,17 @@ const documentSchema = new Schema({
     //Filename
     type: {
         type: String,
-        required: true
+        required: true,
+        default: "" 
     },
-    filename: {
+    filename: { // S3 file key
         type: String,
+        trim: true,
+        default: "" 
     },
+    src: { type: String, trim: true }, // Document URL
     file: {
         type: Buffer,
-        required: true
     },
     uploadedAt: {
         type: Date,
