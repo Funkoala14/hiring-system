@@ -101,7 +101,9 @@ const HousingManagement = () => {
                                     <TableCell>{row.landlord.email}</TableCell>
                                     <TableCell align='center'>{row.residents.length || 0}</TableCell>
                                     <TableCell>
-                                        <Button color='error' onClick={() => handleClickOpen(row._id)}>Delete</Button>
+                                        <Button color='error' onClick={() => handleClickOpen(row._id)}>
+                                            Delete
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -157,6 +159,12 @@ const AddHousing = () => {
             name: 'John Smith',
             phone: '6083654562',
             email: 'landlord1@mail.com',
+        },
+        facilityInfo: {
+            beds: 3,
+            mattresses: 3,
+            chairs: 4,
+            tables: 3,
         },
     });
     const handleChange = (key) => {
@@ -328,7 +336,7 @@ const AddHousing = () => {
                         variant='standard'
                         type='number'
                         InputProps={{
-                            inputProps: { step: 1, min: 0 }
+                            inputProps: { step: 1, min: 0 },
                         }}
                     />
                 </label>
@@ -341,7 +349,7 @@ const AddHousing = () => {
                         variant='standard'
                         type='number'
                         InputProps={{
-                            inputProps: { step: 1, min: 0 }
+                            inputProps: { step: 1, min: 0 },
                         }}
                     />
                 </label>
@@ -354,7 +362,7 @@ const AddHousing = () => {
                         variant='standard'
                         type='number'
                         InputProps={{
-                            inputProps: { step: 1, min: 0 }
+                            inputProps: { step: 1, min: 0 },
                         }}
                     />
                 </label>
@@ -367,7 +375,7 @@ const AddHousing = () => {
                         variant='standard'
                         type='number'
                         InputProps={{
-                            inputProps: { step: 1, min: 0 }
+                            inputProps: { step: 1, min: 0 },
                         }}
                     />
                 </label>
