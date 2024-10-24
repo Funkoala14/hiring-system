@@ -26,7 +26,7 @@ const FileList = ({ files }) => {
           width="100%"
           style={{
             border: "none",
-            height: "80vh",
+            height: "75vh",
           }}
         ></iframe>
       </AccordionDetails>

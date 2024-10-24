@@ -21,6 +21,10 @@ const DropZoneContainer = styled(Paper)(({ theme }) => ({
   "&:hover": {
     borderColor: theme.palette.primary.main,
   },
+  height: "30vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 }));
 
 const DropZone = ({ onUpload }) => {
@@ -38,7 +42,7 @@ const DropZone = ({ onUpload }) => {
     <>
       <DropZoneContainer {...getRootProps()}>
         <input {...getInputProps()} />
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6">
           Drag 'n' drop a file here, or click to select one
         </Typography>
       </DropZoneContainer>

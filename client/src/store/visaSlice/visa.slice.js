@@ -22,23 +22,23 @@ const visaSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(visaStatusInit.fulfilled, (state, action) => {
-        const { type, status, feedback, src, filename, previewUrl } =
+        const { type, status, hrFeedback, src, filename, previewUrl } =
           action.payload;
 
         state.type = type;
         state.status = status;
-        state.feedback = feedback;
+        state.feedback = hrFeedback;
         state.src = src;
         state.filename = filename;
         state.previewUrl = previewUrl;
       })
       .addCase(updateVisaStatus.fulfilled, (state, action) => {
-        const { type, status, feedback, src, filename, previewUrl } =
+        const { type, status, hrFeedback, src, filename, previewUrl } =
           action.payload;
 
         state.type = type;
         state.status = status;
-        state.feedback = feedback;
+        state.feedback = hrFeedback;
         state.src = src;
         state.filename = filename;
         state.previewUrl = previewUrl;
