@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchEmployeeList } from '../../store/employeeSlice/employee.thunk';
 import { clearSearch, setBaseQuery, setFilteredList } from '../../store/searchSlice/search.slice';
 import Loading from '../../components/Loading';
+import { clearError } from '../../store/employeeSlice/employee.slice';
+import { showNotification } from '../../store/notificationSlice/notification.slice';
 
 const EmployeeManagement = () => {
     const dispatch = useDispatch();
@@ -38,7 +40,8 @@ const EmployeeManagement = () => {
     }
 
     if (error) {
-        return <p>Error: {error}</p>;
+        dispatch(showNotification({ message: error, severity: 'error' }));
+        dispatch(clearError);
     }
 
     const setNameSet = async () => {
