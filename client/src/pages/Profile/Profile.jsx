@@ -43,7 +43,7 @@ const Profile = ({ parent }) => {
     useEffect(() => {
       // Redirect based on onboarding status once data is available
       if (info && info.onboardingStatus) {
-
+        const { status } = info.onboardingStatus;
         if (status !== "Approved") {
           navigate("/employee/on-boarding");
         }

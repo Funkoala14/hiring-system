@@ -11,20 +11,22 @@ import {
 } from "@mui/material";
 import { logoutThunk } from "../../store/auth/auth.thunk";
 import { useNavigate } from "react-router-dom";
+import { fetchEmployeeInfo } from "../../store/profileSlice/profile.thunk";
 
 const Confirmation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [isRedirecting, setIsRedirecting] = useState(false);
   const { loading, info, error } = useSelector((state) => state.profile);
+  
+  // Fetch employee information on page load
+  useEffect(() => {
+    dispatch(fetchEmployeeInfo(info));
+  }, [dispatch]);
 
   useEffect(() => {
     // Redirect based on onboarding status once data is available
     if (info && info.onboardingStatus) {
       const { status } = info.onboardingStatus;
-      console.log("info", info);
-      console.log("status", status);
 
       if (status !== "Pending") {
         setIsRedirecting(true);
@@ -170,7 +172,7 @@ const Confirmation = () => {
           <Card>
             <CardContent>
               <Typography variant="h6">Work Authorization</Typography>
-              {dataToDisplay.visaStatus.citizenshipType === "non-resident" && (
+              {dataToDisplay.visaStatus?.citizenshipType === "non-resident" && (
                 <>
                   <Typography>
                     <strong>Citizenship Type:</strong>{" "}
@@ -199,11 +201,11 @@ const Confirmation = () => {
                   </Typography>
                 </>
               )}
-              {(dataToDisplay.visaStatus.citizenshipType === "citizen" ||
-                dataToDisplay.visaStatus.citizenshipType === "green card") && (
+              {(dataToDisplay.visaStatus?.citizenshipType === "citizen" ||
+                dataToDisplay.visaStatus?.citizenshipType === "green card") && (
                 <Typography>
                   <strong>Citizenship Type:</strong>{" "}
-                  {dataToDisplay.visaStatus.citizenshipType}
+                  {dataToDisplay.visaStatus?.citizenshipType}
                 </Typography>
               )}
             </CardContent>
