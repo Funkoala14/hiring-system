@@ -9,12 +9,25 @@ import {
   InputLabel,
   OutlinedInput,
 } from "@mui/material";
+import { formatDate, formatDateForInput } from "../../utils/publicUtils";
 
-const PersonalInfo = ({ formData, handleChange }) => {
+const PersonalInfo = ({ formData, handleChange, info }) => {
   return (
     <>
       <Grid xs={12} sx={{ padding: "24px" }}>
         <Typography variant="h6">Personal Information</Typography>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <TextField
+          label="Email"
+          name="email"
+          value={info.email || null}
+          disabled
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
@@ -23,6 +36,7 @@ const PersonalInfo = ({ formData, handleChange }) => {
           value={formData.firstName}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -32,6 +46,7 @@ const PersonalInfo = ({ formData, handleChange }) => {
           value={formData.lastName}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -57,12 +72,13 @@ const PersonalInfo = ({ formData, handleChange }) => {
           label="Date of Birth"
           name="dob"
           type="date"
-          value={formData.dob}
+          value={formatDateForInput(formData.dob)}
           onChange={handleChange}
           fullWidth
           InputLabelProps={{
             shrink: true,
           }}
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -76,7 +92,7 @@ const PersonalInfo = ({ formData, handleChange }) => {
         >
           <MenuItem value="male">Male</MenuItem>
           <MenuItem value="female">Female</MenuItem>
-          <MenuItem value="other">Other</MenuItem>
+          <MenuItem value="other">I do not wish to answer</MenuItem>
         </TextField>
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -86,6 +102,7 @@ const PersonalInfo = ({ formData, handleChange }) => {
           value={formData.ssn}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
       <Grid item xs={12} sm={6}>

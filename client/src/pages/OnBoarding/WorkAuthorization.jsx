@@ -1,5 +1,6 @@
 import React from "react";
 import { TextField, MenuItem, Grid, Typography } from "@mui/material";
+import { formatDateForInput } from "../../utils/publicUtils";
 
 const WorkAuthorization = ({ formData, handleChange }) => {
   const isNonResident = formData.visaStatus.citizenship === "no";
@@ -23,6 +24,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
           value={formData.visaStatus.citizenship || ''}
           onChange={handleChange}
           fullWidth
+          required
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
@@ -39,6 +41,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
             value={formData.visaStatus.citizenshipType}
             onChange={handleChange}
             fullWidth
+            required
           >
             <MenuItem value="citizen">Citizen</MenuItem>
             <MenuItem value="green card">Green Card</MenuItem>
@@ -57,6 +60,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               value={formData.visaStatus.visaTitle}
               onChange={handleChange}
               fullWidth
+              required
             >
               <MenuItem value="H1-B">H1-B</MenuItem>
               <MenuItem value="L2">L2</MenuItem>
@@ -93,6 +97,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
+                required
               />
             </Grid>
           )}
@@ -103,7 +108,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               label="Visa Start Date"
               name="visaStatus.startDate"
               type="date"
-              value={formData.visaStatus.startDate}
+              value={formatDateForInput(formData.visaStatus.startDate)}
               onChange={handleChange}
               fullWidth
               InputLabelProps={{
@@ -117,7 +122,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               label="Visa End Date"
               name="visaStatus.endDate"
               type="date"
-              value={formData.visaStatus.endDate}
+              value={formatDateForInput(formData.visaStatus.endDate)}
               onChange={handleChange}
               fullWidth
               InputLabelProps={{
@@ -140,6 +145,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               InputLabelProps={{
                 shrink: true,
               }}
+              required
             />
           </Grid>
         </>

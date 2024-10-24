@@ -15,6 +15,7 @@ const ReferenceInfo = ({ formData, handleChange }) => {
           value={formData.reference.firstName}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
 
@@ -25,6 +26,7 @@ const ReferenceInfo = ({ formData, handleChange }) => {
           value={formData.reference.lastName}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
 
@@ -35,6 +37,7 @@ const ReferenceInfo = ({ formData, handleChange }) => {
           value={formData.reference.phone}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
 
@@ -46,6 +49,7 @@ const ReferenceInfo = ({ formData, handleChange }) => {
           value={formData.reference.email}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
 
@@ -56,6 +60,7 @@ const ReferenceInfo = ({ formData, handleChange }) => {
           value={formData.reference.relationship}
           onChange={handleChange}
           fullWidth
+          required
         />
       </Grid>
     </>

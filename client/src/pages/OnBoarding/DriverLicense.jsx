@@ -9,6 +9,7 @@ import {
   Radio,
   Typography,
 } from "@mui/material";
+import { formatDateForInput } from "../../utils/publicUtils";
 
 const DriverLicense = ({ formData, handleChange }) => {
   // Ensure driverLicenseDetails is always an object to avoid undefined errors
@@ -35,6 +36,7 @@ const DriverLicense = ({ formData, handleChange }) => {
             name="driverLicense.hasLicense"
             value={driverLicense.hasLicense || "yes"} // Default to "no" if undefined
             onChange={handleChange}
+            required
           >
             <FormControlLabel value="yes" control={<Radio />} label="Yes" />
             <FormControlLabel value="no" control={<Radio />} label="No" />
@@ -52,6 +54,7 @@ const DriverLicense = ({ formData, handleChange }) => {
               value={driverLicense.number || ""} // Fallback to empty string if undefined
               onChange={handleChange}
               fullWidth
+              required
             />
           </Grid>
 
@@ -60,12 +63,13 @@ const DriverLicense = ({ formData, handleChange }) => {
               label="Expiration Date"
               name="driverLicense.expirationDate"
               type="date"
-              value={driverLicense.expirationDate || ""} // Fallback to empty string if undefined
+              value={formatDateForInput(driverLicense.expirationDate) || ""} // Fallback to empty string if undefined
               onChange={handleChange}
               fullWidth
               InputLabelProps={{
                 shrink: true,
               }}
+              required
             />
           </Grid>
 
@@ -79,6 +83,7 @@ const DriverLicense = ({ formData, handleChange }) => {
               InputLabelProps={{
                 shrink: true,
               }}
+              required
             />
           </Grid>
         </>
