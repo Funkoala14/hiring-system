@@ -54,7 +54,6 @@ const onboardingSlice = createSlice({
         src : "",
         name: ""
       },
-      img: null,
       address: {
         buildingOrAptNumber: '',
         street: '',
@@ -96,7 +95,7 @@ const onboardingSlice = createSlice({
         visaTitle: '',
         startDate: '',
         endDate: '',
-        documents: [],
+        visaDocuments: [],
       }
 
     },

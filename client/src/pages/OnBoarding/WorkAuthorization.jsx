@@ -131,7 +131,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Visa Documents"
-              name="documents"
+              name="visaDocuments"
               type="file"
               onChange={handleChange}
               fullWidth
