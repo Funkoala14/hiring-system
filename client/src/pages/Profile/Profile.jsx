@@ -35,6 +35,21 @@ const Profile = ({ parent }) => {
     const { username } = useSelector(selectIsLoggedIn);
     const queryParams = new URLSearchParams(location.search);
 
+    // Fetch employee information on page load
+    useEffect(() => {
+      dispatch(fetchEmployeeInfo(info)); // Pass Data if necessary
+    }, [dispatch]);
+  
+    useEffect(() => {
+      // Redirect based on onboarding status once data is available
+      if (info && info.onboardingStatus) {
+
+        if (status !== "Approved") {
+          navigate("/employee/on-boarding");
+        }
+      }
+    }, [info, navigate]);
+
     useEffect(() => {
         switch (parent) {
             case 'hr':
