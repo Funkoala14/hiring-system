@@ -11,12 +11,23 @@ const SendLink = ({ setUsers, fetchUsers }) => {
     const generateTokenLink = async (name, email) => {
         try {
             const response = await post('/user/generate-token', { name, email });
-            const { data } = response;
+            const { data, message } = response;
+
+            if (response.status === 400 && message === 'This email is already in use and activated.') {
+                alert('This email is already in use and activated.');
+                return null;
+            }
+
             const { registrationLink } = data;
             setTokenLink(registrationLink);
             return registrationLink;
         } catch (error) {
-            console.error('Error generating token:', error);
+            if (error.response && error.response.status === 400) {
+                alert(error.response.data.message);
+            } else {
+                console.error('Error generating token:', error);
+            }
+            return null;
         }
     };
 
@@ -27,6 +38,7 @@ const SendLink = ({ setUsers, fetchUsers }) => {
         const email = form.current.email.value;
         const name = form.current.name.value;
 
+        // Generate the token and handle email sending
         const link = await generateTokenLink(name, email);
 
         if (link) {
@@ -45,8 +57,7 @@ const SendLink = ({ setUsers, fetchUsers }) => {
                     async () => {
                         alert('Email sent successfully!');
                         setIsLoading(false);
-
-                        await fetchUsers();
+                        await fetchUsers(); // Update the user list
                     },
                     (error) => {
                         alert(`Failed to send email: ${error.text}`);
@@ -54,7 +65,6 @@ const SendLink = ({ setUsers, fetchUsers }) => {
                     }
                 );
         } else {
-            console.error('Token link was not generated. Email not sent.');
             setIsLoading(false);
         }
     };

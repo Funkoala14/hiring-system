@@ -6,6 +6,28 @@ import NewUser from '../models/NewUser.js';
 const router = express.Router();
 const { JWT_SECRET } = process.env;
 
+// Check if the email is already in use and activated
+router.get('/check-email', async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required', code: 400 });
+  }
+
+  try {
+    const user = await NewUser.findOne({ email });
+
+    if (user && user.activated) {
+      return res.status(400).json({ message: 'This email is already in use and activated.' });
+    }
+
+    res.status(200).json({ exists: !!user, activated: user?.activated });
+  } catch (error) {
+    console.error('Error checking email:', error);
+    res.status(500).json({ message: 'Server error', code: 500 });
+  }
+});
+
 router.post('/generate-token', async (req, res) => {
   const { name, email } = req.body;
 
@@ -14,18 +36,37 @@ router.post('/generate-token', async (req, res) => {
   }
 
   try {
+    // Find the user by email
     let user = await NewUser.findOne({ email });
-    
+
+    // If the user exists and is activated, return an error
+    if (user && user.activated) {
+      return res.status(400).json({ message: 'This email is already in use and activated.', code: 400 });
+    }
+
+    // If the user exists but is not activated, regenerate the token and update the registration link
+    if (user && !user.activated) {
+      const token = generateRegistrationToken(email);
+      const registrationLink = `http://localhost:3000/register?token=${token}`;
+      
+      // Update the existing user's registration link
+      user.registrationLink = registrationLink;
+      await user.save();
+      
+      return res.status(200).json({ data: { registrationLink: user.registrationLink }, message: 'Registration link regenerated for existing user', code: 200 });
+    }
+
+    // If the user does not exist, create a new user and generate the registration link
     if (!user) {
       const token = generateRegistrationToken(email);
-
       const registrationLink = `http://localhost:3000/register?token=${token}`;
 
       user = new NewUser({ name, email, registrationLink });
       await user.save();
+
+      return res.status(201).json({ data: { registrationLink: user.registrationLink }, message: 'Registration link generated', code: 201 });
     }
 
-    res.status(201).json({ data: { registrationLink: user.registrationLink }, message: 'Registration link generated', code: 201 });
   } catch (error) {
     console.error('Error creating new user:', error);
     res.status(500).json({ message: 'Server error', code: 500 });
