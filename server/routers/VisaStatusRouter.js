@@ -12,9 +12,7 @@ import {
   jwtValidation,
   checkPermission,
 } from "../middlewares/authMiddleware.js";
-import multer from "multer";
-
-const upload = multer();
+import { uploadFileMiddleware } from "../middlewares/fileMiddleware.js";
 
 const visaStatusRouter = Router();
 
@@ -23,7 +21,7 @@ visaStatusRouter.get("/info", jwtValidation, getVisaStatusNextStep);
 visaStatusRouter.post(
   "/submit",
   jwtValidation,
-  upload.single("file"),
+  uploadFileMiddleware,
   submitDocument
 );
 

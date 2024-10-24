@@ -3,7 +3,6 @@ import Employee from "../models/Employee.js";
 import User from "../models/User.js";
 import VisaStatus from "../models/VisaStatus.js";
 import emailjs from "@emailjs/browser";
-import { generatePresignedUrl } from "./S3BucketController.js";
 
 export const submitDocument = async (req, res) => {
   try {
@@ -25,7 +24,7 @@ export const submitDocument = async (req, res) => {
     await newDoc.save();
 
     const employee = await User.findById(employeeId).lean().exec();
-    
+
     const updatedStatus = await VisaStatus.findByIdAndUpdate(
       employee.visaStatus,
       { $push: { documents: newDoc._id } },
@@ -144,9 +143,8 @@ export const getNextStep = (documents) => {
       return {
         type: sequence[0], // First step in the sequence
         status: "not-submitted",
-        file: null,
+        src: null,
         feedback: "",
-        previewUrl: "",
       };
     }
 
@@ -159,9 +157,8 @@ export const getNextStep = (documents) => {
       return {
         type: sequence[0], // No relevant documents found, return the first step
         status: "not-submitted",
-        file: null,
+        src: null,
         feedback: "",
-        previewUrl: "",
       };
     }
 
@@ -172,7 +169,7 @@ export const getNextStep = (documents) => {
 
     if (allApproved) {
       // If all steps are approved, return the last step (I-20)
-      return appendPreviewUrl(sortedDocuments[sortedDocuments.length - 1]);
+      return sortedDocuments[sortedDocuments.length - 1];
     }
 
     // Get the last submitted document in the sequence
@@ -180,7 +177,7 @@ export const getNextStep = (documents) => {
 
     // If the last submitted document is not approved, return it
     if (lastDocument && lastDocument.status !== "approved") {
-      return appendPreviewUrl(lastDocument);
+      return lastDocument;
     }
 
     // If the last document is approved, find the next step in the sequence
@@ -190,9 +187,8 @@ export const getNextStep = (documents) => {
       return {
         type: sequence[nextIndex],
         status: "not-submitted",
-        file: null,
+        src: null,
         feedback: "",
-        previewUrl: "",
       };
     }
 
@@ -200,9 +196,8 @@ export const getNextStep = (documents) => {
     return {
       type: sequence[0],
       status: "not-submitted",
-      file: null,
+      src: null,
       feedback: "",
-      previewUrl: "",
     };
   } catch (error) {
     console.error("Error in getNextStep:", error);
