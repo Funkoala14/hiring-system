@@ -1,7 +1,13 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
+import { SendLink } from "./pages/Registration/SendRegistration";
 import MainLayout from "/layouts/MainLayout";
 import HRVisaStatus from "./pages/HRVisaStatus/HRVisaStatus";
+import OnBoarding from "./pages/OnBoarding/OnBoarding";
+import Review from "./pages/OnBoarding/Review";
+import Confirmation from "./pages/OnBoarding/Confirmation";
+import ApplicationTables from "./pages/ViewOnboardingApplications";
+import ApplicationDetails from "./pages/ApplicationDetails";
 
 const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
 const Home = lazy(() => import("/pages/Home/Home"));
@@ -44,7 +50,11 @@ function AppRouter() {
 
         {/* RegistrationPage Route */}
         <Route path="/register" element={<RegistrationPage />} />
+        {/* RegistrationPage Route */}
+        <Route path="/register" element={<RegistrationPage />} />
 
+        {/* Login Route */}
+        <Route path="/login" element={<Login />} />
         {/* Login Route */}
         <Route path="/login" element={<Login />} />
 
@@ -57,10 +67,19 @@ function AppRouter() {
             </PrivateRoute>
           }
         >
-          {/* Employee Details Route (for onboarding status check) */}
+          {/* On-Boarding Route (without Header and Navbar) */}
+
+          <Route path="on-boarding" element={<OnBoarding />} />
+
+          {/* Confirmation Route */}
           <Route
-            path="details"
-            element={<OnboardingStatus />} // OnboardingStatus will handle the redirect logic
+            path="on-boarding/confirmation"
+            element={<Confirmation parent={"on-boarding"} />}
+          />
+          {/* Confirmation Route */}
+          <Route
+            path="on-boarding/pending"
+            element={<Review parent={"on-boarding"} />}
           />
           {/* Employee Personal Info Route (with MainLayout) */}
           <Route
@@ -81,7 +100,15 @@ function AppRouter() {
           />
 
           {/* On-Boarding Route (without Header and Navbar) */}
-          <Route path="on-boarding" element={<OnBoarding />} />
+
+          <Route path="on-boarding" element={<OnBoarding/>} /> 
+
+          {/* Confirmation Route */}
+          <Route
+            path="on-boarding/confirmation"
+            element={<Confirmation parent={"on-boarding"} />}
+          />
+ 
 
           {/* Visa-Status Route */}
           <Route

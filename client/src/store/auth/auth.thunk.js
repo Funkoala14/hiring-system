@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../interceptors/auth.interceptor';
 import {jwtDecode} from 'jwt-decode';
 import { get, post } from '../../services/api.js'
+import { resetProfileState } from '../profileSlice/profile.slice.js';
 
 const loginThunk = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
   try {
@@ -57,7 +58,7 @@ const verifyThunk = createAsyncThunk('auth/verify', async (_, { rejectWithValue 
 });
 
 // Async thunk for logging out
-const logoutThunk = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
+const logoutThunk = createAsyncThunk('auth/logout', async (_, { rejectWithValue, dispatch }) => {
   try {
     // Send the logout request to the server (this assumes your server clears any session-related info)
     await get('/user/logout');

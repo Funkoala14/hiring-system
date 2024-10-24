@@ -5,6 +5,8 @@ const { sign } = jsonwebtoken;
 import validator from 'validator';
 const { escape } = validator;
 import Employee from '../models/Employee.js';
+import VisaStatus from '../models/VisaStatus.js';
+import Document from '../models/Document.js';
 import config from '../config/config.js';
 import { Types } from 'mongoose';
 import mongoose from 'mongoose';
@@ -338,6 +340,112 @@ export const updateAvatar = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
+        return res.status(500).json({ message: 'Internal server error', code: 500 });
+    }
+};
+
+export const updateEmployeeDocuments = async (req, res) => {
+    //const { username } = req.user;
+    const files = req.files;
+
+    console.log(req.files);
+
+    if (!files) {
+        return res.status(400).send({
+            message: 'No files uploaded',
+            code: 400,
+        });
+    }
+
+    try {
+        const employee = await Employee.findOne({ username }).lean().exec();
+        if (!employee) {
+            return res.status(404).json({ message: 'Employee not found', code: 404 });
+        }
+
+        // Prepare updates
+        let updateData = {};
+
+        // Handle profile image upload
+        if (files.img && files.img[0]) {
+            const imgFile = files.img[0];
+            // Delete old image from S3 if necessary
+            if (employee.image && employee.image.name) {
+                await deleteFileFn(employee.image.name);
+            }
+            updateData.image = {
+                src: imgFile.location,
+                name: imgFile.key,
+            };
+        }
+
+        // Handle driver license upload
+        if (files.driverLicense && files.driverLicense[0]) {
+            const dlFile = files.driverLicense[0];
+            // Delete old driver license copy from S3 if necessary
+            if (employee.driverLicense && employee.driverLicense.copyName) {
+                await deleteFileFn(employee.driverLicense.copyName);
+            }
+            updateData.driverLicense = {
+                ...employee.driverLicense,
+                copy: dlFile.location,
+                copyName: dlFile.key,
+            };
+        }
+
+       // Handle visa documents upload
+       if (files.visaDocuments && files.visaDocuments.length > 0) {
+        let visaStatus = await VisaStatus.findById(employee.visaStatus).exec();
+
+        if (!visaStatus) {
+            return res.status(404).json({ message: 'Visa status not found', code: 404 });
+        }
+
+        // Create Document instances for each uploaded visa document
+        const newDocuments = await Promise.all(
+            files.visaDocuments.map(async (file) => {
+                const newDocument = new Document({
+                    type: 'visa',                // You can customize this
+                    filename: file.key,          // S3 file key
+                    src: file.location,          // S3 URL
+                });
+
+                // Save each document to the database
+                await newDocument.save();
+                return newDocument._id;          // Return the ObjectId of the saved document
+            })
+        );
+
+        // Add the new document ObjectIds to the visaStatus's documents array
+        visaStatus.documents.push(...newDocuments);
+
+        // Save the updated visaStatus
+        await visaStatus.save();
+        updateData.visaStatus = visaStatus._id;
+    }
+            
+        
+
+        // Update employee data
+        const updatedEmployee = await Employee.findOneAndUpdate(
+            { username },
+            updateData,
+            { new: true, lean: true }
+        )
+            .select('-__v -password -__t')
+            .populate('housingAssignment')
+            .populate('visaStatus onboardingStatus')
+            .populate('visaStatus.documents')
+            .lean()
+            .exec();
+
+        return res.status(200).json({
+            message: 'Documents updated successfully',
+            data: { id: updatedEmployee._id, ...updatedEmployee },
+            code: 200,
+        });
+    } catch (error) {
+        console.error('Error updating documents:', error);
         return res.status(500).json({ message: 'Internal server error', code: 500 });
     }
 };

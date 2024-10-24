@@ -12,6 +12,7 @@ import dotenv from 'dotenv';
 import housingRouter from './routers/HousingRouter.js';
 import OnboardingApplicationRouter from './routers/OnboardingApplicationRouter.js';
 import fileRouter from './routers/fileRouter.js';
+import onboardingRouter from './routers/OnboardingRouter.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -28,12 +29,6 @@ app.use(express.json());
 app.use(morgan(':method :url :status :response-time ms'));
 app.use(express.urlencoded({ extended: true }));
 
-// newUserRouter for create register link
-app.use('/v1/api/user', newUserRouter);
-
-// newUserRouter for create register link
-app.use('/v1/api/user', newUserRouter);
-
 app.use('/v1/api/user', userRouter);
 app.use('/v1/api/user', newUserRouter);
 app.use('/v1/api/visa', visaStatusRouter);
@@ -41,6 +36,7 @@ app.use('/v1/api/employee', employeeRouter);
 app.use('/v1/api/housing', housingRouter);
 app.use('/v1/api/onboarding', OnboardingApplicationRouter);
 app.use('/v1/api/file', fileRouter);
+app.use('/v1/api/onboarding', onboardingRouter);
 
 app.all('*', (_req, res) => {
     return res.status(404).json({ message: 'API Not Found' });

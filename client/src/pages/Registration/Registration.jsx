@@ -48,7 +48,7 @@ const RegistrationPage = () => {
       if (role === 'HR') {
         navigate('/hr/dashboard');  // HR redirect
       } else {
-        navigate(`/employee/details?username=${credentials.username}`);  // Employee redirect
+        navigate(`/employee/on-boarding`);  // Employee redirect
       }
       setCredentials({ username: '', password: '' });
     }
@@ -63,14 +63,19 @@ const RegistrationPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Submitting Username:', credentials.username);
-    const registrationResponse = await dispatch(signupThunk({ ...credentials, email }));
-
-    if (registrationResponse && registrationResponse.type === 'auth/signup/fulfilled') {
-      // after successful registration, activate the email
-      await post('/user/activate-email', { email });
+    e.preventDefault();  // Prevent default form submission
+    if (credentials.username && credentials.password) {
+      // Check the username before dispatch
+      console.log('Submitting Username:', credentials.username);
+      const registrationResponse = await dispatch(signupThunk({ ...credentials, email })); // Dispatch signup only on manual submit
+      if (registrationResponse && registrationResponse.type === 'auth/signup/fulfilled') {
+        // after successful registration, activate the email
+        await post('/user/activate-email', { email });
+      }
+    } else {
+      console.error('Username or password is missing'); // Handle missing fields
     }
+    
   };
 
   if (isLoading) {
