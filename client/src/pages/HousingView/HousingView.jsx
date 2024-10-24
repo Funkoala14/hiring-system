@@ -367,6 +367,7 @@ const NewReportForm = ({ handleClose, open, handleSubmit, formData, setFormData 
             <DialogContent dividers sx={{ width: '30vw' }}>
                 <form className='input-container flex-col g-1'>
                     <TextField
+                        sx={{ width: '100%' }}
                         required
                         label='Title'
                         value={formData.title}
@@ -375,6 +376,7 @@ const NewReportForm = ({ handleClose, open, handleSubmit, formData, setFormData 
                     <TextField
                         required
                         label='Description'
+                        sx={{ width: '100%' }}
                         multiline
                         rows={4}
                         value={formData.description}

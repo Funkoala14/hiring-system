@@ -1,13 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
-import { SendLink } from "./pages/Registration/SendRegistration";
 import MainLayout from "/layouts/MainLayout";
 import HRVisaStatus from "./pages/HRVisaStatus/HRVisaStatus";
-import OnBoarding from "./pages/OnBoarding/OnBoarding";
 import Review from "./pages/OnBoarding/Review";
 import Confirmation from "./pages/OnBoarding/Confirmation";
-import ApplicationTables from "./pages/ViewOnboardingApplications";
-import ApplicationDetails from "./pages/ApplicationDetails";
 
 const RegistrationPage = lazy(() => import("/pages/Registration/Registration"));
 const Home = lazy(() => import("/pages/Home/Home"));
@@ -17,9 +13,8 @@ const Login = lazy(() => import("/pages/Home/Login"));
 const Dashboard = lazy(() => import("/pages/Home/Dashboard"));
 const NotFound = lazy(() => import("/pages/Home/NotFound"));
 const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
-const OnboardingStatus = lazy(() => import("./components/OnboardingStatus"));
 const Forbidden = lazy(() => import("./pages/Home/Forbidden"));
-const OnBoarding = lazy(() => import("./pages/OnBoarding"));
+const OnBoarding = lazy(() => import("./pages/OnBoarding/OnBoarding"));
 const EmployeeManagement = lazy(() =>
   import("./pages/EmployeeManagement/EmployeeManagement")
 );
