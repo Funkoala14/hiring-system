@@ -47,8 +47,8 @@ const DriverLicense = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Driver License Number"
-              name="driverLicense.number"
-              value={formData.driverLicense.number}
+              name="driverLicenseDetails.number"
+              value={formData.driverLicenseDetails.number}
               onChange={handleChange}
               fullWidth
             />
@@ -57,9 +57,9 @@ const DriverLicense = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Expiration Date"
-              name="driverLicense.expirationDate"
+              name="driverLicenseDetails.expirationDate"
               type="date"
-              value={formData.driverLicense.expirationDate}
+              value={formData.driverLicenseDetails.expirationDate}
               onChange={handleChange}
               fullWidth
               InputLabelProps={{
@@ -71,7 +71,7 @@ const DriverLicense = ({ formData, handleChange }) => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Upload License Copy"
-              name="driverLicense.copy"
+              name="driverLicense"
               type="file"
               onChange={handleChange}
               fullWidth
