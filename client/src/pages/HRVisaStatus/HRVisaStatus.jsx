@@ -90,10 +90,10 @@ const HRVisaStatus = () => {
 
   const handleReset = () => dispatch(clearSearch(allStatuses));
 
-  const handleSearch = () => {
+  const handleSearch = (value) => {
     const results = allStatuses.filter((item) =>
       [item.firstName, item.lastName, item.preferredName].some((name) =>
-        name?.toLowerCase().includes(query.toLowerCase())
+        name?.toLowerCase().includes(value.toLowerCase())
       )
     );
     dispatch(setFilteredList(results));
@@ -236,7 +236,7 @@ const HRVisaStatus = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {allPending.map((row) => (
+              {allPending && allPending.map((row) => (
                 <TableRow key={row.username}>
                   <TableCell align="center">{row.firstName ?? ""}</TableCell>
                   <TableCell align="center">{row.lastName ?? ""}</TableCell>
@@ -244,7 +244,7 @@ const HRVisaStatus = () => {
                     {row.preferredName ?? ""}
                   </TableCell>
                   <TableCell align="center">
-                    {row.visaStatus.visaTitle}
+                    {row.visaStatus?.visaTitle}
                   </TableCell>
                   <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
                     {row.visaStatus.startDate?.slice(0, 10)}
@@ -254,12 +254,12 @@ const HRVisaStatus = () => {
                   </TableCell>
                   <TableCell align="center">
                     {calculateRemainingDays(
-                      row.visaStatus.startDate,
-                      row.visaStatus.endDate
+                      row.visaStatus?.startDate,
+                      row.visaStatus?.endDate
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    {getDocumentMessage(row.nextStep.type, row.nextStep.status)}
+                    {getDocumentMessage(row.nextStep?.type, row.nextStep?.status)}
                   </TableCell>
                   <TableCell align="center">{renderAction(row)}</TableCell>
                 </TableRow>
@@ -292,7 +292,7 @@ const HRVisaStatus = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredList.map((row) => (
+              {filteredList && filteredList.map((row) => (
                 <TableRow key={row.username}>
                   <TableCell align="center">{row.firstName ?? ""}</TableCell>
                   <TableCell align="center">{row.lastName ?? ""}</TableCell>
@@ -300,7 +300,7 @@ const HRVisaStatus = () => {
                     {row.preferredName ?? ""}
                   </TableCell>
                   <TableCell align="center">
-                    {row.visaStatus.visaTitle}
+                    {row.visaStatus?.visaTitle}
                   </TableCell>
                   <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
                     {row.visaStatus.startDate?.slice(0, 10)}
@@ -310,12 +310,12 @@ const HRVisaStatus = () => {
                   </TableCell>
                   <TableCell align="center">
                     {calculateRemainingDays(
-                      row.visaStatus.startDate,
-                      row.visaStatus.endDate
+                      row.visaStatus?.startDate,
+                      row.visaStatus?.endDate
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    {getDocumentMessage(row.nextStep.type, row.nextStep.status)}
+                    {getDocumentMessage(row.nextStep?.type, row.nextStep?.status)}
                   </TableCell>
                   <TableCell align="center">
                     <Box
@@ -327,7 +327,7 @@ const HRVisaStatus = () => {
                         overflow: "auto",
                       }}
                     >
-                      {row.visaStatus.documents.map((doc) => (
+                      {row.visaStatus?.documents?.map((doc) => (
                         <Chip
                           icon={<AttachFileIcon />}
                           key={doc.type}
