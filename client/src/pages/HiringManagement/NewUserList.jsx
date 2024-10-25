@@ -3,6 +3,7 @@ import { Container, Table, TableBody, TableCell, TableContainer, TableHead, Tabl
 import { get } from '../../services/api';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { formatDate, formatDateTime } from '../../utils/publicUtils';
 
 function Row({user}) {
   const [open, setOpen] = React.useState(false);
@@ -17,10 +18,11 @@ function Row({user}) {
               </TableCell>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
+              <TableCell>{formatDateTime(user.updatedAt)}</TableCell>
               <TableCell>{user.activated ? 'Yes' : 'No'}</TableCell>
           </TableRow>
           <TableRow>
-              <TableCell style={{ paddingBottom: 0, paddingTop: 0, wordBreak: "break-word"}} colSpan={4}>
+              <TableCell style={{ paddingBottom: 0, paddingTop: 0, wordBreak: "break-word"}} colSpan={5}>
                   <Collapse in={open} timeout='auto' unmountOnExit>
                     <Typography variant="subtitle1" sx={{mt: '0.5rem', fontWeight: "bold"}} component="div">Registration Link</Typography>
                     <Typography variant="body1" sx={{mb: '0.5rem'}} component="div">{user.registrationLink}</Typography>
@@ -73,6 +75,7 @@ const NewUserList = () => {
               <TableCell />
               <TableCell><strong>Name</strong></TableCell>
               <TableCell><strong>Email</strong></TableCell>
+              <TableCell><strong>Update Time</strong></TableCell>
               <TableCell><strong>Activated</strong></TableCell>
             </TableRow>
           </TableHead>

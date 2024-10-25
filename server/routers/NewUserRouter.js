@@ -110,7 +110,7 @@ router.post('/activate-email', async (req, res) => {
 
 router.get('/all-users', async (req, res) => {
   try {
-    const users = await NewUser.find();
+    const users = await NewUser.find().sort({ updatedAt: -1}).lean().exec();
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
