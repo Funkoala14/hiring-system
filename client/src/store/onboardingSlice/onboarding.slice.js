@@ -6,6 +6,9 @@ export const submitOnboarding = createAsyncThunk(
   'onboarding/submit',
   async (formData, { rejectWithValue }) => {
     try {
+
+      console.log("FE Files received:", formData.files);
+      console.log("FE Body received:", formData.body);
       console.log("Submitting form data:", formData);
       const formDataObj = new FormData();
 
@@ -39,6 +42,19 @@ export const submitOnboarding = createAsyncThunk(
 );
 
 
+export const fetchDocumentById = createAsyncThunk(
+  "documents/fetchDocumentById",
+  async (documentId, { rejectWithValue }) => {
+    try {
+      const response = await get(`/onboarding/documents/${documentId}`);
+      return response;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Unable to fetch document";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
 
 
 
@@ -72,7 +88,7 @@ const onboardingSlice = createSlice({
       dob: '',
       gender: '',
       driverLicense: {
-        hasLicense: 'no',
+        hasLicense: 'yes',
         number: '',
         expirationDate: '',
         driverLicenseFile: null
@@ -106,7 +122,7 @@ const onboardingSlice = createSlice({
     onboardingStatus: null,
     housingAssignment: null,
     visaStatus: null,
-    feedback: "Rejected", // Store feedback from rejected applications
+    feedback: ' ', // Store feedback from rejected applications
   },
   reducers: {
     updateFormField(state, action) {
