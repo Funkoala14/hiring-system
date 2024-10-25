@@ -6,7 +6,7 @@ import { formValidation } from '../middlewares/validationMiddleware.js';
 
 const onboardingRouter = Router();
 
-onboardingRouter.post('/submit', jwtValidation, formValidation, uploadMultipleFilesMiddleware, submitOnboarding);
+onboardingRouter.post('/submit', jwtValidation, uploadMultipleFilesMiddleware, submitOnboarding);
 onboardingRouter.get("/documents/:documentId", jwtValidation, getDocumentById);
 
 export default onboardingRouter;
