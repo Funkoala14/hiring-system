@@ -62,7 +62,7 @@ const NewUserList = () => {
   }
 
   return (
-    <Container style={{marginTop: "2rem"}} >
+    <Container style={{ marginTop: "2rem" }}>
       <Typography variant="h5" gutterBottom>
         New Employee Registration Status
       </Typography>
