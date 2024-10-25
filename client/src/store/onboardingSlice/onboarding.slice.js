@@ -34,9 +34,6 @@ export const submitOnboarding = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');
-      // return rejectWithValue({
-      //   feedback: "Your application was rejected due to missing documents.",
-      // });
     }
   }
 );
@@ -122,7 +119,7 @@ const onboardingSlice = createSlice({
     onboardingStatus: null,
     housingAssignment: null,
     visaStatus: null,
-    feedback: ' ', // Store feedback from rejected applications
+    message: '',
   },
   reducers: {
     updateFormField(state, action) {
@@ -145,9 +142,6 @@ const onboardingSlice = createSlice({
       const index = action.payload;
       state.formData.emergencyContacts.splice(index, 1);
     },
-    resetFeedback: (state) => {
-      state.feedback = null; // Reset feedback when resubmitting
-    },
     setInitialFormData: (state, action) => {
       state.formData = action.payload; // Set form data to user info when rejected
     },
@@ -157,11 +151,13 @@ const onboardingSlice = createSlice({
       .addCase(submitOnboarding.pending, (state) => {
         state.status = 'loading';
         state.error = null;
+        state.message = '';
       })
       .addCase(submitOnboarding.fulfilled, (state, action) => {
         const data = action.payload; // action.payload contains the API response
         if (data) {
           state.status = 'succeeded';
+          state.message = 'Your application has been submitted successfully!';
           state.error = null;
           state.formData = {
             ...state.formData,
@@ -170,14 +166,13 @@ const onboardingSlice = createSlice({
           state.onboardingStatus = data.onboardingStatus;
           state.housingAssignment = data.housingAssignment;
           state.visaStatus = data.visaStatus;
-          state.feedback = null;
         }
       })
       .addCase(submitOnboarding.rejected, (state, action) => {
         
         state.status = 'failed';
-        state.error = action.payload.message;
-        state.feedback = action.payload?.feedback || "Your application was rejected for unspecified reasons."; // Handle feedback from API
+        state.message = '';
+        state.error = action.payload.message || action.payload || 'Submission failed!';
       });
   },
 });
@@ -186,7 +181,6 @@ export const { updateFormField,
   updateEmergencyContact, 
   addEmergencyContact, 
   removeEmergencyContact,
-  resetFeedback, 
   setInitialFormData,
  } = onboardingSlice.actions;
 export default onboardingSlice.reducer;
