@@ -224,57 +224,55 @@ export default function HeaderWithDrawer({
   const renderNavLinks = (links) => (
     <List>
       {links.map(({ text, icon, path }) => (
-        <Link to={path}>
-          <ListItem key={text} disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              component="a"
-              href={path}
+        <ListItem key={text} disablePadding sx={{ display: "block" }}>
+          <ListItemButton
+            component={Link}
+            to={path}
+            sx={[
+              {
+                minHeight: 48,
+                px: 2.5,
+              },
+              open
+                ? {
+                    justifyContent: "initial",
+                  }
+                : {
+                    justifyContent: "center",
+                  },
+            ]}
+          >
+            <ListItemIcon
               sx={[
                 {
-                  minHeight: 48,
-                  px: 2.5,
+                  minWidth: 0,
+                  justifyContent: "center",
                 },
                 open
                   ? {
-                      justifyContent: "initial",
+                      mr: 3,
                     }
                   : {
-                      justifyContent: "center",
+                      mr: "auto",
                     },
               ]}
             >
-              <ListItemIcon
-                sx={[
-                  {
-                    minWidth: 0,
-                    justifyContent: "center",
-                  },
-                  open
-                    ? {
-                        mr: 3,
-                      }
-                    : {
-                        mr: "auto",
-                      },
-                ]}
-              >
-                {icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={text}
-                sx={[
-                  open
-                    ? {
-                        opacity: 1,
-                      }
-                    : {
-                        opacity: 0,
-                      },
-                ]}
-              />
-            </ListItemButton>
-          </ListItem>
-        </Link>
+              {icon}
+            </ListItemIcon>
+            <ListItemText
+              primary={text}
+              sx={[
+                open
+                  ? {
+                      opacity: 1,
+                    }
+                  : {
+                      opacity: 0,
+                    },
+              ]}
+            />
+          </ListItemButton>
+        </ListItem>
       ))}
     </List>
   );
