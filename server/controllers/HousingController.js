@@ -5,12 +5,27 @@ export const getHousesList = async (_req, res) => {
     try {
         const houses = await House.find()
             .select('-__v')
-            .populate({ path: 'residents', select: '_id username firstName preferredName lastName phone email' })
+            .populate({
+                path: 'residents',
+                select: '_id username firstName preferredName lastName phone email onboardingStatus',
+                populate: {
+                    path: 'onboardingStatus',
+                    select: 'status',
+                },
+            })
+
             .populate({ path: 'facilityReports' })
             .lean()
             .exec();
-
-        res.status(200).send({ data: houses, code: 200, message: 'success' });
+        const filteredHouses = houses.map((house) => {
+            return {
+                ...house,
+                residents: house.residents.filter((resident) => {
+                    return resident.onboardingStatus && resident.onboardingStatus.status === 'Approved';
+                }),
+            };
+        });
+        res.status(200).send({ data: filteredHouses, code: 200, message: 'success' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
