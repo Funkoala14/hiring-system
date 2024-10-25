@@ -91,7 +91,7 @@ function AppRouter() {
             path="visa-status"
             element={
               <MainLayout>
-                <SendLink />
+                <VisaStatus />
               </MainLayout>
             }
           />

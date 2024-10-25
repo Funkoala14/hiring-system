@@ -938,20 +938,11 @@ const DocumentSection = ({ docs, username }) => {
     return (
         <div className='outlined-container'>
             <div className='title'>Documents</div>
-            <List sx={{ display: 'flex', gap: '1rem' }}>
+            <List sx={{ display: 'flex', gap: '1rem', flexFlow: "row wrap" }}>
                 {docs?.length > 0 ? (
                     docs.map((doc) => (
-                        // <a
-                        //     key={doc._id}
-                        //     href={doc.src}
-                        //     target='_blank'
-                        //     style={{ textDecoration: 'none', color: 'inherit' }}
-                        // >
-                        //     <AttachFileIcon />
-                        //     {doc.filename}
-
-                        // </a>
                         <ListItem
+                            key={doc._id}
                             sx={{
                                 width: 'fit-content',
                                 bgcolor: '#f2f2f3',
