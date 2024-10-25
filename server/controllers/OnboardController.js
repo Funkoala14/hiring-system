@@ -101,6 +101,7 @@ export const submitOnboarding = async (req, res) => {
       onboardingStatus = new OnboardingStatus({
         employee: userId,
         status: "Pending", // Set status to Pending after submission
+        comments: ""
       });
     } else {
       // If it exists, just update the status

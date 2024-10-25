@@ -67,7 +67,7 @@ export const getApplicationById = async (req, res) => {
 
 export const updateApplicationStatus = async (req, res) => {
   const { applicationId } = req.params;
-  const { status, feedback } = req.body;
+  const { status, comment } = req.body;
 
   try {
     const employee = await Employee.findById(applicationId)
@@ -78,8 +78,8 @@ export const updateApplicationStatus = async (req, res) => {
 
     if (['Approved', 'Rejected'].includes(status)) {
       employee.onboardingStatus.status = status;
-      if (status === 'Rejected' && feedback) {
-        employee.onboardingStatus.feedback = feedback;
+      if (status === 'Rejected' && comment) {
+        employee.onboardingStatus.comments = comment;
       }
       await employee.onboardingStatus.save();
       return res.json({ message: `Application ${status.toLowerCase()} successfully`, employee });
