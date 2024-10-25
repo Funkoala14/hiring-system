@@ -9,11 +9,6 @@ const documentSchema = new Schema({
   filename: {
     type: String,
   },
-  uploadedAt: {
-    type: Date,
-    required: true,
-    default: Date.now,
-  },
   status: {
     type: String,
     enum: ["pending", "approved", "rejected"],
@@ -31,7 +26,7 @@ const documentSchema = new Schema({
   awsKey: {
     type: String,
   },
-});
+}, { timestamps: true});
 
 const Document = model("Document", documentSchema);
 

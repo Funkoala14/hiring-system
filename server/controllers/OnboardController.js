@@ -53,26 +53,28 @@ export const submitOnboarding = async (req, res) => {
         }
       : null;
 
-    const visaDocuments = files.visaDocuments
-      ? await Promise.all(
-          files.visaDocuments.map(async (file) => {
-            const newDocument = new Document({
-              type: "visa",
-              filename: file.key,
-              src: file.location,
-            });
-            await newDocument.save();
-            return newDocument._id;
-          })
-        )
-      : [];
+    // const visaDocuments = files.visaDocuments
+    //   ? await Promise.all(
+    //       files.visaDocuments.map(async (file) => {
+    //         const newDocument = new Document({
+    //           type: "visa",
+    //           filename: file.key,
+    //           src: file.location,
+    //         });
+    //         await newDocument.save();
+    //         return newDocument._id;
+    //       })
+    //     )
+    //   : [];
 
     // Handle optReceipt as an object with { src, name }
     const optReceipt = files.optReceipt
-      ? {
-          src: files.optReceipt[0].location,
-          name: files.optReceipt[0].key,
-        }
+      ? new Document({
+        type: "visa",
+        src: files.optReceipt[0].location,
+        filename: files.optReceipt[0].originalname,
+        awsKey: files.optReceipt[0].key,
+      })
       : null;
 
       // Find or create VisaStatus for the user
@@ -114,12 +116,12 @@ export const submitOnboarding = async (req, res) => {
         specificVisaTitle,
         startDate,
         endDate,
-        documents: visaDocuments,  // Save the visaDocuments
-        optReceipt: optReceipt,  // Save optReceipt if available
+        documents: [optReceipt._id],  // Save the visaDocuments
       });
 
       await visaStatus.save();
     } else {
+      await deleteFileFn(visaStatus.documents[0].awsKey);
       // Update existing visa status
       visaStatus.citizenship = citizenship;
       visaStatus.citizenshipType = citizenshipType;
@@ -127,9 +129,7 @@ export const submitOnboarding = async (req, res) => {
       visaStatus.specificVisaTitle = specificVisaTitle;
       visaStatus.startDate = startDate;
       visaStatus.endDate = endDate;
-      visaStatus.documents = visaDocuments.length ? visaDocuments : visaStatus.documents;
-      visaStatus.optReceipt = optReceipt ? optReceipt : visaStatus.optReceipt;
-
+      visaStatus.documents = [optReceipt._id]
       await visaStatus.save();
     }
 

@@ -133,7 +133,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
           </Grid>
 
           {/* Visa Documents Upload */}
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <TextField
               label="Visa Documents"
               name="visaDocuments"
@@ -147,7 +147,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               }}
               required
             />
-          </Grid>
+          </Grid> */}
         </>
       )}
     </>

@@ -106,9 +106,9 @@ const OnboardingForm = () => {
       : [];
 
     // Add optReceipt to visaDocuments if it exists
-    if (formData.optReceipt) {
-      finalFormData.visaStatus.visaDocuments.push(formData.optReceipt);
-    }
+    // if (formData.optReceipt) {
+    //   finalFormData.visaStatus.visaDocuments.push(formData.optReceipt);
+    // }
     if (feedback) {
       // This could be where you handle additional logic before resubmission
       userStatus = "Pending"; // Reset status to Pending before submission

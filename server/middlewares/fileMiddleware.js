@@ -33,9 +33,10 @@ const upload = multer({
 
 // Middleware to handle multiple file uploads
 export const uploadMultipleFilesMiddleware = upload.fields([
-    { name: 'profilePicture', maxCount: 1 },               // Profile image
-    { name: 'driverLicenseFile', maxCount: 1 },      // Driver license
-    { name: 'visaDocuments', maxCount: 5 },      // Visa documents (multiple files)
+  { name: 'profilePicture', maxCount: 1 },               // Profile image
+  { name: 'driverLicenseFile', maxCount: 1 },      // Driver license
+  { name: 'visaDocuments', maxCount: 5 },      // Visa documents (multiple files)
+  { name: 'optReceipt', maxCount: 1 },      // optReceipt
 ]);
 
 // Single file upload for a generic field 'file'
