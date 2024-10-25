@@ -34,7 +34,7 @@ const OnboardingForm = () => {
     ? info?.onboardingStatus.status
     : "Unknown";
 
-  let feedback = info?.onboardingStatus
+  let comments = info?.onboardingStatus
   ? info?.onboardingStatus.comments
   : "Your application was rejected due to missing documents";
 
@@ -129,7 +129,7 @@ const OnboardingForm = () => {
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={4}>
-            {/* Display feedback if application is rejected */}
+            {/* Display comments if application is rejected */}
             {userStatus === "Rejected" && (
               <Grid item xs={12}>
                 <Box
@@ -146,13 +146,13 @@ const OnboardingForm = () => {
                     Your application was Rejected
                   </Alert>
 
-                  {/* Display feedback alert only if feedback exists */}
-                  {feedback && (
+                  {/* Display comments alert only if comments exists */}
+                  {comments && (
                     <Alert
                       severity="warning"
                       sx={{ fontSize: "1.25rem", textAlign: "center" }}
                     >
-                      {feedback}
+                      {comments}
                     </Alert>
                   )}
 
