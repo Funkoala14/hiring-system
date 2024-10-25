@@ -104,7 +104,7 @@ const HousingDetail = ({ parent, housing }) => {
             </Typography>
             <Card className='view-container' sx={{ p: '1rem' }}>
                 <label className='view-item'>
-                    Building/Apartment #<span>{housing?.address?.building}</span>
+                    Building/Apartment #<span>{housing?.address?.buildingOrAptNumber}</span>
                 </label>
                 <label className='view-item'>
                     Street

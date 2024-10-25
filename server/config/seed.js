@@ -14,7 +14,7 @@ const seedHouses = async () => {
         {
             title: 'House 13',
             address: {
-                building: 'Building 1',
+                buildingOrAptNumber: 'Building 1',
                 street: '123 Main St',
                 city: 'New York',
                 state: 'NY',
@@ -37,7 +37,7 @@ const seedHouses = async () => {
         {
             title: 'House 21',
             address: {
-                building: 'Building 2',
+                buildingOrAptNumber: 'Building 2',
                 street: '456 Oak Ave',
                 city: 'Los Angeles',
                 state: 'CA',

@@ -93,7 +93,7 @@ const HousingManagement = () => {
                                         <Link to={`/hr/housing-detail?title=${row.title}`}>{row.title}</Link>
                                     </TableCell>
                                     <TableCell>
-                                        <p>{`${row.address.building}`}</p>
+                                        <p>{`${row.address.buildingOrAptNumber}`}</p>
                                         <p>{`${row.address.street}, ${row.address.city}, ${row.address.state} ${row.address.zip}`}</p>
                                     </TableCell>
                                     <TableCell>{row.landlord.name}</TableCell>
@@ -149,7 +149,7 @@ const AddHousing = () => {
     const [formData, setFormData] = useState({
         title: 'House 3',
         address: {
-            building: 'Building A',
+            buildingOrAptNumber: 'Building A',
             street: '123 Main St',
             city: 'Springfield',
             state: 'IL',
@@ -233,8 +233,8 @@ const AddHousing = () => {
                     <TextField
                         required
                         id='standard-required'
-                        value={formData?.address?.building || ''}
-                        onChange={handleChange('address.building')}
+                        value={formData?.address?.buildingOrAptNumber || ''}
+                        onChange={handleChange('address.buildingOrAptNumber')}
                         variant='standard'
                         maxLength='10'
                     />
