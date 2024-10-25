@@ -72,8 +72,6 @@ const HRVisaStatus = () => {
   const message = useSelector(selectMessage);
   const { query, filteredList } = useSelector((state) => state.search);
 
-  console.log(allStatuses);
-
   const [selectedFile, setSelectedFile] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);

@@ -219,8 +219,6 @@ export const postDocumentFeedback = async (req, res) => {
       { new: true }
     );
 
-    console.log("updatedDocument", updatedDocument);
-
     if (!updatedDocument) {
       return res.status(404).send({ error: "Document not found." });
     }
