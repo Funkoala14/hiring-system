@@ -68,15 +68,13 @@ export const submitOnboarding = async (req, res) => {
     //   : [];
 
     // Handle optReceipt as an object with { src, name }
-    const optReceipt = files.optReceipt
-      ? new Document({
-        type: "visa",
-        src: files.optReceipt[0].location,
-        filename: files.optReceipt[0].originalname,
-        awsKey: files.optReceipt[0].key,
-      })
-      : null;
-
+    const optReceipt = new Document({
+      type: "visa",
+      src: files.optReceipt[0].location,
+      filename: files.optReceipt[0].originalname,
+      awsKey: files.optReceipt[0].key,
+    });
+    await optReceipt.save()
       // Find or create VisaStatus for the user
     //let visaStatus = await VisaStatus.findOne({ employee: userId });
             // Fallback default values for visaStatus fields
