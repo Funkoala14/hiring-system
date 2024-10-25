@@ -80,15 +80,23 @@ export const getVisaStatusNextStep = async (req, res) => {
 
 export const getAllPendingStatuses = async (_req, res) => {
   try {
-    let allUsers = await User.find({ visaStatus: { $exists: true, $ne: null } })
+    const allUsers = await User.find({
+      visaStatus: { $exists: true, $ne: null },
+    })
       .populate({
         path: "visaStatus",
         populate: { path: "documents" },
       })
+      .populate("onboardingStatus")
       .lean()
       .exec();
 
-    const pendingStatuses = allUsers.reduce((acc, employee) => {
+    const approvedUsers = allUsers.filter(
+      (employee) =>
+        employee.onboardingStatus &&
+        employee.onboardingStatus.status === "Approved"
+    );
+    const pendingStatuses = approvedUsers.reduce((acc, employee) => {
       if (employee.visaStatus.documents.length > 0) {
         const nextStep = getNextStep(employee.visaStatus.documents);
 
@@ -118,14 +126,23 @@ export const getAllPendingStatuses = async (_req, res) => {
 
 export const getAllStatuses = async (_req, res) => {
   try {
-    let allUsers = await User.find({ visaStatus: { $exists: true, $ne: null } })
+    const allUsers = await User.find({
+      visaStatus: { $exists: true, $ne: null },
+    })
       .populate({
         path: "visaStatus",
         populate: { path: "documents" },
       })
+      .populate("onboardingStatus")
       .lean()
       .exec();
-    const allStatuses = allUsers.reduce((acc, employee) => {
+
+    const approvedUsers = allUsers.filter(
+      (employee) =>
+        employee.onboardingStatus &&
+        employee.onboardingStatus.status === "Approved"
+    );
+    const allStatuses = approvedUsers.reduce((acc, employee) => {
       if (employee.visaStatus.documents.length > 0) {
         const nextStep = getNextStep(employee.visaStatus.documents);
 
