@@ -12,7 +12,7 @@ import NewUser from '../models/NewUser.js';
 const seedHouses = async () => {
     const houses = [
         {
-            title: 'House 1',
+            title: 'House 13',
             address: {
                 building: 'Building 1',
                 street: '123 Main St',
@@ -35,7 +35,7 @@ const seedHouses = async () => {
             },
         },
         {
-            title: 'House 2',
+            title: 'House 21',
             address: {
                 building: 'Building 2',
                 street: '456 Oak Ave',
@@ -60,8 +60,8 @@ const seedHouses = async () => {
     ];
 
     // Clear existing houses and insert new ones
-    await House.deleteMany(); // Clear any existing data
-    await FacilityReport.deleteMany();
+    // await House.deleteMany(); // Clear any existing data
+    // await FacilityReport.deleteMany();
     const savedHouses = await House.insertMany(houses); // Save the new houses to DB
 
     return savedHouses;
@@ -69,75 +69,93 @@ const seedHouses = async () => {
 
 // Seed Employees
 const seedEmployees = async (houses) => {
+    const documents = await Document.insertMany([
+        { type: 'Passport', filename: 'passport.pdf' },
+        { type: 'Visa', filename: 'visa.pdf' },
+    ]);
+
+    const visaStatuses = await VisaStatus.insertMany([
+        { citizenshipType: 'citizen', visaTitle: 'Work Visa', documents: [documents[0]._id] },
+        { citizenshipType: 'green card', visaTitle: 'Green Card', documents: [documents[1]._id] },
+    ]);
+
     const users = [
-        // {
-        //     username: "emp1",
-        //     firstName: "John",
-        //     lastName: "Doe",
-        //     ssn: "123456789",
-        //     phone: "6234237342",
-        //     email: "emp1@mail.com",
-        //     password: "Pw@123456", // Will be hashed before saving
-        //     role: "Employee",
-        //     housingAssignment: houses[0]._id, // Assign employee1 to the first house
-        //     emergencyContacts: []
-        // },
-        // {
-        //     username: "emp2",
-        //     firstName: "Jane",
-        //     lastName: "Smith",
-        //     ssn: "987654321",
-        //     phone: "8024350234",
-        //     email: "emp2@mail.com",
-        //     password: "Pw@123456",
-        //     role: "Employee",
-        //     housingAssignment: houses[1]._id, // Assign employee2 to the second house
-        //     emergencyContacts: []
-        // },
-        // {
-        //     username: "emp3",
-        //     firstName: "Michael",
-        //     lastName: "Jones",
-        //     ssn: "543219876",
-        //     phone: "7749242474",
-        //     email: "emp3@mail.com",
-        //     password: "Pw@123456",
-        //     role: "Employee",
-        //     housingAssignment: houses[0]._id, // Assign employee3 to the first house
-        //     emergencyContacts: []
-        // },
-        // {
-        //     username: "emp4",
-        //     firstName: "Mark",
-        //     lastName: "Taylor",
-        //     ssn: "112334455",
-        //     phone: "6042345321",
-        //     email: "mark.taylor@mail.com",
-        //     password: "Pw@123456",
-        //     role: "Employee",
-        //     housingAssignment: houses[1]._id,
-        //     emergencyContacts: []
-        // },
         {
-            username: 'hr',
-            email: 'hr@mail.com',
-            password: 'Hrpw@123456',
-            role: 'HR', // HR role, no housing assignment
+            username: 'emp1',
+            firstName: 'John',
+            lastName: 'Doe',
+            ssn: '123456789',
+            phone: '6234237342',
+            email: 'emp1@mail.com',
+            password: 'Pw@123456', // Will be hashed before saving
+            role: 'Employee',
+            housingAssignment: houses[0]._id, // Assign employee1 to the first house
+            visaStatus: visaStatuses[0]._id,
+            emergencyContacts: [],
         },
+        {
+            username: 'emp2',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            ssn: '987654321',
+            phone: '8024350234',
+            email: 'emp2@mail.com',
+            password: 'Pw@123456',
+            role: 'Employee',
+            housingAssignment: houses[1]._id, // Assign employee2 to the second house
+            visaStatus: visaStatuses[1]._id,
+            emergencyContacts: [],
+        },
+        {
+            username: 'emp3',
+            firstName: 'Michael',
+            lastName: 'Jones',
+            ssn: '543219876',
+            phone: '7749242474',
+            email: 'emp3@mail.com',
+            password: 'Pw@123456',
+            role: 'Employee',
+            housingAssignment: houses[0]._id, // Assign employee3 to the first house
+            visaStatus: visaStatuses[0]._id,
+            emergencyContacts: [],
+        },
+        {
+            username: 'emp4',
+            firstName: 'Mark',
+            lastName: 'Taylor',
+            ssn: '112334455',
+            phone: '6042345321',
+            email: 'mark.taylor@mail.com',
+            password: 'Pw@123456',
+            role: 'Employee',
+            housingAssignment: houses[1]._id,
+            visaStatus: visaStatuses[1]._id,
+            emergencyContacts: [],
+        },
+        // {
+        //     username: 'hr',
+        //     email: 'hr@mail.com',
+        //     password: 'Hrpw@123456',
+        //     role: 'HR', // HR role, no housing assignment
+        // },
     ];
 
     // Clear existing users in the database
-    await Employee.deleteMany();
-    await Document.deleteMany();
-    await OnboardingStatus.deleteMany();
-    await VisaStatus.deleteMany();
-    await NewUser.deleteMany();
-    
+    // await Employee.deleteMany();
+    // await Document.deleteMany();
+    // await OnboardingStatus.deleteMany();
+    // await VisaStatus.deleteMany();
+    // await NewUser.deleteMany();
+
     // Loop over each user and save it using Employee.save()
     for (let userData of users) {
         const user = new Employee(userData); // Create a new User instance
-        await user.save(); // Save the user, triggering password hashing
 
+        const onboardingStatuses = await new OnboardingStatus({ employee: user._id, status: 'Approved', comments: 'All documents verified.' },)
+        user.onboardingStatus = onboardingStatuses._id;
+        await user.save(); // Save the user, triggering password hashing
+        await onboardingStatuses.save();
+        
         if (user.housingAssignment) {
             await House.findByIdAndUpdate(
                 user.housingAssignment,

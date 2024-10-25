@@ -65,7 +65,7 @@ const HousingView = ({ parent }) => {
             )}
             {housing ? (
                 <div className='flex-col g-1'>
-                    <HousingDetail housing={housing} />
+                    <HousingDetail housing={housing} parent={parent}/>
                     <HousingFaicilityReport houseId={houseId} parent={parent} />
                 </div>
             ) : (
@@ -75,7 +75,7 @@ const HousingView = ({ parent }) => {
     );
 };
 
-const HousingDetail = ({ housing }) => {
+const HousingDetail = ({ parent, housing }) => {
     return (
         <div className='housing-detail outlined-container'>
             <header>
@@ -156,7 +156,7 @@ const HousingDetail = ({ housing }) => {
                                 <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
                                         {parent === 'hr' ? (
-                                            <Link to={`/hr/employee-profile?username=${row.username}`}>
+                                            <Link to={`/hr/employee-profile?username=${row.username}`} style={{textDecoration: "underline"}}>
                                                 {row.preferredName || row.firstName} {row.lastName}
                                             </Link>
                                         ) : (

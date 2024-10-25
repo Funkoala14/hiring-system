@@ -284,11 +284,15 @@ export const getEmployeeList = async (req, res) => {
     try {
         const employees = await Employee.find({ role: 'Employee' })
             .select('-__v -password -__t')
-            .populate("visaStatus")
+            .populate("visaStatus onboardingStatus")
             .sort({ lastName: 1 })
             .lean()
             .exec();
-        return res.status(200).json({ message: 'success', data: employees, code: 200 });
+        // Filter for approved onboarding status
+        const approvedEmployees = employees.filter(employee => 
+            employee.onboardingStatus && employee.onboardingStatus.status === 'Approved'
+        );
+        return res.status(200).json({ message: 'success', data: approvedEmployees, code: 200 });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Internal server error', code: 500 });

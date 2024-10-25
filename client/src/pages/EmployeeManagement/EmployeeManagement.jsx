@@ -103,7 +103,7 @@ const EmployeeManagement = () => {
                             filteredList.map((row) => (
                                 <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
-                                        <Link to={`/hr/employee-profile?username=${row.username}`}>
+                                        <Link to={`/hr/employee-profile?username=${row.username}`} style={{textDecoration: "underline"}}>
                                             {row.firstName}
                                             {row.middleName ? ` ${row.middleName} ` : ' '}
                                             {row.lastName}
