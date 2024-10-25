@@ -4,7 +4,7 @@ import MainLayout from "@/layouts/MainLayout";
 import HRVisaStatus from "./pages/HRVisaStatus/HRVisaStatus";
 import Review from "./pages/OnBoarding/Review";
 import Loading from "./components/Loading";
-
+import SendLink from "./pages/HiringManagement/SendRegistration";
 
 const RegistrationPage = lazy(() => import("@pages/Registration/Registration"));
 const Home = lazy(() => import("@pages/Home/Home"));

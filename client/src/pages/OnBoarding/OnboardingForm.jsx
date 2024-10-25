@@ -10,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  resetFeedback,
   setInitialFormData,
   submitOnboarding,
   updateFormField,
@@ -27,13 +26,17 @@ const OnboardingForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { formData, status, error, feedback } = useSelector(
+  const { formData, status, error, message } = useSelector(
     (state) => state.onboarding
   );
   const { info } = useSelector((state) => state.profile);
   let userStatus = info?.onboardingStatus
     ? info?.onboardingStatus.status
     : "Unknown";
+
+  let feedback = info?.onboardingStatus
+  ? info?.onboardingStatus.comments
+  : "Your application was rejected due to missing documents";
 
   // Effect to set initial form data if the application was rejected
   useEffect(() => {
@@ -48,10 +51,10 @@ const OnboardingForm = () => {
       dispatch(
         updateFormField({
           driverLicense: {
-            hasLicense: "no", 
-            number: "", 
-            expirationDate: "", 
-            driverLicenseFile: null, 
+            hasLicense: "no",
+            number: "",
+            expirationDate: "",
+            driverLicenseFile: null,
           },
         })
       );
@@ -95,48 +98,85 @@ const OnboardingForm = () => {
       ? [...formData.emergencyContacts]
       : [];
 
-    if (feedback) {
-      userStatus = "Pending"; 
-    }
-
     dispatch(submitOnboarding(finalFormData)).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
-        dispatch(resetFeedback());
         navigate("pending");
       }
     });
   };
 
   return (
-    <Container maxWidth="md" sx={{ backgroundColor: "#f9f9f9", padding: "2rem", borderRadius: "8px", boxShadow: 3 }}>
+    <Container
+      maxWidth="md"
+      sx={{
+        backgroundColor: "#f9f9f9",
+        padding: "2rem",
+        borderRadius: "8px",
+        boxShadow: 3,
+      }}
+    >
       <Box mt={5}>
-        <Typography variant="h4" gutterBottom sx={{ marginBottom: "1.5rem", textAlign: "center", fontWeight: "bold" }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            marginBottom: "1.5rem",
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
           Onboarding Application
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={4}>
             {/* Display feedback if application is rejected */}
-            {userStatus === "Rejected" && feedback && (
+            {userStatus === "Rejected" && (
               <Grid item xs={12}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Alert severity="warning" sx={{ fontSize: '1.75rem', textAlign: 'center' }}>
-                  Your application was Rejected 
-                </Alert>
-                <Alert severity="warning" sx={{ fontSize: '1.25rem', textAlign: 'center' }}>
-                  {feedback}
-                </Alert>
-                <Alert severity="warning" sx={{ fontSize: '1rem', textAlign: 'center' }}>
-                  Please resubmit with updated information.
-                </Alert>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Alert
+                    severity="warning"
+                    sx={{ fontSize: "1.75rem", textAlign: "center" }}
+                  >
+                    Your application was Rejected
+                  </Alert>
+
+                  {/* Display feedback alert only if feedback exists */}
+                  {feedback && (
+                    <Alert
+                      severity="warning"
+                      sx={{ fontSize: "1.25rem", textAlign: "center" }}
+                    >
+                      {feedback}
+                    </Alert>
+                  )}
+
+                  <Alert
+                    severity="warning"
+                    sx={{ fontSize: "1rem", textAlign: "center" }}
+                  >
+                    Please resubmit with updated information.
+                  </Alert>
                 </Box>
               </Grid>
             )}
-
-            <PersonalInfo formData={formData} handleChange={handleChange} info={info} />
+            <PersonalInfo
+              formData={formData}
+              handleChange={handleChange}
+              info={info}
+            />
 
             <ContactInfo formData={formData} handleChange={handleChange} />
 
-            <WorkAuthorization formData={formData} handleChange={handleChange} />
+            <WorkAuthorization
+              formData={formData}
+              handleChange={handleChange}
+            />
 
             <DriverLicense formData={formData} handleChange={handleChange} />
 
@@ -145,7 +185,11 @@ const OnboardingForm = () => {
             <ReferenceInfo formData={formData} handleChange={handleChange} />
 
             {/* Submit button */}
-            <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "center", mt: 3 }}
+            >
               <Button
                 variant="contained"
                 color="primary"
@@ -159,7 +203,11 @@ const OnboardingForm = () => {
 
             {/* Display a loader when the form is being submitted */}
             {status === "loading" && (
-              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+              <Grid
+                item
+                xs={12}
+                sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+              >
                 <CircularProgress />
               </Grid>
             )}
@@ -168,10 +216,16 @@ const OnboardingForm = () => {
             {status === "failed" && error && (
               <Grid item xs={12}>
                 <Alert severity="error">
-                  {error.message || "Submission failed"}
+                  {error.message || "Submission failed. Check your input"}
                 </Alert>
               </Grid>
             )}
+
+            {status === "pending" && <p>Submitting your application...</p>}
+            {status === "succeeded" && (
+              <p style={{ color: "green" }}>{message}</p>
+            )}
+            {status === "failed" && <p style={{ color: "red" }}>{error.message}</p>}
           </Grid>
         </form>
       </Box>
