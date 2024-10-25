@@ -21,12 +21,9 @@ export const submitDocument = async (req, res) => {
       (item) => item.type === type
     );
 
-    console.log(deleteDoc);
-
     if (deleteDoc) {
       const res = await deleteFileFn(deleteDoc.awsKey);
       const res2 = await Document.deleteOne({ _id: deleteDoc._id });
-      console.log(res, res2);
     }
 
     if (!req.file) {
