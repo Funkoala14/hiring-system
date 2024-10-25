@@ -74,7 +74,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
           {isF1Visa && (
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Upload OPT Receipt"
+                label="OPT Receipt"
                 name="optReceipt"
                 type="file"
                 onChange={handleChange}
@@ -83,6 +83,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
                 InputLabelProps={{
                   shrink: true,
                 }}
+                required
               />
             </Grid>
           )}
@@ -135,7 +136,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
           {/* Visa Documents Upload */}
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Visa Documents"
+              label="Work Authorization Document"
               name="visaDocuments"
               type="file"
               onChange={handleChange}

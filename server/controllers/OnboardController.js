@@ -69,11 +69,18 @@ export const submitOnboarding = async (req, res) => {
 
     // Handle optReceipt as an object with { src, name }
     const optReceipt = files.optReceipt
-      ? {
-          src: files.optReceipt[0].location,
-          name: files.optReceipt[0].key,
-        }
-      : null;
+      ? await Promise.all(
+          files.optReceipt.map(async (file) => {
+            const newDocument = new Document({
+              type: "OPT Receipt",
+              filename: file.key,
+              src: file.location,
+            });
+            await newDocument.save();
+            return newDocument._id;
+          })
+        )
+      : [];
 
       // Find or create VisaStatus for the user
     //let visaStatus = await VisaStatus.findOne({ employee: userId });
@@ -105,6 +112,7 @@ export const submitOnboarding = async (req, res) => {
     // Find or create VisaStatus for the user
     let visaStatus = await VisaStatus.findOne({ employee: userId });
 
+ 
     if (!visaStatus) {
       // Create new visa status if it doesn't exist
       visaStatus = new VisaStatus({
@@ -114,8 +122,8 @@ export const submitOnboarding = async (req, res) => {
         specificVisaTitle,
         startDate,
         endDate,
-        documents: visaDocuments,  // Save the visaDocuments
-        optReceipt: optReceipt,  // Save optReceipt if available
+        documents: [...visaDocuments,...optReceipt],  // Save the visaDocuments and optReceipt
+
       });
 
       await visaStatus.save();
@@ -127,8 +135,7 @@ export const submitOnboarding = async (req, res) => {
       visaStatus.specificVisaTitle = specificVisaTitle;
       visaStatus.startDate = startDate;
       visaStatus.endDate = endDate;
-      visaStatus.documents = visaDocuments.length ? visaDocuments : visaStatus.documents;
-      visaStatus.optReceipt = optReceipt ? optReceipt : visaStatus.optReceipt;
+      visaStatus.documents = visaDocuments.length ? [...visaDocuments,...optReceipt] : visaStatus.documents;
 
       await visaStatus.save();
     }

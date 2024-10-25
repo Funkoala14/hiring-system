@@ -28,16 +28,6 @@ const OnBoarding = () => {
   }, [dispatch, username]);
 
   useEffect(() => {
-    const fetchInfo = async () => {
-      // Fetch info here (e.g., from an API)
-      const fetchedInfo = await getInfoFromAPI();
-      dispatch(setInfo(fetchedInfo)); // Dispatch the action to store info in Redux
-    };
-
-    fetchInfo();
-  }, [dispatch]);
-  
-  useEffect(() => {
     // Redirect based on onboarding status once data is available
     if (info && info.onboardingStatus) {
         const { status } = info.onboardingStatus;

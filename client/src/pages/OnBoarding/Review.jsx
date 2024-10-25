@@ -7,8 +7,9 @@ import {
   Card,
   CardContent,
   Link,
-  Box,
+  Box, List, ListItem,
 } from "@mui/material";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { logoutThunk } from "../../store/auth/auth.thunk";
 import { useNavigate } from "react-router-dom";
 import { fetchEmployeeInfo } from "../../store/profileSlice/profile.thunk";
@@ -18,7 +19,7 @@ const Confirmation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { info } = useSelector((state) => state.profile);
-  
+
   // Fetch employee information on page load
   useEffect(() => {
     dispatch(fetchEmployeeInfo(info));
@@ -291,24 +292,29 @@ const Confirmation = () => {
           <Card>
             <CardContent>
               <Typography variant="h6">Uploaded Documents</Typography>
-              {documents.map((doc, index) => (
-                <div key={index}>
-                  <Typography>{doc.name}</Typography>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => window.open(doc.url, "_blank")}
-                    style={{ marginRight: "10px" }}
-                  >
-                    Preview
-                  </Button>
-                  <Link href={doc.url} download>
-                    <Button variant="outlined" color="secondary">
-                      Download
-                    </Button>
-                  </Link>
-                </div>
-              ))}
+ 
+              <div className="outlined-container">
+                <List sx={{ display: "flex", gap: "1rem" }}>
+                  {documents?.length > 0 ? (
+                    documents.map((doc) => (
+                      <ListItem
+                        sx={{
+                          width: "fit-content",
+                          bgcolor: "#f2f2f3",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => window.open(doc.url, "_blank")}
+                      >
+                        <AttachFileIcon />
+                        {doc.name}
+                      </ListItem>
+                    ))
+                  ) : (
+                    <Typography>No files</Typography>
+                  )}
+                </List>
+              </div>
             </CardContent>
           </Card>
         </Grid>

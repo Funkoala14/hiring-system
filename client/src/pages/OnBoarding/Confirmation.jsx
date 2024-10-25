@@ -7,8 +7,9 @@ import {
   Card,
   CardContent,
   Link,
-  Box,
+  Box, List, ListItem,
 } from "@mui/material";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { logoutThunk } from "../../store/auth/auth.thunk";
 import { useNavigate } from "react-router-dom";
 import { fetchEmployeeInfo } from "../../store/profileSlice/profile.thunk";

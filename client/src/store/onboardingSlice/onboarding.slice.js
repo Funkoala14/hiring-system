@@ -6,6 +6,9 @@ export const submitOnboarding = createAsyncThunk(
   'onboarding/submit',
   async (formData, { rejectWithValue }) => {
     try {
+
+      console.log("FE Files received:", formData.files);
+      console.log("FE Body received:", formData.body);
       console.log("Submitting form data:", formData);
       const formDataObj = new FormData();
 
