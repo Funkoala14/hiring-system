@@ -7,60 +7,59 @@ import {
   Card,
   CardContent,
   Link,
-  Box, List, ListItem,
+  Box,
+  List,
+  ListItem,
 } from "@mui/material";
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { logoutThunk } from "../../store/auth/auth.thunk";
 import { useNavigate } from "react-router-dom";
 import { fetchEmployeeInfo } from "../../store/profileSlice/profile.thunk";
 import { formatDate } from "../../utils/publicUtils";
+import { fetchDocumentById } from "../../store/onboardingSlice/onboarding.slice";
 
 const Confirmation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { info } = useSelector((state) => state.profile);
-  
-  // Fetch employee information on page load
+  const [documentSrcs, setDocumentSrcs] = useState([]); // Initialize state to hold multiple Work Authorization document URLs
+
+  useEffect(() => {
+    if (info?.visaStatus?.documents?.length > 0) {
+      const documentIds = info.visaStatus.documents;
+      Promise.all(
+        documentIds.map((documentId) => {
+          return dispatch(fetchDocumentById(documentId)).then((result) => result?.payload?.src);
+        })
+      ).then((fetchedSrcs) => {
+        setDocumentSrcs(fetchedSrcs);
+      }).catch((error) => {
+        console.error("Error fetching documents", error);
+      });
+    }
+  }, [dispatch, info?.visaStatus]);
+
   useEffect(() => {
     dispatch(fetchEmployeeInfo(info));
   }, [dispatch]);
 
   useEffect(() => {
-    // Redirect based on onboarding status once data is available
     if (info && info.onboardingStatus) {
       const { status } = info.onboardingStatus;
-
       if (status !== "Pending") {
         navigate("/employee/on-boarding");
       }
     }
   }, [info, navigate]);
 
-  // Destructure formData from the onboarding slice and info from the profile slice
-  const { formData } = useSelector((state) => state.onboarding);
-
-  console.log("Confirmation info", info);
-  console.log("Confirmation info firstName", info.firstName);
-  console.log("Confirmation formData", formData);
-
-  // Use formData if available, otherwise fall back to info
-  let dataToDisplay = info;
-
-  console.log("dataToDisplay", dataToDisplay);
-
-  // Documents (driver's license, work authorization, etc.)
   const documents = [
-    { name: "Profile Picture", url: dataToDisplay?.image?.src },
-    { name: "Driver’s License", url: dataToDisplay?.driverLicense?.copy },
-    {
-      name: "Work Authorization",
-      url:
-        dataToDisplay?.documents?.length > 0
-          ? dataToDisplay.documents[0]
-          : null, // Safely access the first document
-    },
-    // other documents
-  ];
+    { name: "Profile Picture", url: info?.image?.src },
+    { name: "Driver’s License", url: info?.driverLicense?.copy },
+    ...documentSrcs.map((src, index) => ({
+      name: `Work Authorization ${index + 1}`,
+      url: src,
+    })),
+  ].filter(document => document.url);
 
   const handleLogout = () => {
     dispatch(logoutThunk());
@@ -68,195 +67,123 @@ const Confirmation = () => {
 
   return (
     <>
-      {/* Logout Button at the top right */}
+      {/* Logout Button */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
         <Button variant="contained" color="secondary" onClick={handleLogout}>
           Logout
         </Button>
       </Box>
-      <Grid container spacing={3}>
+
+      {/* Main Content */}
+      <Grid container spacing={3} sx={{ maxWidth: "900px", margin: "0 auto" }}>
+        {/* Header */}
         <Grid item xs={12}>
           <Typography variant="h4" align="center" gutterBottom>
             Please wait for HR to review your application.
           </Typography>
         </Grid>
 
-        {/* Personal Information */}
+        {/* Personal Information Card */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card sx={{ bgcolor: "#f9f9f9" }}>
             <CardContent>
-              <Typography variant="h6">Personal Information</Typography>
-              <Typography>
-                <strong>Email:</strong> {dataToDisplay.email}
-              </Typography>
-              <Typography>
-                <strong>First Name:</strong> {dataToDisplay.firstName}
-              </Typography>
-              <Typography>
-                <strong>Last Name:</strong> {dataToDisplay.lastName}
-              </Typography>
-              <Typography>
-                <strong>Preferred Name:</strong> {dataToDisplay.preferredName}
-              </Typography>
-              <Typography>
-                <strong>Date of Birth:</strong> {formatDate(dataToDisplay.dob)}
-              </Typography>
-              <Typography>
-                <strong>Gender:</strong> {dataToDisplay.gender}
-              </Typography>
-              <Typography>
-                <strong>SSN:</strong> {dataToDisplay.ssn}
-              </Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>Personal Information</Typography>
+              <Typography><strong>Email:</strong> {info.email}</Typography>
+              <Typography><strong>First Name:</strong> {info.firstName}</Typography>
+              <Typography><strong>Last Name:</strong> {info.lastName}</Typography>
+              <Typography><strong>Preferred Name:</strong> {info.preferredName}</Typography>
+              <Typography><strong>Date of Birth:</strong> {formatDate(info.dob)}</Typography>
+              <Typography><strong>Gender:</strong> {info.gender}</Typography>
+              <Typography><strong>SSN:</strong> {info.ssn}</Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Address Information */}
+        {/* Address Information Card */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card sx={{ bgcolor: "#f9f9f9" }}>
             <CardContent>
-              <Typography variant="h6">Address</Typography>
-              <Typography>
-                <strong>Building/Apt Number:</strong>{" "}
-                {dataToDisplay.address.buildingOrAptNumber}
-              </Typography>
-              <Typography>
-                <strong>Street:</strong> {dataToDisplay.address.street}
-              </Typography>
-              <Typography>
-                <strong>City:</strong> {dataToDisplay.address.city}
-              </Typography>
-              <Typography>
-                <strong>State:</strong> {dataToDisplay.address.state}
-              </Typography>
-              <Typography>
-                <strong>Zip Code:</strong> {dataToDisplay.address.zipCode}
-              </Typography>
-              <Typography>
-                <strong>Cell Phone:</strong> {dataToDisplay.cellPhone}
-              </Typography>
-              <Typography>
-                <strong>Work Phone:</strong> {dataToDisplay.workPhone}
-              </Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>Address</Typography>
+              <Typography><strong>Building/Apt Number:</strong> {info.address.buildingOrAptNumber}</Typography>
+              <Typography><strong>Street:</strong> {info.address.street}</Typography>
+              <Typography><strong>City:</strong> {info.address.city}</Typography>
+              <Typography><strong>State:</strong> {info.address.state}</Typography>
+              <Typography><strong>Zip Code:</strong> {info.address.zipCode}</Typography>
+              <Typography><strong>Cell Phone:</strong> {info.cellPhone}</Typography>
+              <Typography><strong>Work Phone:</strong> {info.workPhone}</Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Emergency Contacts */}
+        {/* Emergency Contacts Card */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card sx={{ bgcolor: "#f9f9f9" }}>
             <CardContent>
-              <Typography variant="h6">Emergency Contacts</Typography>
-              <Typography>
-                <strong>First Name:</strong>{" "}
-                {dataToDisplay.emergencyContacts[0]?.firstName}
-              </Typography>
-              <Typography>
-                <strong>Last Name:</strong>{" "}
-                {dataToDisplay.emergencyContacts[0]?.lastName}
-              </Typography>
-              <Typography>
-                <strong>Phone:</strong>{" "}
-                {dataToDisplay.emergencyContacts[0]?.phone}
-              </Typography>
-              <Typography>
-                <strong>Email:</strong>{" "}
-                {dataToDisplay.emergencyContacts[0]?.email}
-              </Typography>
-              <Typography>
-                <strong>Relationship:</strong>{" "}
-                {dataToDisplay.emergencyContacts[0]?.relationship}
-              </Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>Emergency Contacts</Typography>
+              <Typography><strong>First Name:</strong> {info.emergencyContacts[0]?.firstName}</Typography>
+              <Typography><strong>Last Name:</strong> {info.emergencyContacts[0]?.lastName}</Typography>
+              <Typography><strong>Phone:</strong> {info.emergencyContacts[0]?.phone}</Typography>
+              <Typography><strong>Email:</strong> {info.emergencyContacts[0]?.email}</Typography>
+              <Typography><strong>Relationship:</strong> {info.emergencyContacts[0]?.relationship}</Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Work Authorization */}
+        {/* Work Authorization Card */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card sx={{ bgcolor: "#f9f9f9" }}>
             <CardContent>
-              <Typography variant="h6">Work Authorization</Typography>
-              {dataToDisplay.visaStatus?.citizenshipType === "non-resident" && (
+              <Typography variant="h6" sx={{ mb: 2 }}>Work Authorization</Typography>
+              {info.visaStatus?.citizenshipType === "non-resident" && (
                 <>
-                  <Typography>
-                    <strong>Citizenship Type:</strong>{" "}
-                    {dataToDisplay.visaStatus.citizenshipType}
-                  </Typography>
-                  <Typography>
-                    <strong>Visa Title:</strong>{" "}
-                    {dataToDisplay.visaStatus.visaTitle}
-                  </Typography>
-
-                  {/* Only show specificVisaTitle if visaTitle is "Other" */}
-                  {dataToDisplay.visaStatus.visaTitle === "Other" && (
-                    <Typography>
-                      <strong>Specific Visa Title:</strong>{" "}
-                      {dataToDisplay.visaStatus.specificVisaTitle}
-                    </Typography>
+                  <Typography><strong>Citizenship Type:</strong> {info.visaStatus.citizenshipType}</Typography>
+                  <Typography><strong>Visa Title:</strong> {info.visaStatus.visaTitle}</Typography>
+                  {info.visaStatus.visaTitle === "Other" && (
+                    <Typography><strong>Specific Visa Title:</strong> {info.visaStatus.specificVisaTitle}</Typography>
                   )}
-
-                  <Typography>
-                    <strong>Start Date:</strong>{" "}
-                    {formatDate(dataToDisplay.visaStatus.startDate)}
-                  </Typography>
-                  <Typography>
-                    <strong>End Date:</strong>{" "}
-                    {formatDate(dataToDisplay.visaStatus.endDate)}
-                  </Typography>
+                  <Typography><strong>Start Date:</strong> {formatDate(info.visaStatus.startDate)}</Typography>
+                  <Typography><strong>End Date:</strong> {formatDate(info.visaStatus.endDate)}</Typography>
                 </>
               )}
-              {(dataToDisplay.visaStatus?.citizenshipType === "citizen" ||
-                dataToDisplay.visaStatus?.citizenshipType === "green card") && (
-                <Typography>
-                  <strong>Citizenship Type:</strong>{" "}
-                  {dataToDisplay.visaStatus?.citizenshipType}
-                </Typography>
+              {(info.visaStatus?.citizenshipType === "citizen" || info.visaStatus?.citizenshipType === "green card") && (
+                <Typography><strong>Citizenship Type:</strong> {info.visaStatus?.citizenshipType}</Typography>
               )}
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Driver License Information */}
+        {/* Driver License Information Card */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card sx={{ bgcolor: "#f9f9f9" }}>
             <CardContent>
-              <Typography variant="h6">Driver License Information</Typography>
-              {dataToDisplay.driverLicense?.number ? (
+              <Typography variant="h6" sx={{ mb: 2 }}>Driver License Information</Typography>
+              {info.driverLicense?.number ? (
                 <>
-                  <Typography>
-                    <strong>Yes</strong>
-                  </Typography>
-                  <Typography>
-                    <strong>Driver License Number:</strong>{" "}
-                    {dataToDisplay.driverLicense.number}
-                  </Typography>
-                  <Typography>
-                    <strong>Expiration Date:</strong>{" "}
-                    {formatDate(dataToDisplay.driverLicense.expirationDate)}
-                  </Typography>
+                  <Typography><strong>Driver License Number:</strong> {info.driverLicense.number}</Typography>
+                  <Typography><strong>Expiration Date:</strong> {formatDate(info.driverLicense.expirationDate)}</Typography>
                 </>
               ) : (
-                <Typography>
-                  <strong>No</strong>
-                </Typography>
+                <Typography>No driver’s license information provided.</Typography>
               )}
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Car Information */}
-        <Grid item xs={12} md={6}>
-          <Card>
+{/* Car Information */}
+<Grid item xs={12} md={6}>
+          <Card sx={{ bgcolor: "#f9f9f9" }}>
             <CardContent>
-              <Typography variant="h6">Car Information</Typography>
-              <Typography>
-                <strong>Make:</strong> {dataToDisplay.carInfo?.make}
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Car Information
               </Typography>
               <Typography>
-                <strong>Model:</strong> {dataToDisplay.carInfo?.model}
+                <strong>Make:</strong> {info.carInfo?.make || 'N/A'}
               </Typography>
               <Typography>
-                <strong>Color:</strong> {dataToDisplay.carInfo?.color}
+                <strong>Model:</strong> {info.carInfo?.model || 'N/A'}
+              </Typography>
+              <Typography>
+                <strong>Color:</strong> {info.carInfo?.color || 'N/A'}
               </Typography>
             </CardContent>
           </Card>
@@ -264,24 +191,26 @@ const Confirmation = () => {
 
         {/* Reference Information */}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card sx={{ bgcolor: "#f9f9f9" }}>
             <CardContent>
-              <Typography variant="h6">Reference Information</Typography>
-              <Typography>
-                <strong>First Name:</strong> {dataToDisplay.reference.firstName}
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Reference Information
               </Typography>
               <Typography>
-                <strong>Last Name:</strong> {dataToDisplay.reference.lastName}
+                <strong>First Name:</strong> {info.reference?.firstName || 'N/A'}
               </Typography>
               <Typography>
-                <strong>Phone:</strong> {dataToDisplay.reference.phone}
+                <strong>Last Name:</strong> {info.reference?.lastName || 'N/A'}
               </Typography>
               <Typography>
-                <strong>Email:</strong> {dataToDisplay.reference.email}
+                <strong>Phone:</strong> {info.reference?.phone || 'N/A'}
+              </Typography>
+              <Typography>
+                <strong>Email:</strong> {info.reference?.email || 'N/A'}
               </Typography>
               <Typography>
                 <strong>Relationship:</strong>{" "}
-                {dataToDisplay.reference.relationship}
+                {info.reference?.relationship || 'N/A'}
               </Typography>
             </CardContent>
           </Card>
@@ -289,32 +218,32 @@ const Confirmation = () => {
 
         {/* Documents Section */}
         <Grid item xs={12}>
-          <Card>
+          <Card sx={{ bgcolor: "#f9f9f9" }}>
             <CardContent>
-              <Typography variant="h6">Uploaded Documents</Typography>
- 
-              <div className="outlined-container">
-                <List sx={{ display: "flex", gap: "1rem" }}>
-                  {documents?.length > 0 ? (
-                    documents.map((doc) => (
-                      <ListItem
-                        sx={{
-                          width: "fit-content",
-                          bgcolor: "#f2f2f3",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => window.open(doc.url, "_blank")}
-                      >
-                        <AttachFileIcon />
-                        {doc.name}
-                      </ListItem>
-                    ))
-                  ) : (
-                    <Typography>No files</Typography>
-                  )}
-                </List>
-              </div>
+              <Typography variant="h6" sx={{ mb: 2 }}>Uploaded Documents</Typography>
+              <List sx={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+                {documents.length > 0 ? (
+                  documents.map((doc) => (
+                    <ListItem
+                      key={doc.name}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0.5rem 1rem",
+                        bgcolor: "#e0e0e0",
+                        borderRadius: "4px",
+                        cursor: doc.url ? "pointer" : "not-allowed",
+                      }}
+                      onClick={() => doc.url && window.open(doc.url, "_blank")}
+                    >
+                      <AttachFileIcon sx={{ mr: 1 }} />
+                      <Typography>{doc.name}</Typography>
+                    </ListItem>
+                  ))
+                ) : (
+                  <Typography>No documents available.</Typography>
+                )}
+              </List>
             </CardContent>
           </Card>
         </Grid>

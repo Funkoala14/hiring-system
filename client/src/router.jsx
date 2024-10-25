@@ -63,11 +63,6 @@ function AppRouter() {
 
           <Route path="on-boarding" element={<OnBoarding />} />
 
-          {/* Confirmation Route */}
-          <Route
-            path="on-boarding/confirmation"
-            element={<Confirmation parent={"on-boarding"} />}
-          />
           {/* pending Route for review */}
           <Route
             path="on-boarding/pending"

@@ -34,27 +34,24 @@ const OnboardingForm = () => {
   let userStatus = info?.onboardingStatus
     ? info?.onboardingStatus.status
     : "Unknown";
-  console.log("userStatus", userStatus);
 
   // Effect to set initial form data if the application was rejected
   useEffect(() => {
     if (userStatus === "Rejected" && info) {
-      console.log("Setting form data for rejected status", info);
       dispatch(setInitialFormData(info)); // Assuming info contains the necessary fields
     }
   }, [userStatus, info, dispatch]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    // Handle clearing the driver license details if 'hasLicense' is set to 'no'
     if (name === "driverLicense.hasLicense" && value === "no") {
       dispatch(
         updateFormField({
           driverLicense: {
-            hasLicense: "no", // Set hasLicense to "no"
-            number: "", // Clear number
-            expirationDate: "", // Clear expiration date
-            driverLicenseFile: null, // Clear file input
+            hasLicense: "no", 
+            number: "", 
+            expirationDate: "", 
+            driverLicenseFile: null, 
           },
         })
       );
@@ -68,37 +65,30 @@ const OnboardingForm = () => {
         })
       );
     } else if (files) {
-      // Handle file inputs
       dispatch(updateFormField({ [name]: files[0] }));
     } else if (name.includes(".")) {
-      // Handle nested values (e.g., address.city or carInfo.make)
       const [key, subkey] = name.split(".");
       dispatch(
         updateFormField({ [key]: { ...formData[key], [subkey]: value } })
       );
     } else {
-      // Handle normal text inputs
       dispatch(updateFormField({ [name]: value }));
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Create a copy of the formData
     let finalFormData = { ...formData };
 
-    // Check if specificVisaTitle exists and override visaTitle
     if (formData.specificVisaTitle) {
       finalFormData.visaTitle = formData.specificVisaTitle;
     }
 
-    // Ensure that formData.visaStatus.visaDocuments is an array
     finalFormData.visaStatus = {
-      ...finalFormData.visaStatus, // Spread the existing visaStatus object
+      ...finalFormData.visaStatus,
       visaDocuments: Array.isArray(formData.visaStatus.visaDocuments)
-        ? [...formData.visaStatus.visaDocuments] // Create a new array with the existing documents
-        : [], // If not an array, default to an empty array
+        ? [...formData.visaStatus.visaDocuments]
+        : [],
     };
 
     finalFormData.emergencyContacts = Array.isArray(formData.emergencyContacts)
@@ -106,38 +96,47 @@ const OnboardingForm = () => {
       : [];
 
     if (feedback) {
-      // This could be where you handle additional logic before resubmission
-      userStatus = "Pending"; // Reset status to Pending before submission
+      userStatus = "Pending"; 
     }
 
-    // Dispatch finalFormData to the backend
     dispatch(submitOnboarding(finalFormData)).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
         dispatch(resetFeedback());
-        // Redirect to confirmation page after successful submission
-        navigate("confirmation");
+        navigate("pending");
       }
     });
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ backgroundColor: "#f9f9f9", padding: "2rem", borderRadius: "8px", boxShadow: 3 }}>
       <Box mt={5}>
-        <Typography variant="h4" gutterBottom sx={{ marginBottom: "1rem" }}>
+        <Typography variant="h4" gutterBottom sx={{ marginBottom: "1.5rem", textAlign: "center", fontWeight: "bold" }}>
           Onboarding Application
         </Typography>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
+          <Grid container spacing={4}>
             {/* Display feedback if application is rejected */}
+            {userStatus === "Rejected" && feedback && (
+              <Grid item xs={12}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Alert severity="warning" sx={{ fontSize: '1.75rem', textAlign: 'center' }}>
+                  Your application was Rejected 
+                </Alert>
+                <Alert severity="warning" sx={{ fontSize: '1.25rem', textAlign: 'center' }}>
+                  {feedback}
+                </Alert>
+                <Alert severity="warning" sx={{ fontSize: '1rem', textAlign: 'center' }}>
+                  Please resubmit with updated information.
+                </Alert>
+                </Box>
+              </Grid>
+            )}
 
-            <PersonalInfo formData={formData} handleChange={handleChange} info={info}/>
+            <PersonalInfo formData={formData} handleChange={handleChange} info={info} />
 
             <ContactInfo formData={formData} handleChange={handleChange} />
 
-            <WorkAuthorization
-              formData={formData}
-              handleChange={handleChange}
-            />
+            <WorkAuthorization formData={formData} handleChange={handleChange} />
 
             <DriverLicense formData={formData} handleChange={handleChange} />
 
@@ -146,12 +145,13 @@ const OnboardingForm = () => {
             <ReferenceInfo formData={formData} handleChange={handleChange} />
 
             {/* Submit button */}
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
               <Button
                 variant="contained"
                 color="primary"
                 type="submit"
                 disabled={status === "loading"}
+                sx={{ padding: "0.75rem 2rem", fontSize: "1rem" }}
               >
                 {status === "loading" ? "Submitting..." : "Submit"}
               </Button>
@@ -159,7 +159,7 @@ const OnboardingForm = () => {
 
             {/* Display a loader when the form is being submitted */}
             {status === "loading" && (
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                 <CircularProgress />
               </Grid>
             )}

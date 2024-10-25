@@ -3,9 +3,9 @@ import { TextField, MenuItem, Grid, Typography } from "@mui/material";
 import { formatDateForInput } from "../../utils/publicUtils";
 
 const WorkAuthorization = ({ formData, handleChange }) => {
-  const isNonResident = formData.visaStatus.citizenship === "no";
-  const isF1Visa = formData.visaStatus.visaTitle === "F1 (CPT/OPT)";
-  const isOtherVisa = formData.visaStatus.visaTitle === "Other";
+  const isNonResident = formData.visaStatus?.citizenship === "no";
+  const isF1Visa = formData.visaStatus?.visaTitle === "F1 (CPT/OPT)";
+  const isOtherVisa = formData.visaStatus?.visaTitle === "Other";
 
   return (
     <>
@@ -17,11 +17,16 @@ const WorkAuthorization = ({ formData, handleChange }) => {
 
       {/* Citizenship Question */}
       <Grid item xs={12} sm={6}>
+        <Typography variant="body2" sx={{ marginBottom: 1 }}>
+          Are you a U.S citizen or permanent resident?
+        </Typography>
+      </Grid>
+      <Grid item xs={12} sm={6}>
         <TextField
-          label="Are you a U.S citizen or permanent resident?"
+          label="Yes / No"
           select
           name="visaStatus.citizenship"
-          value={formData.visaStatus.citizenship || ''}
+          value={formData.visaStatus?.citizenship || ""}
           onChange={handleChange}
           fullWidth
           required
@@ -32,13 +37,13 @@ const WorkAuthorization = ({ formData, handleChange }) => {
       </Grid>
 
       {/* If "Yes" is selected */}
-      {formData.visaStatus.citizenship === "yes" && (
+      {formData.visaStatus?.citizenship === "yes" && (
         <Grid item xs={12} sm={6}>
           <TextField
             label="Select your status"
             select
             name="visaStatus.citizenshipType"
-            value={formData.visaStatus.citizenshipType}
+            value={formData.visaStatus?.citizenshipType}
             onChange={handleChange}
             fullWidth
             required
@@ -57,7 +62,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               label="What is your work authorization?"
               select
               name="visaStatus.visaTitle"
-              value={formData.visaStatus.visaTitle}
+              value={formData.visaStatus?.visaTitle}
               onChange={handleChange}
               fullWidth
               required
@@ -94,7 +99,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               <TextField
                 label="Specify Visa Title"
                 name="visaStatus.specificVisaTitle"
-                value={formData.visaStatus.specificVisaTitle || ""}
+                value={formData.visaStatus?.specificVisaTitle || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
@@ -109,7 +114,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               label="Visa Start Date"
               name="visaStatus.startDate"
               type="date"
-              value={formatDateForInput(formData.visaStatus.startDate)}
+              value={formatDateForInput(formData.visaStatus?.startDate)}
               onChange={handleChange}
               fullWidth
               InputLabelProps={{
@@ -123,7 +128,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               label="Visa End Date"
               name="visaStatus.endDate"
               type="date"
-              value={formatDateForInput(formData.visaStatus.endDate)}
+              value={formatDateForInput(formData.visaStatus?.endDate)}
               onChange={handleChange}
               fullWidth
               InputLabelProps={{
@@ -134,7 +139,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
           </Grid>
 
           {/* Visa Documents Upload */}
-          {/* <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Work Authorization Document"
               name="visaDocuments"
@@ -148,7 +153,7 @@ const WorkAuthorization = ({ formData, handleChange }) => {
               }}
               required
             />
-          </Grid> */}
+          </Grid>
         </>
       )}
     </>
