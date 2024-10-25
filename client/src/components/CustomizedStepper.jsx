@@ -25,11 +25,17 @@ const generateSteps = ({ type, status }) => {
 };
 
 export default function CustomizedStepper({ nextStep }) {
+  let activeIndex = 0;
   const { steps, activeStep } = generateSteps(nextStep);
+  activeIndex = activeStep;
+
+  if (nextStep.type === "I-20" && nextStep.status === "approved") {
+    activeIndex = 4;
+  }
 
   return (
     <Box sx={{ width: "100%", mt: 3, mb: 5 }}>
-      <Stepper activeStep={activeStep}>
+      <Stepper activeStep={activeIndex}>
         {steps.map(({ type, status }) => {
           const labelProps = {};
           if (status === "rejected") {
