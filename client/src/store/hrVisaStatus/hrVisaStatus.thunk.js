@@ -23,8 +23,9 @@ export const approveDocument = createAsyncThunk(
   "hrVisa/approve",
   async ({ documentId, status }) => {
     const { message } = await post("/visa/status", { documentId, status });
-    const { data } = await get("/visa/all-pending");
-    return { data, message };
+    const allPending = await get("/visa/all-pending");
+    const all = await get("/visa/all");
+    return { pending: allPending.data, all: all.data, message };
   }
 );
 
@@ -32,8 +33,9 @@ export const rejectDocument = createAsyncThunk(
   "hrVisa/reject",
   async ({ documentId, status }) => {
     await post("/visa/status", { documentId, status });
-    const { data } = await get("/visa/all-pending");
-    return data;
+    const allPending = await get("/visa/all-pending");
+    const all = await get("/visa/all");
+    return { pending: allPending.data, all: all.data };
   }
 );
 
@@ -41,7 +43,8 @@ export const postFeedback = createAsyncThunk(
   "hrVisa/feedback",
   async ({ documentId, feedback }) => {
     const { message } = await post("/visa/feedback", { documentId, feedback });
-    const { data } = await get("/visa/all-pending");
-    return { data, message };
+    const allPending = await get("/visa/all-pending");
+    const all = await get("/visa/all");
+    return { pending: allPending.data, all: all.data, message };
   }
 );

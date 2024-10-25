@@ -9,11 +9,21 @@ export const submitDocument = async (req, res) => {
     const employeeId = req.user.id;
     const type = req.body.type;
 
-    const oldDoc = await Document.findOne({ type }).exec();
+    const employee = await Employee.findById(employeeId)
+      .populate({
+        path: "visaStatus",
+        populate: { path: "documents" },
+      })
+      .lean()
+      .exec();
 
-    if (oldDoc) {
-      await deleteFileFn(oldDoc.awsKey);
-      await Document.deleteOne({ _id: oldDoc._id });
+    const deleteDoc = employee?.visaStatus?.documents.find(
+      (item) => item.type === type
+    );
+
+    if (deleteDoc) {
+      const res = await deleteFileFn(deleteDoc.awsKey);
+      const res2 = await Document.deleteOne({ _id: deleteDoc._id });
     }
 
     if (!req.file) {
@@ -30,10 +40,8 @@ export const submitDocument = async (req, res) => {
 
     await newDoc.save();
 
-    const employee = await User.findById(employeeId).lean().exec();
-
     const updatedStatus = await VisaStatus.findByIdAndUpdate(
-      employee.visaStatus,
+      employee.visaStatus._id,
       { $push: { documents: newDoc._id } },
       { new: true }
     )

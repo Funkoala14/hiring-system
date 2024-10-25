@@ -27,7 +27,7 @@ import { blueGrey } from "@mui/material/colors";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import Groups3Icon from "@mui/icons-material/Groups3";
-import { Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 const drawerWidth = 280;
 
@@ -222,11 +222,12 @@ export default function HeaderWithDrawer({
   );
 
   const renderNavLinks = (links) => (
-    <List>
+    <List sx={{ py: 0 }}>
       {links.map(({ text, icon, path }) => (
         <ListItem key={text} disablePadding sx={{ display: "block" }}>
           <ListItemButton
-            component={Link}
+            className="drawer-link"
+            component={NavLink}
             to={path}
             sx={[
               {
