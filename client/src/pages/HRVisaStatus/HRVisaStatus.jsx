@@ -261,10 +261,11 @@ const HRVisaStatus = () => {
                       )}
                     </TableCell>
                     <TableCell align="center">
-                      {getDocumentMessage(
-                        row.nextStep?.type,
-                        row.nextStep?.status
-                      )}
+                      {row.visaStatus?.visaTitle === "F1 (CPT/OPT)" &&
+                        getDocumentMessage(
+                          row.nextStep?.type,
+                          row.nextStep?.status
+                        )}
                     </TableCell>
                     <TableCell align="center">{renderAction(row)}</TableCell>
                   </TableRow>
@@ -322,10 +323,11 @@ const HRVisaStatus = () => {
                       )}
                     </TableCell>
                     <TableCell align="center">
-                      {getDocumentMessage(
-                        row.nextStep?.type,
-                        row.nextStep?.status
-                      )}
+                      {row.visaStatus?.visaTitle === "F1 (CPT/OPT)" &&
+                        getDocumentMessage(
+                          row.nextStep?.type,
+                          row.nextStep?.status
+                        )}
                     </TableCell>
                     <TableCell align="center">
                       <Box

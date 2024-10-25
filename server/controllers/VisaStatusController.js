@@ -22,8 +22,8 @@ export const submitDocument = async (req, res) => {
     );
 
     if (deleteDoc) {
-      const res = await deleteFileFn(deleteDoc.awsKey);
-      const res2 = await Document.deleteOne({ _id: deleteDoc._id });
+      await deleteFileFn(deleteDoc.awsKey);
+      await Document.deleteOne({ _id: deleteDoc._id });
     }
 
     if (!req.file) {
