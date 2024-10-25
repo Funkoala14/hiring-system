@@ -14,7 +14,7 @@ import { formatDate, formatDateForInput } from "../../utils/publicUtils";
 const PersonalInfo = ({ formData, handleChange, info }) => {
   return (
     <>
-      <Grid xs={12} sx={{ padding: "24px" }}>
+      <Grid item xs={12} sx={{ padding: "24px" }}>
         <Typography variant="h6">Personal Information</Typography>
       </Grid>
       <Grid item xs={12} sm={6}>
