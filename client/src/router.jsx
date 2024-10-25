@@ -3,9 +3,8 @@ import { Routes, Route, Outlet } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
 import HRVisaStatus from "./pages/HRVisaStatus/HRVisaStatus";
 import Review from "./pages/OnBoarding/Review";
-import Confirmation from "./pages/OnBoarding/Confirmation";
 import Loading from "./components/Loading";
-import SendLink from "./pages/HiringManagement/SendRegistration";
+
 
 const RegistrationPage = lazy(() => import("@pages/Registration/Registration"));
 const Home = lazy(() => import("@pages/Home/Home"));
@@ -170,15 +169,6 @@ function AppRouter() {
             element={
               <MainLayout>
                 <ApplicationDetails />
-              </MainLayout>
-            }
-          />
-
-          <Route
-            path="contact"
-            element={
-              <MainLayout>
-                <SendLink />
               </MainLayout>
             }
           />
