@@ -1,5 +1,53 @@
 import validator from 'validator';
-const { escape, isEmpty, isAlphanumeric, isEmail, isStrongPassword, isMobilePhone } = validator;
+const { escape, isEmpty, isAlphanumeric, 
+  isEmail, isStrongPassword, isMobilePhone,
+  isAlpha, isNumeric, isDate
+ } = validator;
+
+ export const formValidation = (req, res, next) => {
+  let {
+    cellPhone,
+    workPhone,
+    ssn,
+    reference,
+    emergencyContacts,
+  } = req.body;
+
+
+  const { phone: refPhone,} = reference || {};
+
+    // SSN validation
+  if (ssn && (!isNumeric(ssn) || ssn.length !== 9)) {
+    return res.status(400).json({ message: 'SSN must be exactly 9 digits!' });
+  }
+
+  // Phone validation (optional fields)
+  if (cellPhone && (!isMobilePhone(cellPhone, 'en-US') || cellPhone.length !== 10)) {
+    return res.status(400).json({ message: 'Cell phone number must be a valid 10-digit number!' });
+  }
+
+  if (workPhone && (!isMobilePhone(workPhone, 'en-US') || workPhone.length !== 10)) {
+    return res.status(400).json({ message: 'Work phone number must be a valid 10-digit number!' });
+  }
+
+
+  // Reference validation
+  if (reference) {
+    if (refPhone && (!isMobilePhone(refPhone, 'en-US') || refPhone.length !== 10)) {
+      return res.status(400).json({ message: 'Reference phone number must be a valid 10-digit number!' });
+    }
+  }
+
+  // Emergency contact validation (can have 1 or more)
+  for (let contact of emergencyContacts || []) {
+    const {phone } = contact;
+    if (phone && (!isMobilePhone(refPhone, 'en-US') || refPhone.length !== 10)) {
+      return res.status(400).json({ message: 'Emergency contact phone number must be a valid 10-digit number!' });
+    }
+  }
+
+  next();
+};
 
 // Sanitize input to escape potentially harmful characters
 const createUserValidation = (req, res, next) => {
@@ -61,12 +109,12 @@ const loginUserValidation = (req, res, next) => {
 export const housingValidation = (req, res, next) => {
     try {
         const { address, landlord, title} = req.body;
-        const { building, street, city, state, zip } = address;
+        const { buildingOrAptNumber, street, city, state, zip } = address;
         const { name, phone, email } = landlord;
         if (!title) return res.status(400).json({ message: "Missing title!" });
         if (!address) return res.status(400).json({ message: "Missing address info!" });
         if (!landlord) return res.status(400).json({ message: "Missing landlord info!" });
-        if (!building) return res.status(400).json({ message: "Missing building info!" });
+        if (!buildingOrAptNumber) return res.status(400).json({ message: "Missing building info!" });
         if (!street) return res.status(400).json({ message: "Missing street info!" });
         if (!city) return res.status(400).json({ message: "Missing city info!" });
         if (!state) return res.status(400).json({ message: "Missing state info!" });
