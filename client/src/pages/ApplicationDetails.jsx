@@ -9,8 +9,8 @@ const ApplicationDetails = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState('');
-  const [showFeedbackInput, setShowFeedbackInput] = useState(false);
+  const [comment, setComment] = useState(''); // using comment instead
+  const [showCommentInput, setShowCommentInput] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,6 +20,9 @@ const ApplicationDetails = () => {
         const response = await fetch(`http://localhost:5000/v1/api/onboarding/application/${id}`);
         const data = await response.json();
         setEmployee(data);
+        if (data.onboardingStatus?.comments) {
+          setComment(data.onboardingStatus.comments);
+        }
       } catch (error) {
         console.error('Error fetching employee details:', error);
       }
@@ -31,8 +34,8 @@ const ApplicationDetails = () => {
 
   const updateApplicationStatus = async (status) => {
     const updateData = { status };
-    if (status === 'Rejected' && feedback) {
-      updateData.feedback = feedback;
+    if (status === 'Rejected' && comment) {
+      updateData.comment = comment;
     }
 
     try {
@@ -45,6 +48,8 @@ const ApplicationDetails = () => {
       });
 
       if (response.ok) {
+        const updatedEmployee = await response.json();
+        setEmployee(updatedEmployee);
         navigate('/hr/hiring-management');
       } else {
         console.error('Error updating status:', response.statusText);
@@ -147,7 +152,6 @@ const ApplicationDetails = () => {
           </>
         )}
 
-
         <Box mb={2}>
           <Typography variant="body1">
             <strong>Car Info:</strong> {`${employee.carInfo?.make || 'N/A'}, ${employee.carInfo?.model || 'N/A'}, ${employee.carInfo?.color || 'N/A'}`}
@@ -161,7 +165,7 @@ const ApplicationDetails = () => {
         </Box>
         <Box mb={2}>
           <Typography variant="body1">
-            <strong>Feedback:</strong> {employee.onboardingStatus?.feedback || 'No feedback provided'}
+            <strong>Comments:</strong> {employee.onboardingStatus?.comments || 'No comments provided'}
           </Typography>
         </Box>
 
@@ -178,18 +182,18 @@ const ApplicationDetails = () => {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => setShowFeedbackInput(true)}
+              onClick={() => setShowCommentInput(true)}
             >
               Reject
             </Button>
 
-            {showFeedbackInput && (
+            {showCommentInput && (
               <Box mt={3}>
                 <TextField
-                  id="feedback"
-                  label="Rejection Feedback"
-                  value={feedback}
-                  onChange={(e) => setFeedback(e.target.value)}
+                  id="comment"
+                  label="Rejection Comments"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
                   multiline
                   rows={4}
                   fullWidth
