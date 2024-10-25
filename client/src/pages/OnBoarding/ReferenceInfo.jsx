@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Grid, Typography } from "@mui/material";
+import { TextField, Grid, Typography, MenuItem } from "@mui/material";
 
 const ReferenceInfo = ({ formData, handleChange }) => {
   return (
@@ -61,7 +61,17 @@ const ReferenceInfo = ({ formData, handleChange }) => {
           onChange={handleChange}
           fullWidth
           required
-        />
+          select
+        >
+          <MenuItem value="parent">Parent</MenuItem>
+          <MenuItem value="sibling">Sibling</MenuItem>
+          <MenuItem value="spouse">Spouse</MenuItem>
+          <MenuItem value="child">Child</MenuItem>
+          <MenuItem value="relative">Relative</MenuItem>
+          <MenuItem value="friend">Friend</MenuItem>
+          <MenuItem value="colleague">Colleague</MenuItem>
+          <MenuItem value="other">Other</MenuItem>
+        </TextField>
       </Grid>
     </>
   );

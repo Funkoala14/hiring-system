@@ -1,5 +1,14 @@
 import React from "react";
-import { TextField, Grid, Typography } from "@mui/material";
+import {
+  TextField,
+  Grid,
+  Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+} from "@mui/material";
+import { STATES } from "../../store/constant";
 
 const ContactInfo = ({ formData, handleChange }) => {
   // Function to handle changes specifically for emergency contacts
@@ -47,6 +56,7 @@ const ContactInfo = ({ formData, handleChange }) => {
           required
         />
       </Grid>
+
       <Grid item xs={12} sm={6}>
         <TextField
           label="State"
@@ -55,8 +65,16 @@ const ContactInfo = ({ formData, handleChange }) => {
           onChange={handleChange}
           fullWidth
           required
-        />
+          select
+        >
+          {STATES.map((state) => (
+            <MenuItem key={state.code} value={state.code}>
+              {state.name}
+            </MenuItem>
+          ))}
+        </TextField>
       </Grid>
+
       <Grid item xs={12} sm={6}>
         <TextField
           label="Zip Code"
@@ -87,12 +105,17 @@ const ContactInfo = ({ formData, handleChange }) => {
         />
       </Grid>
 
-      <Grid item xs={12} >
+      <Grid item xs={12}>
         <Typography variant="h6">Emergency Contacts</Typography>
       </Grid>
 
       {formData.emergencyContacts.map((contact, index) => (
-        <Grid container spacing={3} key={index} sx={{ marginBottom: 2, marginTop: 2, paddingLeft: '1.5rem' }}>
+        <Grid
+          container
+          spacing={3}
+          key={index}
+          sx={{ marginBottom: 2, marginTop: 2, paddingLeft: "1.5rem" }}
+        >
           <Grid item xs={12} sm={4}>
             <TextField
               label="First Name"
@@ -151,7 +174,17 @@ const ContactInfo = ({ formData, handleChange }) => {
               }
               fullWidth
               required
-            />
+              select
+            >
+              <MenuItem value="parent">Parent</MenuItem>
+              <MenuItem value="sibling">Sibling</MenuItem>
+              <MenuItem value="spouse">Spouse</MenuItem>
+              <MenuItem value="child">Child</MenuItem>
+              <MenuItem value="relative">Relative</MenuItem>
+              <MenuItem value="friend">Friend</MenuItem>
+              <MenuItem value="colleague">Colleague</MenuItem>
+              <MenuItem value="other">Other</MenuItem>
+            </TextField>
           </Grid>
         </Grid>
       ))}
