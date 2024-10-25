@@ -7,7 +7,6 @@ import {
     DialogContentText,
     DialogTitle,
     FormControl,
-    Link,
     MenuItem,
     Paper,
     Select,
@@ -28,6 +27,7 @@ import { NotificationSnackbar } from '../../components/NotificationSnackBar/Noti
 import { showNotification } from '../../store/notificationSlice/notification.slice';
 import Loading from '../../components/Loading';
 import { clearError } from '../../store/housingSlice/housing.slice';
+import { Link } from 'react-router-dom';
 
 const HousingManagement = () => {
     const dispatch = useDispatch();
@@ -90,7 +90,7 @@ const HousingManagement = () => {
                             list.map((row) => (
                                 <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
-                                        <Link href={`/hr/housing-detail?title=${row.title}`}>{row.title}</Link>
+                                        <Link to={`/hr/housing-detail?title=${row.title}`}>{row.title}</Link>
                                     </TableCell>
                                     <TableCell>
                                         <p>{`${row.address.building}`}</p>
