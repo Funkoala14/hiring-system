@@ -17,9 +17,9 @@ const DriverLicense = ({ formData, handleChange }) => {
 
   // Sync `hasLicense` with driverLicenseDetails.hasLicense, fallback to 'no' if undefined
   const hasLicense = driverLicense.hasLicense === "yes";
-  console.log('driverLicenseDetails.hasLicense', driverLicense.hasLicense);
-  console.log('driverLicenseDetails', driverLicense);
-  console.log('formData', formData);
+  // console.log('driverLicenseDetails.hasLicense', driverLicense.hasLicense);
+  // console.log('driverLicenseDetails', driverLicense);
+  // console.log('formData', formData);
   
 
   return (

@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchEmployeeList } from '../../store/employeeSlice/employee.thunk';
 import { clearSearch, setBaseQuery, setFilteredList } from '../../store/searchSlice/search.slice';
 import Loading from '../../components/Loading';
+import { clearError } from '../../store/employeeSlice/employee.slice';
+import { showNotification } from '../../store/notificationSlice/notification.slice';
 
 const EmployeeManagement = () => {
     const dispatch = useDispatch();
@@ -38,7 +40,8 @@ const EmployeeManagement = () => {
     }
 
     if (error) {
-        return <p>Error: {error}</p>;
+        dispatch(showNotification({ message: error, severity: 'error' }));
+        dispatch(clearError);
     }
 
     const setNameSet = async () => {
@@ -63,12 +66,14 @@ const EmployeeManagement = () => {
         dispatch(clearSearch(list));
     };
 
-    const handleSearch = () => {
+    const handleSearch = (value) => {
+        console.log('handleSearch', query, value);
+
         const results = list.filter(
             (item) =>
-                item.firstName?.toLowerCase().includes(query.toLowerCase()) ||
-                item.lastName?.toLowerCase().includes(query.toLowerCase()) ||
-                item.preferredName?.toLowerCase().includes(query.toLowerCase())
+                item.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+                item.lastName?.toLowerCase().includes(value.toLowerCase()) ||
+                item.preferredName?.toLowerCase().includes(value.toLowerCase())
         );
         console.log(results);
 
@@ -104,7 +109,7 @@ const EmployeeManagement = () => {
                                         </Link>
                                     </TableCell>
                                     <TableCell>{row.ssn}</TableCell>
-                                    <TableCell>{row.workauth}</TableCell>
+                                    <TableCell>{row.visaStatus?.visaTitle}</TableCell>
                                     <TableCell>{row.cellPhone}</TableCell>
                                     <TableCell>{row.email}</TableCell>
                                 </TableRow>

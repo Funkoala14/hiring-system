@@ -58,8 +58,9 @@ export const submitOnboarding = async (req, res) => {
           files.visaDocuments.map(async (file) => {
             const newDocument = new Document({
               type: "visa",
-              filename: file.key,
+              filename: file.originalname,
               src: file.location,
+              awsKey: file.key,
             });
             await newDocument.save();
             return newDocument._id;
@@ -73,8 +74,9 @@ export const submitOnboarding = async (req, res) => {
           files.optReceipt.map(async (file) => {
             const newDocument = new Document({
               type: "OPT Receipt",
-              filename: file.key,
+              filename: file.originalname,
               src: file.location,
+              awsKey: file.key,
             });
             await newDocument.save();
             return newDocument._id;
@@ -128,6 +130,7 @@ export const submitOnboarding = async (req, res) => {
 
       await visaStatus.save();
     } else {
+      await deleteFileFn(visaStatus.documents[0].awsKey);
       // Update existing visa status
       visaStatus.citizenship = citizenship;
       visaStatus.citizenshipType = citizenshipType;

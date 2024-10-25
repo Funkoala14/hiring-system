@@ -31,9 +31,9 @@ export const approveDocument = createAsyncThunk(
 export const rejectDocument = createAsyncThunk(
   "hrVisa/reject",
   async ({ documentId, status }) => {
-    const { message } = await post("/visa/status", { documentId, status });
+    await post("/visa/status", { documentId, status });
     const { data } = await get("/visa/all-pending");
-    return { data, message };
+    return data;
   }
 );
 

@@ -284,6 +284,7 @@ export const getEmployeeList = async (req, res) => {
     try {
         const employees = await Employee.find({ role: 'Employee' })
             .select('-__v -password -__t')
+            .populate("visaStatus")
             .sort({ lastName: 1 })
             .lean()
             .exec();
@@ -312,7 +313,7 @@ export const updateAvatar = async (req, res) => {
             return res.status(401).json({ message: 'Invalid userid', code: 401 });
         }
 
-        const { name } = employee.image;
+        const name = employee?.image?.name || "";
 
         const updatedEmployee = await Employee.findOneAndUpdate(
             { username },

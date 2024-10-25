@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import PreviewIcon from "@mui/icons-material/Preview";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 
 const DropZoneContainer = styled(Paper)(({ theme }) => ({
@@ -49,7 +49,7 @@ const DropZone = ({ onUpload }) => {
       {file && (
         <Accordion key={file.name} sx={{ backgroundColor: "white" }}>
           <AccordionSummary
-            expandIcon={<PreviewIcon />}
+            expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1-content"
             id="panel1-header"
           >

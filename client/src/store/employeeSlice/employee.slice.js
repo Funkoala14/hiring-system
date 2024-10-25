@@ -8,7 +8,11 @@ const employeeSlice = createSlice({
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        clearError: (state) => {
+            state.error = null;
+        },
+    },
     selectors: {},
     extraReducers: (builder) => {
         builder
@@ -27,4 +31,5 @@ const employeeSlice = createSlice({
     },
 });
 
+export const { clearError } = employeeSlice.actions;
 export default employeeSlice.reducer;

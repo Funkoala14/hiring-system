@@ -42,6 +42,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import CommentIcon from "@mui/icons-material/Comment";
 import EmailIcon from "@mui/icons-material/Email";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { getDocumentMessage } from "../../utils/publicUtils";
 
 // Constants
@@ -89,10 +90,10 @@ const HRVisaStatus = () => {
 
   const handleReset = () => dispatch(clearSearch(allStatuses));
 
-  const handleSearch = () => {
+  const handleSearch = (value) => {
     const results = allStatuses.filter((item) =>
       [item.firstName, item.lastName, item.preferredName].some((name) =>
-        name?.toLowerCase().includes(query.toLowerCase())
+        name?.toLowerCase().includes(value.toLowerCase())
       )
     );
     dispatch(setFilteredList(results));
@@ -150,7 +151,7 @@ const HRVisaStatus = () => {
     const { status, type } = row.nextStep;
     if (status === "pending") {
       return (
-        <>
+        <Box sx={{ display: "flex" }}>
           <Tooltip title="Preview Document">
             <IconButton onClick={() => handlePreview(row.nextStep)}>
               <PreviewIcon />
@@ -166,11 +167,11 @@ const HRVisaStatus = () => {
               <CloseIcon />
             </IconButton>
           </Tooltip>
-        </>
+        </Box>
       );
     } else if (status === "rejected") {
       return (
-        <>
+        <Box sx={{ display: "flex" }}>
           <Tooltip title="Preview Document">
             <IconButton onClick={() => handlePreview(row.nextStep)}>
               <PreviewIcon />
@@ -186,14 +187,12 @@ const HRVisaStatus = () => {
               <CommentIcon />
             </IconButton>
           </Tooltip>
-        </>
+        </Box>
       );
     }
     return (
       <Tooltip title="Send Notification">
-        <IconButton
-          onClick={() => handleNotify("lqz061@gmail.com", row.username, type)}
-        >
+        <IconButton onClick={() => handleNotify(row.email, row.username, type)}>
           <EmailIcon />
         </IconButton>
       </Tooltip>
@@ -224,50 +223,55 @@ const HRVisaStatus = () => {
         <Typography component="h2" sx={{ mb: 2, fontWeight: "bold" }}>
           In Progress
         </Typography>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                {headers.map((value) => (
-                  <TableCell key={value} align="center">
-                    {value}
-                  </TableCell>
-                ))}
-                <TableCell align="center">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {allPending.map((row) => (
-                <TableRow key={row.username}>
-                  <TableCell align="center">{row.firstName ?? ""}</TableCell>
-                  <TableCell align="center">{row.lastName ?? ""}</TableCell>
-                  <TableCell align="center">
-                    {row.preferredName ?? ""}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.visaStatus.visaTitle}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.visaStatus.startDate?.slice(0, 10)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.visaStatus.endDate?.slice(0, 10)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {calculateRemainingDays(
-                      row.visaStatus.startDate,
-                      row.visaStatus.endDate
-                    )}
-                  </TableCell>
-                  <TableCell align="center">
-                    {getDocumentMessage(row.nextStep.type, row.nextStep.status)}
-                  </TableCell>
-                  <TableCell align="center">{renderAction(row)}</TableCell>
+        {allPending && allPending.length > 0 && (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  {headers.map((value) => (
+                    <TableCell key={value} align="center">
+                      {value}
+                    </TableCell>
+                  ))}
+                  <TableCell align="center">Action</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {allPending.map((row) => (
+                  <TableRow key={row.username}>
+                    <TableCell align="center">{row.firstName ?? ""}</TableCell>
+                    <TableCell align="center">{row.lastName ?? ""}</TableCell>
+                    <TableCell align="center">
+                      {row.preferredName ?? ""}
+                    </TableCell>
+                    <TableCell align="center">
+                      {row.visaStatus?.visaTitle}
+                    </TableCell>
+                    <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
+                      {row.visaStatus?.startDate?.slice(0, 10)}
+                    </TableCell>
+                    <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
+                      {row.visaStatus?.endDate?.slice(0, 10)}
+                    </TableCell>
+                    <TableCell align="center">
+                      {calculateRemainingDays(
+                        row.visaStatus?.startDate,
+                        row.visaStatus?.endDate
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      {getDocumentMessage(
+                        row.nextStep?.type,
+                        row.nextStep?.status
+                      )}
+                    </TableCell>
+                    <TableCell align="center">{renderAction(row)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Box>
       <Box sx={{ mt: 5 }}>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -280,62 +284,75 @@ const HRVisaStatus = () => {
             handleSearch={handleSearch}
           />
         </Box>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {headers.map((value) => (
-                  <TableCell key={value} align="center">
-                    {value}
-                  </TableCell>
-                ))}
-                <TableCell align="center">Documents</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredList.map((row) => (
-                <TableRow key={row.username}>
-                  <TableCell align="center">{row.firstName ?? ""}</TableCell>
-                  <TableCell align="center">{row.lastName ?? ""}</TableCell>
-                  <TableCell align="center">
-                    {row.preferredName ?? ""}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.visaStatus.visaTitle}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.visaStatus.startDate?.slice(0, 10)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.visaStatus.endDate?.slice(0, 10)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {calculateRemainingDays(
-                      row.visaStatus.startDate,
-                      row.visaStatus.endDate
-                    )}
-                  </TableCell>
-                  <TableCell align="center">
-                    {getDocumentMessage(row.nextStep.type, row.nextStep.status)}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Box
-                      sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                    >
-                      {row.visaStatus.documents.map((doc) => (
-                        <Chip
-                          key={doc.filename}
-                          label={doc.filename}
-                          onClick={() => handlePreview(doc)}
-                        />
-                      ))}
-                    </Box>
-                  </TableCell>
+        {allStatuses && allStatuses.length > 0 && filteredList && (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {headers.map((value) => (
+                    <TableCell key={value} align="center">
+                      {value}
+                    </TableCell>
+                  ))}
+                  <TableCell align="center">Documents</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {filteredList.map((row) => (
+                  <TableRow key={row.username}>
+                    <TableCell align="center">{row.firstName ?? ""}</TableCell>
+                    <TableCell align="center">{row.lastName ?? ""}</TableCell>
+                    <TableCell align="center">
+                      {row.preferredName ?? ""}
+                    </TableCell>
+                    <TableCell align="center">
+                      {row.visaStatus?.visaTitle}
+                    </TableCell>
+                    <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
+                      {row.visaStatus?.startDate?.slice(0, 10)}
+                    </TableCell>
+                    <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
+                      {row.visaStatus?.endDate?.slice(0, 10)}
+                    </TableCell>
+                    <TableCell align="center">
+                      {calculateRemainingDays(
+                        row.visaStatus?.startDate,
+                        row.visaStatus?.endDate
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      {getDocumentMessage(
+                        row.nextStep?.type,
+                        row.nextStep?.status
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1,
+                          maxHeight: "10vh",
+                          overflow: "auto",
+                        }}
+                      >
+                        {row.visaStatus?.documents?.map((doc) => (
+                          <Chip
+                            icon={<AttachFileIcon />}
+                            key={doc.type}
+                            sx={{ flexShrink: 0, px: 2, width: 260 }}
+                            label={doc.filename}
+                            onClick={() => handlePreview(doc)}
+                          />
+                        ))}
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Box>
       {selectedFile && (
         <PreviewModal

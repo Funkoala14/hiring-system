@@ -27,27 +27,27 @@ visaStatusRouter.post(
 //HR API
 visaStatusRouter.get(
   "/all-pending",
-  // jwtValidation,
-  // checkPermission('hr'), // Add this after testing
+  jwtValidation,
+  checkPermission("HR"),
   getAllPendingStatuses
 );
 visaStatusRouter.get(
   "/all",
-  //   jwtValidation,
-  //   checkPermission('hr'), // Add this after testing
+  jwtValidation,
+  checkPermission("HR"),
   getAllStatuses
 );
 
 visaStatusRouter.post(
   "/status",
   jwtValidation,
-  //   checkPermission("hr"),
+  checkPermission("HR"),
   changeDocumentStatus
 );
 visaStatusRouter.post(
   "/feedback",
   jwtValidation,
-  //   checkPermission("hr"),
+  checkPermission("HR"),
   postDocumentFeedback
 );
 

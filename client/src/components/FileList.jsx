@@ -5,15 +5,23 @@ import {
   AccordionSummary,
   ListItemText,
 } from "@mui/material";
-import PreviewIcon from "@mui/icons-material/Preview";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const FileList = ({ files }) => {
-  console.log(files);
-
   return files.map(({ filename, src }) => (
-    <Accordion key={filename} sx={{ backgroundColor: "white", my: 0 }}>
+    <Accordion
+      key={filename}
+      sx={{
+        backgroundColor: "white",
+        my: 0,
+        "&::before": {
+          display: "none",
+        },
+        borderRadius: 1,
+      }}
+    >
       <AccordionSummary
-        expandIcon={<PreviewIcon />}
+        expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1-content"
         id="panel1-header"
       >

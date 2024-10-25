@@ -19,7 +19,7 @@ const Confirmation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { info } = useSelector((state) => state.profile);
-
+  
   // Fetch employee information on page load
   useEffect(() => {
     dispatch(fetchEmployeeInfo(info));
