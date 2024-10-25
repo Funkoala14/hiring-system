@@ -18,14 +18,17 @@ const hrVisaSlice = createSlice({
         state.all = action.payload.data;
       })
       .addCase(approveDocument.fulfilled, (state, action) => {
-        state.pending = action.payload.data;
+        state.all = action.payload.all;
+        state.pending = action.payload.pending;
         state.message = action.payload.message;
       })
       .addCase(rejectDocument.fulfilled, (state, action) => {
-        state.pending = action.payload;
+        state.pending = action.payload.pending;
+        state.all = action.payload.all;
       })
       .addCase(postFeedback.fulfilled, (state, action) => {
-        state.pending = action.payload.data;
+        state.pending = action.payload.pending;
+        state.all = action.payload.all;
         state.message = action.payload.message;
       });
   },

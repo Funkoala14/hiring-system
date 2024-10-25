@@ -136,6 +136,7 @@ const HRVisaStatus = () => {
 
   const handleReject = (file) => {
     dispatch(rejectDocument({ documentId: file._id, status: "rejected" }));
+    setSelectedFile(file);
     setOpenDialog(true);
   };
 
