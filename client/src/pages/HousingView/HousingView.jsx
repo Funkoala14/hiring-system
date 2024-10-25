@@ -156,7 +156,7 @@ const HousingDetail = ({ housing }) => {
                                 <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
                                         {parent === 'hr' ? (
-                                            <Link href={`/hr/employee-profile?username=${row.username}`}>
+                                            <Link to={`/hr/employee-profile?username=${row.username}`}>
                                                 {row.preferredName || row.firstName} {row.lastName}
                                             </Link>
                                         ) : (

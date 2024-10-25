@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { Link } from "@mui/material";
+// import { Link } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -27,6 +27,7 @@ import { blueGrey } from "@mui/material/colors";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import Groups3Icon from "@mui/icons-material/Groups3";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 280;
 
@@ -223,55 +224,57 @@ export default function HeaderWithDrawer({
   const renderNavLinks = (links) => (
     <List>
       {links.map(({ text, icon, path }) => (
-        <ListItem key={text} disablePadding sx={{ display: "block" }}>
-          <ListItemButton
-            component="a"
-            href={path}
-            sx={[
-              {
-                minHeight: 48,
-                px: 2.5,
-              },
-              open
-                ? {
-                    justifyContent: "initial",
-                  }
-                : {
-                    justifyContent: "center",
-                  },
-            ]}
-          >
-            <ListItemIcon
+        <Link to={path}>
+          <ListItem key={text} disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              component="a"
+              href={path}
               sx={[
                 {
-                  minWidth: 0,
-                  justifyContent: "center",
+                  minHeight: 48,
+                  px: 2.5,
                 },
                 open
                   ? {
-                      mr: 3,
+                      justifyContent: "initial",
                     }
                   : {
-                      mr: "auto",
+                      justifyContent: "center",
                     },
               ]}
             >
-              {icon}
-            </ListItemIcon>
-            <ListItemText
-              primary={text}
-              sx={[
-                open
-                  ? {
-                      opacity: 1,
-                    }
-                  : {
-                      opacity: 0,
-                    },
-              ]}
-            />
-          </ListItemButton>
-        </ListItem>
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: "center",
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: "auto",
+                      },
+                ]}
+              >
+                {icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={text}
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+        </Link>
       ))}
     </List>
   );
@@ -279,7 +282,7 @@ export default function HeaderWithDrawer({
   const renderLoginOrSignup = (
     <Box sx={{ display: "flex" }}>
       <Link
-        href="/login"
+        to="/login"
         color="inherit"
         sx={{ textDecoration: "none", marginRight: 2 }}
       >
@@ -316,8 +319,8 @@ export default function HeaderWithDrawer({
             <MenuIcon />
           </IconButton>
           <Link
+            to={auth.role === "Employee" ? employeePaths.home : hrPaths.home}
             underline="none"
-            href={auth.role === "Employee" ? employeePaths.home : hrPaths.home}
             sx={{ color: "white", display: "flex", alignItems: "center" }}
           >
             OnTrack HR

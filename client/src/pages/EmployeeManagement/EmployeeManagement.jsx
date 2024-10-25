@@ -5,7 +5,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
+// import Link from '@mui/material/Link';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ import { clearSearch, setBaseQuery, setFilteredList } from '../../store/searchSl
 import Loading from '../../components/Loading';
 import { clearError } from '../../store/employeeSlice/employee.slice';
 import { showNotification } from '../../store/notificationSlice/notification.slice';
+import { Link } from 'react-router-dom';
 
 const EmployeeManagement = () => {
     const dispatch = useDispatch();
@@ -102,7 +103,7 @@ const EmployeeManagement = () => {
                             filteredList.map((row) => (
                                 <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell component='th' scope='row'>
-                                        <Link href={`/hr/employee-profile?username=${row.username}`}>
+                                        <Link to={`/hr/employee-profile?username=${row.username}`}>
                                             {row.firstName}
                                             {row.middleName ? ` ${row.middleName} ` : ' '}
                                             {row.lastName}
